@@ -1,0 +1,102 @@
+div#leenkme_meta_box {
+	
+}
+
+ul.leenkme_tabs {
+	margin: 0;
+	padding: 0;
+	float: left;
+	list-style: none;
+	height: 26px; /*--Set height of tabs--*/
+	border-bottom: 1px solid #999;
+	width: 100%;
+}
+
+ul.leenkme_tabs li {
+	float: left;
+	margin: 0;
+	padding: 0;
+	height: 25px; /*--Subtract 1px from the height of the unordered list--*/
+	line-height: 25px; /*--Vertically aligns the text within the tab--*/
+	margin-bottom: -1px; /*--Pull the list item down 1px--*/
+	overflow: hidden;
+	position: relative;
+	background: #e0e0e0;
+	border: 1px solid #999;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-right: 3px;
+}
+
+ul.leenkme_tabs li a {
+	text-decoration: none;
+	color: #000;
+	display: block;
+	font-size: 1.2em;
+	padding: 4px 6px;
+	border: 1px solid #fff; /*--Gives the bevel look with a 1px white border inside the list item--*/
+	outline: none;
+}
+
+ul.leenkme_tabs li a:hover {
+	background: #ccc;
+}
+
+html ul.leenkme_tabs li.active, html ul.leenkme_tabs li.active a:hover  { /*--Makes sure that the active tab does not listen to the hover properties--*/
+	background: #fff;
+	border-bottom: 1px solid #fff; /*--Makes the active tab look like it's connected with its content--*/
+}
+
+.leenkme_tab_container {
+	border: 1px solid #999;
+	border-top: none;
+	float: left;
+    width: 100%;
+	background: #fff;
+}
+
+.leenkme_tab_container .tab_content {
+	padding: 20px;
+	font-size: 1.2em;
+}
+
+table#leenkme_leenkme_social_network_modules,
+table#leenkme_leenkme_post_type_to_publish,
+table#leenkme_leenkme_url_shortener,
+table#leenkme_site_og_meta_tags,
+table#leenkme_single_og_meta_tags {
+	width: 100%;
+	border-bottom: 1px solid grey;
+	margin-bottom: 15px;
+	padding-bottom: 5px;
+}
+
+table#leenkme_leenkme_social_network_modules th,
+table#leenkme_leenkme_post_type_to_publish th,
+table#leenkme_leenkme_url_shortener th,
+table#leenkme_site_og_meta_tags th,
+table#leenkme_single_og_meta_tags th {
+	width: 30%;
+	padding: 5px;
+	text-align: left;
+	vertical-align: top;	
+}
+
+table#leenkme_leenkme_social_network_modules td,
+table#leenkme_leenkme_post_type_to_publish td,
+table#leenkme_leenkme_url_shortener td,
+table#leenkme_site_og_meta_tags td,
+table#leenkme_single_og_meta_tags td {
+	padding: 5px;
+	text-align: left;
+	vertical-align: top;	
+}
+
+table#leenkme_leenkme_social_network_modules td.leenkme_plugin_name,
+table#leenkme_leenkme_post_type_to_publish td.leenkme_post_type_name {
+	width: 80px;
+}
+
+table#leenkme_leenkme_social_network_modules td.leenkme_module_checkbox {
+	width: 25px;
+}
