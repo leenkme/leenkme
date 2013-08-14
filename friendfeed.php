@@ -432,7 +432,7 @@ function get_leenkme_expanded_ff_post( $post_id, $friendfeed_array, $post_title 
 			
 		}
 		
-		$friendfeed_array['body'] = leenkme_trim_words( leenkme_replacements_args( $friendfeed_array['body'], $post_title, $post->ID, $excerpt ), $maxBodyLen );
+		$friendfeed_array['body'] = leenkme_trim_words( leenkme_replacements_args( $friendfeed_array['body'], $post_title, $post_id, $excerpt ), $maxBodyLen );
 		
 		$user_settings = $dl_pluginleenkmeFriendFeed->get_user_settings( $user_id );
 			
