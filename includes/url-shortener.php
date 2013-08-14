@@ -41,7 +41,7 @@ function leenkme_url_shortener( $post_id ) {
 		
 		case 'wppostid' :
 		default :
-			$short_url = $url;
+			$short_url = home_url( '?p=' . $post_id );;
 			break;
 		
 	}

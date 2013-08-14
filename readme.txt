@@ -95,6 +95,7 @@ Yes, there is now a GUI interface for this in the main leenk.me settings, but if
 * Fixed bug in image generation for Facebook, Friendfeed, and LinkedIn
 * Removed automatic leenk.me preview and replaced with manual refresh preview button, due to some complaints from some web hosts about it draining resources
 * Fixed bug in JavaScript preventing previews from generating properly in some cases
+* Set URL Shortener to shortener permalink URLs (if available) instead of Post ID URLs for SEO compatability
 
 = 2.1.1 =
 * Added leenkme_get_users() function to reduce coding overhead
