@@ -583,8 +583,7 @@ function leenkme_publish_to_friendfeed( $connect_arr = array(), $post, $friendfe
 			
 			$options = get_option( 'leenkme_friendfeed' );
 			
-			$args = array( 'meta_query' => array( 'meta_value' => 'leenkme_API', 'meta_compare' => 'LIKE' ) );
-			$leenkme_users = get_users( apply_filters( 'leenkme_user_args', $args ) );
+			$leenkme_users = leenkme_get_users();
 			
 			if ( !( $url = get_post_meta( $post['ID'], '_leenkme_shortened_url', true ) ) )
 				$url = leenkme_url_shortener( $post['ID'] );
@@ -691,6 +690,8 @@ function leenkme_publish_to_friendfeed( $connect_arr = array(), $post, $friendfe
 						
 						if ( isset( $friendfeed_array['picture'] ) && !empty( $friendfeed_array['picture'] ) )
 							$connect_arr[$api_key]['friendfeed_picture'] = $friendfeed_array['picture'];
+						else
+							$connect_arr[$api_key]['friendfeed_picture'] = leenkme_get_picture( $user_settings, $post['ID'], 'friendfeed' );
 						
 						$connect_arr[$api_key]['friendfeed_body'] = stripslashes( html_entity_decode( $friendfeed_array['body'], ENT_COMPAT, get_bloginfo('charset') ) );
 						$connect_arr[$api_key]['friendfeed_link'] = $url;

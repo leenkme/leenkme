@@ -2,7 +2,8 @@ var $lm_post_jquery = jQuery.noConflict();
 
 $lm_post_jquery(document).ready(function($) {
 	
-	function lm_refresh() {
+	$( '.leenkme_refresh_button' ).on( 'click', function( event ) {
+		event.preventDefault();
 		
 		excerpt = $( 'textarea#excerpt' ).val();
 		
@@ -162,9 +163,7 @@ $lm_post_jquery(document).ready(function($) {
 			
 		});
 		
-	}
-
-	var auto_refresh = window.setInterval( function() { lm_refresh(); }, 3000 );
+	});
 
 	//When page loads...
 	$( '.leenkme_tab_content' ).hide(); //Hide all content

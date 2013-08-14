@@ -18,7 +18,7 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 		function get_user_settings( $user_id ) {
 			
 			// Default values for the options
-			$options = array(
+			$defaults = array(
 								 'tweetFormat' 			=> '%TITLE% %URL%',
 								 'tweetCats '			=> array( '0' ),
 								 'clude'	 			=> 'in',
@@ -27,20 +27,8 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 							
 			// Get values from the WP options table in the database, re-assign if found
 			$user_settings = get_user_option( 'leenkme_twitter', $user_id );
-			if ( !empty( $user_settings ) ) {
-				
-				foreach ( $user_settings as $key => $option ) {
-					
-					$options[$key] = $option;
-					
-				}
-				
-			}
 			
-			// Need this for initial INIT, for people who don't save the default settings...
-			update_user_option( $user_id, 'leenkme_twitter', $user_settings );
-			
-			return $options;
+			return wp_parse_args( $user_settings, $defaults );
 			
 		}
 		
@@ -563,8 +551,7 @@ function leenkme_publish_to_twitter( $connect_arr = array(), $post, $tweet = fal
 			
 			$options = get_option( 'leenkme_twitter' );
 			
-			$args = array( 'meta_query' => array( 'meta_value' => 'leenkme_API', 'meta_compare' => 'LIKE' ) );
-			$leenkme_users = get_users( apply_filters( 'leenkme_user_args', $args ) );
+			$leenkme_users = leenkme_get_users();
 			
 			foreach ( $leenkme_users as $leenkme_user ) {
 				

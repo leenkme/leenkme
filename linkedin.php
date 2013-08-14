@@ -18,7 +18,7 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 		function get_user_settings( $user_id ) {
 			
 			// Default values for the options
-			$options = array(
+			$defaults = array(
 								'linkedin_profile'		=> true,
 								'linkedin_group'		=> false,
 								'linkedin_comment'		=> '%TITLE%',
@@ -33,20 +33,8 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 							
 			// Get values from the WP options table in the database, re-assign if found
 			$user_settings = get_user_option( 'leenkme_linkedin', $user_id );
-			if ( !empty( $user_settings ) ) {
-				
-				foreach ( $user_settings as $key => $option ) {
-					
-					$options[$key] = $option;
-					
-				}
-				
-			}
 			
-			// Need this for initial INIT, for people who don't save the default settings...
-			update_user_option( $user_id, 'leenkme_linkedin', $user_settings );
-			
-			return $options;
+			return wp_parse_args( $user_settings, $defaults );
 			
 		}
 		
@@ -497,9 +485,9 @@ function get_leenkme_expanded_li_post( $post_id, $linkedin_array, $post_title = 
 			
 		}
 		
-		$linkedin_array['comment'] 		= leenkme_trim_words( leenkme_replacements_args( $linkedin_array['comment'], $post_title, $post->ID, $excerpt ), $maxCommentLen );
-		$linkedin_array['linktitle'] 	= leenkme_trim_words( leenkme_replacements_args( $linkedin_array['linktitle'], $post_title, $post->ID, $excerpt ), $maxLinkNameLen );
-		$linkedin_array['description'] 	= leenkme_trim_words( leenkme_replacements_args( $linkedin_array['description'], $post_title, $post->ID, $excerpt ), $maxDescLen );
+		$linkedin_array['comment'] 		= leenkme_trim_words( leenkme_replacements_args( $linkedin_array['comment'], $post_title, $post_id, $excerpt ), $maxCommentLen );
+		$linkedin_array['linktitle'] 	= leenkme_trim_words( leenkme_replacements_args( $linkedin_array['linktitle'], $post_title, $post_id, $excerpt ), $maxLinkNameLen );
+		$linkedin_array['description'] 	= leenkme_trim_words( leenkme_replacements_args( $linkedin_array['description'], $post_title, $post_id, $excerpt ), $maxDescLen );
 		
 		$user_settings = $dl_pluginleenkmeLinkedIn->get_user_settings( $user_id );
 			
@@ -657,8 +645,7 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 			
 			$options = get_option( 'leenkme_linkedin' );
 			
-			$args = array( 'meta_query' => array( 'meta_value' => 'leenkme_API', 'meta_compare' => 'LIKE' ) );
-			$leenkme_users = get_users( apply_filters( 'leenkme_user_args', $args ) );
+			$leenkme_users = leenkme_get_users();
 			
 			// LinkedIn break TinyURL and YOURLS,
 			// So we have to use the default non-permalink URL to be safe.
@@ -764,7 +751,7 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 						
 					} else {
 						
-						if ( empty( $linkedin_array ) ) {
+						if ( !$linkedin_array || empty( $linkedin_array ) ) {
 						
 							if ( !( $linkedin_array['comment'] = get_post_meta( $post['ID'], '_linkedin_comment', true ) ) || $prefer_user )
 								$linkedin_array['comment'] = $options['linkedin_comment'];
@@ -781,7 +768,9 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 													
 						if ( isset( $linkedin_array['picture'] ) && !empty( $linkedin_array['picture'] ) )
 							$connect_arr[$api_key]['li_image'] = $linkedin_array['picture'];
-						
+						else
+							$connect_arr[$api_key]['li_image'] = leenkme_get_picture( $user_settings, $post['ID'], 'linkedin' );
+							
 						$connect_arr[$api_key]['li_comment'] 	= stripslashes( html_entity_decode( $linkedin_array['comment'], ENT_COMPAT, get_bloginfo('charset') ) );
 						$connect_arr[$api_key]['li_url']		= $url;
 						$connect_arr[$api_key]['li_title']		= stripslashes( html_entity_decode( $linkedin_array['linktitle'], ENT_COMPAT, get_bloginfo('charset') ) );

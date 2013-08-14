@@ -4,12 +4,12 @@ Plugin Name: leenk.me
 Plugin URI: http://leenk.me/
 Description: Automatically publish to your Twitter, Facebook Profile/Fan Page/Group, and LinkedIn whenever you publish a new post on your WordPress website with the leenk.me social network connector. You need a <a href="http://leenk.me/">leenk.me API key</a> to use this plugin.
 Author: Lew Ayotte @ leenk.me
-Version: 2.1.0
+Version: 2.1.2
 Author URI: http://leenk.me/about/
 Tags: publish, automatic, facebook, twitter, linkedin, friendfeed, fan page, groups, publicize, open graph, social media, social media tools
 */
 
-define( 'LEENKME_VERSION' , '2.1.0' );
+define( 'LEENKME_VERSION' , '2.1.2' );
 
 if ( ! class_exists( 'leenkme' ) ) {
 	
@@ -43,7 +43,8 @@ if ( ! class_exists( 'leenkme' ) ) {
 		
 		function get_leenkme_settings() {
 			
-			$options = array( 	'twitter' 					=> false,
+			$defaults = array( 	
+								'twitter' 					=> false,
 								'facebook' 					=> false,
 								'linkedin' 					=> false,
 								'friendfeed'				=> false,
@@ -63,48 +64,30 @@ if ( ! class_exists( 'leenkme' ) ) {
 							);
 		
 			$leenkme_settings = get_option( 'leenkme' );
-			if ( !empty( $leenkme_settings ) ) {
-				
-				foreach ( $leenkme_settings as $key => $option ) {
-					
-					$options[$key] = $option;
-					
-				}
 			
-			}
-			
-			return $options;
+			return wp_parse_args( $leenkme_settings, $defaults );
 			
 		}
 	
-		function get_user_settings( $user_id = false ) {
+		function get_user_settings( $user_id ) {
 			
-			$options = array( 'leenkme_API' => '' );
-	
+			$defaults = array( 'leenkme_API' => '' );
+			
 			$user_settings = get_user_option( 'leenkme', $user_id );
-			if ( !empty( $user_settings ) ) {
-				
-				foreach ( $user_settings as $key => $option ) {
-					
-					$options[$key] = $option;
-					
-				}
-				
-			}
 			
-			return $options;
+			return wp_parse_args( $user_settings, $defaults );
 			
 		}
 		
 		function leenkme_admin_enqueue_scripts( $hook_suffix ) {
 			
-			$leenkme_general_pages 		= array( 
+			$leenkme_general_pages = array( 
 											'post.php', 
 											'edit.php',
 											'post-new.php'
 										);
 			
-			$leenkme_settings_pages 	= array( 
+			$leenkme_settings_pages = array( 
 											'toplevel_page_leenkme', 
 											'leenk-me_page_leenkme_twitter', 
 											'leenk-me_page_leenkme_facebook', 
@@ -165,14 +148,16 @@ if ( ! class_exists( 'leenkme' ) ) {
 			get_currentuserinfo();
 			$user_id = $current_user->ID;
 			
-			// Get the user options
-			$user_settings = $this->get_user_settings( $user_id );
 			$leenkme_settings = $this->get_leenkme_settings();
 			
 			if ( isset( $_REQUEST['update_leenkme_settings'] ) ) {
+					
+				$user_settings = $this->get_user_settings( $user_id );
 				
-				if ( isset( $_REQUEST['leenkme_API'] ) )
+				if ( isset( $_REQUEST['leenkme_API'] ) && !empty( $_REQUEST['leenkme_API'] ) )
 					$user_settings['leenkme_API'] = $_REQUEST['leenkme_API'];
+				else
+					unset( $user_settings['leenkme_API'] );
 					
 				update_user_option( $user_id, 'leenkme', $user_settings );
 				
@@ -203,15 +188,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 					
 					if ( isset( $_REQUEST['url_shortener'] ) )
 						$leenkme_settings['url_shortener'] = $_REQUEST['url_shortener'];
-					
-					if ( isset( $_REQUEST['supr_shortner_type'] ) )
-						$leenkme_settings['supr_shortner_type'] = $_REQUEST['supr_shortner_type'];
-					
-					if ( isset( $_REQUEST['supr_username'] ) )
-						$leenkme_settings['supr_username'] = $_REQUEST['supr_username'];
-					
-					if ( isset( $_REQUEST['supr_apikey'] ) )
-						$leenkme_settings['supr_apikey'] = $_REQUEST['supr_apikey'];
 					
 					if ( isset( $_REQUEST['bitly_username'] ) )
 						$leenkme_settings['bitly_username'] = $_REQUEST['bitly_username'];
@@ -295,6 +271,8 @@ if ( ! class_exists( 'leenkme' ) ) {
 				<?php
 				
 			}
+		
+			$user_settings = $this->get_user_settings( $user_id );
 			
 			// Display HTML form for the options below
 			?>
@@ -326,6 +304,42 @@ if ( ! class_exists( 'leenkme' ) ) {
                             </p>
                         
                         <?php } ?>
+                        
+                        <?php
+						if ( current_user_can( 'leenkme_manage_all_settings' ) ) { 
+										
+							$leenkme_users = leenkme_get_users();
+							$other_users = array();
+							
+							if ( 1 < count( $leenkme_users ) ) {
+							
+								foreach( $leenkme_users as $user ) {
+												
+									$leenkme_user_settings = $this->get_user_settings( $user->ID );
+									
+									if ( $user_id === $user->ID )
+										continue; //Skip the current user.
+									
+									if ( empty( $leenkme_user_settings['leenkme_API'] ) )
+										continue;	//Skip user if they do not have an API key set
+										
+									$other_users[] = '<li>' . $user->user_login . ' - ' . $leenkme_user_settings['leenkme_API'] . '</li>';
+													
+								}
+								
+							}
+							
+							if ( 1 <= count( $other_users ) ) {
+								
+								echo '<h4>' . __( 'Other leenk.me users on this site', 'leenkme' ) . '</h4>';
+								
+								echo '<ul>' . join( $other_users ) . '</ul>';
+								
+							}
+						
+						}
+						
+						?>
                             
                         <?php wp_nonce_field( 'leenkme_general_options', 'leenkme_general_options_nonce' ); ?>
                                                   
@@ -422,7 +436,6 @@ if ( ! class_exists( 'leenkme' ) ) {
                         	<th rowspan="1"><?php _e( 'Select Your Default URL Shortner', 'leenkme' ); ?></th>
                             <td class="leenkme_url_shortener">
                             	<select id="leenkme_url_shortener_select" name="url_shortener"> 
-                                	<option value="supr" <?php selected( 'supr', $leenkme_settings['url_shortener'] ); ?>>su.pr</option>
                                 	<option value="bitly" <?php selected( 'bitly', $leenkme_settings['url_shortener'] ); ?>>bit.ly</option>
                                     <option value="yourls" <?php selected( 'yourls', $leenkme_settings['url_shortener'] ); ?>>YOURLS</option>
                                     <option value="isgd" <?php selected( 'isgd', $leenkme_settings['url_shortener'] ); ?>>is.gd</option>
@@ -439,10 +452,6 @@ if ( ! class_exists( 'leenkme' ) ) {
                             <td class='url_shortener_options'>
                             	<?php
 									switch( $leenkme_settings['url_shortener'] ) {
-									
-										case 'supr' :
-											leenkme_show_supr_options();
-											break;
 										
 										case 'bitly' :
 											leenkme_show_bitly_options();
@@ -789,6 +798,8 @@ if ( ! class_exists( 'leenkme' ) ) {
 	
 			echo '<div id="leenkme_meta_box">';
 			
+			echo '<a href class="leenkme_refresh_button button button-primary button-large right">' . __( 'Refresh Preview', 'leenkme' ) . '</a>';
+			
 				echo '<ul class="leenkme_tabs">';
 				
 				if ( $dl_pluginleenkme->plugin_enabled( 'twitter' ) ) {
@@ -884,10 +895,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 			if ( isset( $_REQUEST['selected'] ) ) {
 				
 				switch( $_REQUEST['selected'] ) {
-				
-					case 'supr' :
-						die( leenkme_show_supr_options() );
-						break;
 					
 					case 'bitly' :
 						die( leenkme_show_bitly_options() );

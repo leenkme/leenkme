@@ -47,20 +47,6 @@ $lm_plugin_jquery( document ).ready( function($) {
 		
 	});
 
-	$( 'input.supr_shortner_type' ).live( 'change', function() {
-		
-		if ( 1 == $( 'input.supr_shortner_type:checked' ).val() ) {
-			
-			$( 'div#supr_advanced_options' ).show();
-				
-		} else {
-		
-			$( 'div#supr_advanced_options' ).hide();
-			
-		}
-		
-	});
-
 	$( 'input.yourls_auth_type' ).live( 'change', function() {
 		
 		if ( 1 == $( 'input.yourls_auth_type:checked' ).val() ) {

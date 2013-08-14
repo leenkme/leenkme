@@ -7,13 +7,9 @@ function leenkme_url_shortener( $post_id ) {
 	
 	$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
 	
-	$url = home_url( '?p=' . $post_id );
+	$url = get_permalink( $post_id );
 	
 	switch ( $leenkme_settings['url_shortener'] ) {
-	
-		case 'supr' :
-			$short_url = leenkme_get_supr_url( $url );
-			break;
 		
 		case 'bitly' :
 			$short_url = leenkme_get_bitly_url( $url );
@@ -72,36 +68,6 @@ function leenkme_get_shortened_url( $http_query, $url ) {
 		return apply_filters( 'leenkme_url_shortener_result', $result );	
 		
 	}
-	
-}
-
-function leenkme_get_supr_url( $url ) {
-
-	global $dl_pluginleenkme;
-	
-	$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
-				
-	$supr_api = "http://su.pr/api/simpleshorten"; 
-	
-	if ( isset( $leenkme_settings['supr_username'] ) && isset( $leenkme_settings['supr_apikey'] ) ) {
-		
-		$supr_args = array(  
-								'login' => $leenkme_settings['supr_username'] ,  
-								'apiKey' => $leenkme_settings['supr_apikey'],  
-								'url' => $url
-							);  
-							
-	} else {
-	
-    	$supr_args = array(  
-								'url' => $url
-							);   
-		
-	}
-  
-    $supr_query = $supr_api . '?' .  http_build_query( $supr_args ); 
-	
-	return leenkme_get_shortened_url( $supr_query, $url );
 	
 }
 
@@ -257,41 +223,6 @@ function leenkme_get_tflp_url( $url ) {
 	
 }
 
-function leenkme_show_supr_options() {
-
-	global $dl_pluginleenkme;
-	
-	$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
-	
-	if ( !isset( $leenkme_settings['supr_shortner_type'] ) )
-		$leenkme_settings['supr_shortner_type'] = 0;
-		
-	if ( isset( $leenkme_settings['supr_username'] ) )
-		$supr_username = $leenkme_settings['supr_username'];
-	else
-		$supr_username = '';
-		
-	if ( isset( $leenkme_settings['supr_apikey'] ) )
-		$supr_apikey = $leenkme_settings['supr_apikey'];
-	else
-		$supr_apikey = '';	
-
-    $output = '<input type="radio" class="supr_shortner_type" name="supr_shortner_type" value="0" ' . checked( '0', $leenkme_settings['supr_shortner_type'], false ) . ' /> ' . __( 'Basic', 'leenkme' ) . ' <input type="radio" class="supr_shortner_type" name="supr_shortner_type" value="1" ' . checked( '1', $leenkme_settings['supr_shortner_type'], false ) . ' />  ' . __( 'Advanced', 'leenkme' ) . '<br />';
-	
-	if ( 1 == $leenkme_settings['supr_shortner_type'] )
-		$style = "display: block;";
-	else
-		$style = "display: none;";
-	
-	$output .=  '<div id="supr_advanced_options" style="' . $style . '">';
-	$output .= 'su.pr ' .__( 'Username', 'leenkme' ) . ': <input type="text" id="supr_username" class="regular-text" name="supr_username" value="' . $supr_username . '" /><br />';
-	$output .= 'su.pr ' . __( 'API Key', 'leenkme' ) . ': <input type="text" id="supr_apikey" class="regular-text" name="supr_apikey" value="' . $supr_apikey . '" />';
-	$output .= '</div>';
-
-	echo $output;
-
-}
-
 function leenkme_show_bitly_options() {
 
 	global $dl_pluginleenkme;
@@ -418,6 +349,11 @@ function leenkme_get_shortlink_handler( $shortlink, $post_id, $context, $allow_s
 		update_post_meta( $post_id, '_leenkme_shortened_url', $url );
 		return $url;
 	
+	} else {
+	
+		if ( $url = get_post_meta( $post_id, '_leenkme_shortened_url', true ) )
+			return $url;
+		
 	}
 
 	return $shortlink;

@@ -18,7 +18,7 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 		function get_user_settings( $user_id ) {
 			
 			// Default values for the options
-			$options = array(
+			$defaults = array(
 								 'facebook_profile' 		=> true,
 								 'facebook_page' 			=> false,
 								 'facebook_group' 			=> false,
@@ -35,20 +35,8 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 							
 			// Get values from the WP options table in the database, re-assign if found
 			$user_settings = get_user_option( 'leenkme_facebook', $user_id );
-			if ( !empty( $user_settings ) ) {
-				
-				foreach ( $user_settings as $key => $option ) {
-					
-					$options[$key] = $option;
-					
-				}
-				
-			}
 			
-			// Need this for initial INIT, for people who don't save the default settings...
-			update_user_option( $user_id, 'leenkme_facebook', $user_settings );
-			
-			return $options;
+			return wp_parse_args( $user_settings, $defaults );
 		}
 		
 		// Print the admin page for the plugin
@@ -545,10 +533,10 @@ function get_leenkme_expanded_fb_post( $post_id, $facebook_array, $post_title = 
 			
 		}
 		
-		$facebook_array['message'] 		= leenkme_trim_words( leenkme_replacements_args( $facebook_array['message'], $post_title, $post->ID, $excerpt ), $maxMessageLen );
-		$facebook_array['linkname'] 	= leenkme_trim_words( leenkme_replacements_args( $facebook_array['linkname'], $post_title, $post->ID, $excerpt ), $maxLinkNameLen );
-		$facebook_array['caption'] 		= leenkme_trim_words( leenkme_replacements_args( $facebook_array['caption'], $post_title, $post->ID, $excerpt ), $maxCaptionLen );
-		$facebook_array['description'] 	= leenkme_trim_words( leenkme_replacements_args( $facebook_array['description'], $post_title, $post->ID, $excerpt ), $maxDescLen );
+		$facebook_array['message'] 		= leenkme_trim_words( leenkme_replacements_args( $facebook_array['message'], $post_title, $post_id, $excerpt ), $maxMessageLen );
+		$facebook_array['linkname'] 	= leenkme_trim_words( leenkme_replacements_args( $facebook_array['linkname'], $post_title, $post_id, $excerpt ), $maxLinkNameLen );
+		$facebook_array['caption'] 		= leenkme_trim_words( leenkme_replacements_args( $facebook_array['caption'], $post_title, $post_id, $excerpt ), $maxCaptionLen );
+		$facebook_array['description'] 	= leenkme_trim_words( leenkme_replacements_args( $facebook_array['description'], $post_title, $post_id, $excerpt ), $maxDescLen );
 		
 		$user_settings = $dl_pluginleenkmeFacebook->get_user_settings( $user_id );
 		
@@ -711,8 +699,7 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 			
 			$options = get_option( 'leenkme_facebook' );
 			
-			$args = array( 'meta_query' => array( 'meta_value' => 'leenkme_API', 'meta_compare' => 'LIKE' ) );
-			$leenkme_users = get_users( apply_filters( 'leenkme_user_args', $args ) );
+			$leenkme_users = leenkme_get_users();
 			
 			// Facebook currently addes ref=nf on the end of every URL, this break TinyURL and YOURLS,
 			// So we have to use the default non-permalink URL to be safe.
@@ -841,9 +828,11 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 							$facebook_array = get_leenkme_expanded_fb_post( $post['ID'], $facebook_array, false, false, $leenkme_user->ID );
 						
 						}
-														
+										
 						if ( isset( $facebook_array['picture'] ) && !empty( $facebook_array['picture'] ) )
 							$connect_arr[$api_key]['facebook_picture'] = $facebook_array['picture'];
+						else
+							$connect_arr[$api_key]['facebook_picture'] = leenkme_get_picture( $user_settings, $post['ID'], 'facebook' );
 						
 						$connect_arr[$api_key]['facebook_message'] 		= stripslashes( html_entity_decode( $facebook_array['message'], ENT_COMPAT, get_bloginfo('charset') ) );
 						$connect_arr[$api_key]['facebook_link'] 		= $url;
