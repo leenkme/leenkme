@@ -4,12 +4,12 @@ Plugin Name: leenk.me
 Plugin URI: http://leenk.me/
 Description: Automatically publish to your Twitter, Facebook Profile/Fan Page/Group, and LinkedIn whenever you publish a new post on your WordPress website with the leenk.me social network connector. You need a <a href="http://leenk.me/">leenk.me API key</a> to use this plugin.
 Author: Lew Ayotte @ leenk.me
-Version: 2.1.2
+Version: 2.1.3
 Author URI: http://leenk.me/about/
 Tags: publish, automatic, facebook, twitter, linkedin, friendfeed, fan page, groups, publicize, open graph, social media, social media tools
 */
 
-define( 'LEENKME_VERSION' , '2.1.2' );
+define( 'LEENKME_VERSION' , '2.1.3' );
 
 if ( ! class_exists( 'leenkme' ) ) {
 	
@@ -154,7 +154,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 					
 				$user_settings = $this->get_user_settings( $user_id );
 				
-				if ( isset( $_REQUEST['leenkme_API'] ) && !empty( $_REQUEST['leenkme_API'] ) )
+				if ( !empty( $_REQUEST['leenkme_API'] ) )
 					$user_settings['leenkme_API'] = $_REQUEST['leenkme_API'];
 				else
 					unset( $user_settings['leenkme_API'] );
@@ -163,88 +163,122 @@ if ( ! class_exists( 'leenkme' ) ) {
 				
 				if ( current_user_can( 'leenkme_manage_all_settings' ) ) { //we're dealing with the main Admin options
 				
-					if ( isset( $_REQUEST['twitter'] ) )
+					if ( !empty( $_REQUEST['twitter'] ) )
 						$leenkme_settings['twitter'] = true;
 					else
 						$leenkme_settings['twitter'] = false;
 					
-					if ( isset( $_REQUEST['facebook'] ) )
+					if ( !empty( $_REQUEST['facebook'] ) )
 						$leenkme_settings['facebook'] = true;
 					else
 						$leenkme_settings['facebook'] = false;
 					
-					if ( isset( $_REQUEST['linkedin'] ) )
+					if ( !empty( $_REQUEST['linkedin'] ) )
 						$leenkme_settings['linkedin'] = true;
 					else
 						$leenkme_settings['linkedin'] = false;
 					
-					if ( isset( $_REQUEST['friendfeed'] ) )
+					if ( !empty( $_REQUEST['friendfeed'] ) )
 						$leenkme_settings['friendfeed'] = true;
 					else
 						$leenkme_settings['friendfeed'] = false;
 					
-					if ( isset( $_REQUEST['post_types'] ) )
+					if ( !empty( $_REQUEST['post_types'] ) )
 						$leenkme_settings['post_types'] = $_REQUEST['post_types'];
+					else
+						$leenkme_settings['post_types'] = '';
 					
-					if ( isset( $_REQUEST['url_shortener'] ) )
+					if ( !empty( $_REQUEST['url_shortener'] ) )
 						$leenkme_settings['url_shortener'] = $_REQUEST['url_shortener'];
+					else
+						$leenkme_settings['url_shortener'] = '';
 					
-					if ( isset( $_REQUEST['bitly_username'] ) )
+					if ( !empty( $_REQUEST['bitly_username'] ) )
 						$leenkme_settings['bitly_username'] = $_REQUEST['bitly_username'];
+					else
+						$leenkme_settings['bitly_username'] = '';
 					
-					if ( isset( $_REQUEST['bitly_apikey'] ) )
+					if ( !empty( $_REQUEST['bitly_apikey'] ) )
 						$leenkme_settings['bitly_apikey'] = $_REQUEST['bitly_apikey'];
+					else
+						$leenkme_settings['bitly_apikey'] = '';
 					
-					if ( isset( $_REQUEST['yourls_auth_type'] ) )
+					if ( !empty( $_REQUEST['yourls_auth_type'] ) )
 						$leenkme_settings['yourls_auth_type'] = $_REQUEST['yourls_auth_type'];
+					else
+						$leenkme_settings['yourls_auth_type'] = '';
 					
-					if ( isset( $_REQUEST['yourls_api_url'] ) )
+					if ( !empty( $_REQUEST['yourls_api_url'] ) )
 						$leenkme_settings['yourls_api_url'] = $_REQUEST['yourls_api_url'];
+					else
+						$leenkme_settings['yourls_api_url'] = '';
 					
-					if ( isset( $_REQUEST['yourls_username'] ) )
+					if ( !empty( $_REQUEST['yourls_username'] ) )
 						$leenkme_settings['yourls_username'] = $_REQUEST['yourls_username'];
+					else
+						$leenkme_settings['yourls_username'] = '';
 					
-					if ( isset( $_REQUEST['yourls_password'] ) )
+					if ( !empty( $_REQUEST['yourls_password'] ) )
 						$leenkme_settings['yourls_password'] = $_REQUEST['yourls_password'];
+					else
+						$leenkme_settings['yourls_password'] = '';
 					
-					if ( isset( $_REQUEST['yourls_signature'] ) )
+					if ( !empty( $_REQUEST['yourls_signature'] ) )
 						$leenkme_settings['yourls_signature'] = $_REQUEST['yourls_signature'];
+					else
+						$leenkme_settings['yourls_signature'] = '';
 					
-					if ( isset( $_REQUEST['use_og_meta_tags'] ) )
+					if ( !empty( $_REQUEST['use_og_meta_tags'] ) )
 						$leenkme_settings['use_og_meta_tags'] = true;
 					else
 						$leenkme_settings['use_og_meta_tags'] = false;
 					
-					if ( isset( $_REQUEST['og_type'] ) )
+					if ( !empty( $_REQUEST['og_type'] ) )
 						$leenkme_settings['og_type'] = $_REQUEST['og_type'];
+					else
+						$leenkme_settings['og_type'] = '';
 					
-					if ( isset( $_REQUEST['og_sitename'] ) )
+					if ( !empty( $_REQUEST['og_sitename'] ) )
 						$leenkme_settings['og_sitename'] = $_REQUEST['og_sitename'];
+					else
+						$leenkme_settings['og_sitename'] = '';
 					
-					if ( isset( $_REQUEST['og_description'] ) )
+					if ( !empty( $_REQUEST['og_description'] ) )
 						$leenkme_settings['og_description'] = $_REQUEST['og_description'];
+					else
+						$leenkme_settings['og_description'] = '';
 					
-					if ( isset( $_REQUEST['og_image'] ) )
+					if ( !empty( $_REQUEST['og_image'] ) )
 						$leenkme_settings['og_image'] = $_REQUEST['og_image'];
+					else
+						$leenkme_settings['og_image'] = '';
 					
-					if ( isset( $_REQUEST['use_single_og_meta_tags'] ) )
+					if ( !empty( $_REQUEST['use_single_og_meta_tags'] ) )
 						$leenkme_settings['use_single_og_meta_tags'] = true;
 					else
 						$leenkme_settings['use_single_og_meta_tags'] = false;
 					
-					if ( isset( $_REQUEST['og_single_title'] ) )
+					if ( !empty( $_REQUEST['og_single_title'] ) )
 						$leenkme_settings['og_single_title'] = $_REQUEST['og_single_title'];
+					else
+						$leenkme_settings['og_single_title'] = '';
 					
-					if ( isset( $_REQUEST['og_single_sitename'] ) )
+					if ( !empty( $_REQUEST['og_single_sitename'] ) )
 						$leenkme_settings['og_single_sitename'] = $_REQUEST['og_single_sitename'];
+					else
+						$leenkme_settings['og_single_sitename'] = '';
 					
-					if ( isset( $_REQUEST['og_single_description'] ) )
+					if ( !empty( $_REQUEST['og_single_description'] ) )
 						$leenkme_settings['og_single_description'] = $_REQUEST['og_single_description'];
+					else
+						$leenkme_settings['og_single_description'] = '';
 					
-					if ( isset( $_REQUEST['og_single_image'] ) )
+					if ( !empty( $_REQUEST['og_single_image'] ) )
 						$leenkme_settings['og_single_image'] = $_REQUEST['og_single_image'];
+					else
+						$leenkme_settings['og_single_image'] = '';
 					
-					if ( isset( $_REQUEST['force_og_image'] ) )
+					if ( !empty( $_REQUEST['force_og_image'] ) )
 						$leenkme_settings['force_og_image'] = true;
 					else
 						$leenkme_settings['force_og_image'] = false;
@@ -611,7 +645,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 			
 			$leenkme_settings = $this->get_leenkme_settings();
 			
-			if ( isset( $leenkme_settings['version'] ) )
+			if ( !empty( $leenkme_settings['version'] ) )
 				$old_version = $leenkme_settings['version'];
 			else
 				$old_version = 0;
@@ -677,8 +711,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 				}
 				
 				$tw_user_settings = get_user_option( 'leenkme_twitter', $user_id );
-				if ( !empty( $tw_user_settings )
-						&& isset( $tw_user_settings['tweetcats'] ) && !empty( $tw_user_settings['tweetcats'] ) ) {
+				if ( !empty( $tw_user_settings ) && !empty( $tw_user_settings['tweetcats'] ) ) {
 				
 					$new_tweetcats = $this->convert_old_categories( $tw_user_settings['tweetcats'] );
 					if ( !empty( $new_tweetcats ) ) {
@@ -692,8 +725,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 				}
 				
 				$fb_user_settings = get_user_option( 'leenkme_facebook', $user_id );
-				if ( !empty( $fb_user_settings ) 
-						&& isset( $fb_user_settings['publish_cats'] ) && !empty( $fb_user_settings['publish_cats'] ) ) {
+				if ( !empty( $fb_user_settings ) && !empty( $fb_user_settings['publish_cats'] ) ) {
 				
 					$new_publish_cats = $this->convert_old_categories( $fb_user_settings['publish_cats'] );
 					
@@ -708,8 +740,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 				}
 				
 				$li_user_settings = get_user_option( 'leenkme_linkedin', $user_id );
-				if ( !empty( $li_user_settings )
-						&&isset( $li_user_settings['share_cats'] ) && !empty( $li_user_settings['share_cats'] ) ) {
+				if ( !empty( $li_user_settings ) && !empty( $li_user_settings['share_cats'] ) ) {
 				
 					$new_share_cats = $this->convert_old_categories( $li_user_settings['share_cats'] );
 					
@@ -892,7 +923,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 			
 			check_ajax_referer( 'leenkme_general_options' );
 			
-			if ( isset( $_REQUEST['selected'] ) ) {
+			if ( !empty( $_REQUEST['selected'] ) ) {
 				
 				switch( $_REQUEST['selected'] ) {
 					
@@ -960,8 +991,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 				
 				$og_array['og_image'] 		= leenkme_get_picture( $leenkme_settings, $post->ID, 'og' );
 				
-				if ( isset( $og_array['og_image'] ) && empty( $og_array['og_image'] ) 
-					&& isset( $leenkme_settings['og_image'] ) && !empty( $leenkme_settings['og_image'] ) )
+				if ( empty( $og_array['og_image'] ) && !empty( $leenkme_settings['og_image'] ) )
 					$og_array['og_image'] 	= $leenkme_settings['og_image'];
 			
 				?>
@@ -972,7 +1002,7 @@ if ( ! class_exists( 'leenkme' ) ) {
                 <meta property="og:site_name"	content="<?php echo htmlentities( $og_array['og_sitename'] ); ?>"/>
                 <meta property="og:description"	content="<?php echo htmlentities( $og_array['og_description'] ); ?>">
                 
-                <?php if ( isset( $og_array['og_image'] ) && !empty( $og_array['og_image'] ) ) ?>
+                <?php if ( !empty( $og_array['og_image'] ) ) ?>
                 <meta property="og:image"		content="<?php echo $og_array['og_image']; ?>">
                 
                 <?php
@@ -986,7 +1016,7 @@ if ( ! class_exists( 'leenkme' ) ) {
                 <meta property="og:title"		content="<?php echo htmlentities( leenkme_replacements_args( $leenkme_settings['og_sitename'] ) ); ?>">
                 <meta property="og:description"	content="<?php echo htmlentities( leenkme_trim_words( leenkme_replacements_args( $leenkme_settings['og_description'] ), 300 ) ); ?>">
                 
-                <?php if ( isset( $leenkme_settings['og_image'] ) && !empty( $leenkme_settings['og_image'] ) ) ?>
+                <?php if ( !empty( $leenkme_settings['og_image'] ) ) ?>
                 <meta property="og:image"		content="<?php echo $leenkme_settings['og_image']; ?>">
                 
                 <?php
@@ -1026,7 +1056,7 @@ function leenkme_ap() {
 	
 	global $dl_pluginleenkme;
 	
-	if ( !isset( $dl_pluginleenkme ) )
+	if ( empty( $dl_pluginleenkme ) )
 		return;
 	
 	add_menu_page( __( 'leenk.me Settings', 'leenkme' ), __( 'leenk.me', 'leenkme' ), 'leenkme_edit_user_settings', 'leenkme', array( &$dl_pluginleenkme, 'leenkme_settings_page' ), $dl_pluginleenkme->base_url . '/images/leenkme-logo-16x16.png' );
@@ -1067,14 +1097,14 @@ function leenkme_ajax_verify() {
 
 	check_ajax_referer( 'verify' );
 	
-	if ( isset( $_REQUEST['leenkme_API'] ) ) {
+	if ( !empty( $_REQUEST['leenkme_API'] ) ) {
 
 		$api_key = $_REQUEST['leenkme_API'];
 		$connect_arr[$api_key]['verify'] = true;
 		
 		$results = leenkme_ajax_connect( $connect_arr );
 	
-		if ( isset( $results ) ) {		
+		if ( !empty( $results ) ) {		
 			
 			foreach( $results as $result ) {	
 	
@@ -1082,7 +1112,7 @@ function leenkme_ajax_verify() {
 	
 					$out[$api_key] = "<p>" . $result->get_error_message() . "</p>";
 	
-				} else if ( isset( $result['response']['code'] ) ) {
+				} else if ( !empty( $result['response']['code'] ) ) {
 			
 					$response = json_decode( $result['body'] );
 					$out[$api_key] = $response[1];
@@ -1115,10 +1145,10 @@ function leenkme_ajax_leenkme_row_action() {
 	
 	global $dl_pluginleenkme;
 
-	if ( !isset( $_REQUEST['id'] ) )
+	if ( empty( $_REQUEST['id'] ) )
 		die( __( 'Unable to determine Post ID.', 'leenkme' ) );
 
-	if ( !isset( $_REQUEST['colspan'] ) )
+	if ( empty( $_REQUEST['colspan'] ) )
 		die( __( 'Unable to determine column size.', 'leenkme' ) );
 		
 	$out = '<td colspan="' . $_REQUEST['colspan'] . '">';
@@ -1162,10 +1192,10 @@ function leenkme_ajax_leenkme_row_action() {
 
 function leenkme_ajax_releenk() {
 	
-	if ( !isset( $_REQUEST['id'] ) )
+	if ( empty( $_REQUEST['id'] ) )
 		die( __( 'Unable to determine Post ID.', 'leenkme' ) );
 	
-	if ( !isset( $_REQUEST['networks'] ) )
+	if ( empty( $_REQUEST['networks'] ) )
 		die( __( 'No Social Networks selected.', 'leenkme' ) );
 		
 	$connect_array = array();
@@ -1197,7 +1227,7 @@ function leenkme_ajax_releenk() {
 	
 	$results = leenkme_ajax_connect( $connect_array );
 	
-	if ( isset( $results ) ) {		
+	if ( !empty( $results ) ) {		
 				
 		foreach( $results as $api_key => $result ) {	
 
@@ -1205,7 +1235,7 @@ function leenkme_ajax_releenk() {
 
 				$out[] = "<p>" . $result->get_error_message() . "</p>";
 
-			} else if ( isset( $result['response']['code'] ) ) {
+			} else if ( !empty( $result['response']['code'] ) ) {
 		
 				$response = json_decode( $result['body'] );
 				$out[] = $response[1];
@@ -1228,47 +1258,52 @@ function leenkme_ajax_releenk() {
 	
 }
 
-function leenkme_connect( $post ) {
+function leenkme_connect( $new_status, $old_status, $post ) {
+
+	$out = array();
 	
-	global $dl_pluginleenkme;
-	$out = "";
-	
-	if ( leenkme_rate_limit() ) {
-	
-		$connect_arr = apply_filters( 'leenkme_connect', array(), array( 'ID' => $post->ID, 'post_author' => $post->post_author ) );
-	
-		if ( !empty( $connect_arr ) ) {
-			
-			foreach ( $connect_arr as $api_key => $body ) {
+	if ( 'publish' === $new_status && 'publish' !== $old_status ) {
+		
+		global $dl_pluginleenkme;
+		
+		if ( leenkme_rate_limit() ) {
+		
+			$connect_arr = apply_filters( 'leenkme_connect', array(), array( 'ID' => $post->ID, 'post_author' => $post->post_author ) );
+		
+			if ( !empty( $connect_arr ) ) {
 				
-				$body['host'] = $_SERVER['SERVER_NAME'];
-				$body['leenkme_API'] = $api_key;
-				$headers = array( 'Authorization' => 'None' );
-														
-				$result = wp_remote_post( apply_filters( 'leenkme_api_url', $dl_pluginleenkme->api_url ), 
-											array( 	'body' => $body, 
-													'headers' => $headers,
-													'sslverify' => false,
-													'httpversion' => '1.1',
-													'timeout' => $dl_pluginleenkme->timeout ) );
-				
-				if ( isset( $result ) ) {
+				foreach ( $connect_arr as $api_key => $body ) {
 					
-					$out[$api_key] = $result;
+					$body['host'] = $_SERVER['SERVER_NAME'];
+					$body['leenkme_API'] = $api_key;
+					$headers = array( 'Authorization' => 'None' );
+															
+					$result = wp_remote_post( apply_filters( 'leenkme_api_url', $dl_pluginleenkme->api_url ), 
+												array( 	'body' => $body, 
+														'headers' => $headers,
+														'sslverify' => false,
+														'httpversion' => '1.1',
+														'timeout' => $dl_pluginleenkme->timeout ) );
 					
-				} else {
-					
-					$out[$api_key]=  "<p>" . __( 'Undefined error occurred, for help please contact <a href="http://leenk.me/" target="_blank">leenk.me support</a>.', 'leenkme' ) . "</p>";
+					if ( !empty( $result ) ) {
+						
+						$out[$api_key] = $result;
+						
+					} else {
+						
+						$out[$api_key]=  "<p>" . __( 'Undefined error occurred, for help please contact <a href="http://leenk.me/" target="_blank">leenk.me support</a>.', 'leenkme' ) . "</p>";
+						
+					}
 					
 				}
 				
 			}
+		
+		} else {
+			
+			$out[] = __( 'Error: You have exceeded your rate limit for API calls, only 350 API calls are allowed every hour.', 'leenkme' );
 			
 		}
-	
-	} else {
-		
-		$out[] = __( 'Error: You have exceeded your rate limit for API calls, only 350 API calls are allowed every hour.', 'leenkme' );
 		
 	}
 	
@@ -1299,7 +1334,7 @@ function leenkme_ajax_connect( $connect_arr ) {
 													'httpversion' => '1.1',
 													'timeout' => $dl_pluginleenkme->timeout ) );
 				
-				if ( isset( $result ) ) {
+				if ( !empty( $result ) ) {
 					
 					$out[$api_key] = $result;
 					
@@ -1333,43 +1368,43 @@ function get_leenkme_expanded_post_ajax() {
 	
 	$return_array = array();
 	
-	if ( isset( $_REQUEST['post_id'] ) )
+	if ( !empty( $_REQUEST['post_id'] ) )
 		$post_id = $_REQUEST['post_id'];
 	else
 		die( __( 'Error: Unable to determine post ID', 'leenkme' ) );
 	
-	if ( isset( $_REQUEST['title'] ) )
+	if ( !empty( $_REQUEST['title'] ) )
 		$title = $_REQUEST['title'];
 	
-	if ( isset( $_REQUEST['excerpt'] ) )
+	if ( !empty( $_REQUEST['excerpt'] ) )
 		$excerpt = $_REQUEST['excerpt'];
 	
-	if ( isset( $_REQUEST['cats'] ) )
+	if ( !empty( $_REQUEST['cats'] ) )
 		$cats = $_REQUEST['cats'];
 	else
 		$cats = false;
 	
-	if ( isset( $_REQUEST['tags'] ) )
+	if ( !empty( $_REQUEST['tags'] ) )
 		$tags = $_REQUEST['tags'];
 	else
 		$tags = false;
 		
-	if ( $dl_pluginleenkme->plugin_enabled( 'twitter' ) && isset( $_REQUEST['tweet'] ) )
+	if ( $dl_pluginleenkme->plugin_enabled( 'twitter' ) && !empty( $_REQUEST['tweet'] ) )
 		$return_array['twitter'] = get_leenkme_expanded_tweet( $post_id, $_REQUEST['tweet'], $title, $cats, $tags );
 	else
 		$return_array['twitter'] = array();
 		
-	if ( $dl_pluginleenkme->plugin_enabled( 'facebook' ) && isset( $_REQUEST['facebook_array'] ) )
+	if ( $dl_pluginleenkme->plugin_enabled( 'facebook' ) && !empty( $_REQUEST['facebook_array'] ) )
 		$return_array['facebook'] = get_leenkme_expanded_fb_post( $post_id, $_REQUEST['facebook_array'], $title, $excerpt );
 	else
 		$return_array['facebook'] = array();
 		
-	if ( $dl_pluginleenkme->plugin_enabled( 'linkedin' ) && isset( $_REQUEST['linkedin_array'] ) )
+	if ( $dl_pluginleenkme->plugin_enabled( 'linkedin' ) && !empty( $_REQUEST['linkedin_array'] ) )
 		$return_array['linkedin'] = get_leenkme_expanded_li_post( $post_id, $_REQUEST['linkedin_array'], $title, $excerpt );
 	else
 		$return_array['linkedin'] = array();
 		
-	if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) && isset( $_REQUEST['friendfeed_array'] ) )
+	if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) && !empty( $_REQUEST['friendfeed_array'] ) )
 		$return_array['friendfeed'] = get_leenkme_expanded_ff_post( $post_id, $_REQUEST['friendfeed_array'], $title, $excerpt );
 	else
 		$return_array['friendfeed'] = array();
@@ -1415,7 +1450,7 @@ function releenk_row_action( $actions, $post ) {
 }
 
 // Actions and filters	
-if ( isset( $dl_pluginleenkme ) ) {
+if ( !empty( $dl_pluginleenkme ) ) {
 
 	/*--------------------------------------------------------------------
 	    Actions
@@ -1427,11 +1462,7 @@ if ( isset( $dl_pluginleenkme ) ) {
 	add_action( 'admin_menu', 'leenkme_ap');
 	
 	// Whenever you publish a post, connect to leenk.me
-	add_action( 'new_to_publish', 'leenkme_connect', 5 );
-	add_action( 'draft_to_publish', 'leenkme_connect', 5 );
-	add_action( 'auto-draft_to_publish', 'leenkme_connect', 5 );
-	add_action( 'pending_to_publish', 'leenkme_connect', 5 );
-	add_action( 'future_to_publish', 'leenkme_connect', 5 );
+	add_action( 'transition_post_status', 'leenkme_connect', 100, 3 );
 	
 	add_action( 'admin_footer', array( $dl_pluginleenkme, 'leenkme_add_wpnonce' ) );
 	

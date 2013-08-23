@@ -59,7 +59,7 @@ function leenkme_get_shortened_url( $http_query, $url ) {
 	
 		return $url;
 	
-	} else if ( isset( $result ) && isset( $result['body'] ) ) {
+	} else if ( !empty( $result ) && !empty( $result['body'] ) ) {
 	
 		return $result['body']; 
 	
@@ -79,7 +79,7 @@ function leenkme_get_bitly_url( $url ) {
 				
 	$bitly_api = "http://api.bitly.com/v3/shorten"; 
 	
-	if ( isset( $leenkme_settings['bitly_username'] ) && isset( $leenkme_settings['bitly_apikey'] ) ) {
+	if ( !empty( $leenkme_settings['bitly_username'] ) && !empty( $leenkme_settings['bitly_apikey'] ) ) {
 		
 		$bitly_args = array(  
 								'login' => $leenkme_settings['bitly_username'],  
@@ -107,9 +107,9 @@ function leenkme_get_yourls_url( $url ) {
 	
 	$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
 	
-	if ( isset( $leenkme_settings['yourls_api_url'] ) 
-			&& ( ( isset( $leenkme_settings['yourls_username'] ) && isset( $leenkme_settings['yourls_password'] ) ) 
-					|| isset( $leenkme_settings['yourls_signature'] ) ) ) {
+	if ( !empty( $leenkme_settings['yourls_api_url'] ) 
+			&& ( ( !empty( $leenkme_settings['yourls_username'] ) && !empty( $leenkme_settings['yourls_password'] ) ) 
+					|| !empty( $leenkme_settings['yourls_signature'] ) ) ) {
 	
 		$yourls_api = $leenkme_settings['yourls_api_url']; 
 	  
@@ -229,12 +229,12 @@ function leenkme_show_bitly_options() {
 	
 	$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
 		
-	if ( isset( $leenkme_settings['bitly_username'] ) )
+	if ( !empty( $leenkme_settings['bitly_username'] ) )
 		$bitly_username = $leenkme_settings['bitly_username'];
 	else
 		$bitly_username = '';
 		
-	if ( isset( $leenkme_settings['bitly_apikey'] ) )
+	if ( !empty( $leenkme_settings['bitly_apikey'] ) )
 		$bitly_apikey = $leenkme_settings['bitly_apikey'];
 	else
 		$bitly_apikey = '';	
@@ -252,25 +252,25 @@ function leenkme_show_yourls_options() {
 	
 	$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
 	
-	if ( !isset( $leenkme_settings['yourls_auth_type'] ) )
+	if ( empty( $leenkme_settings['yourls_auth_type'] ) )
 		$leenkme_settings['yourls_auth_type'] = 0;
 		
-	if ( isset( $leenkme_settings['yourls_api_url'] ) )
+	if ( !empty( $leenkme_settings['yourls_api_url'] ) )
 		$yourls_api_url = $leenkme_settings['yourls_api_url'];
 	else
 		$yourls_api_url = '';
 		
-	if ( isset( $leenkme_settings['yourls_username'] ) )
+	if ( !empty( $leenkme_settings['yourls_username'] ) )
 		$yourls_username = $leenkme_settings['yourls_username'];
 	else
 		$yourls_username = '';
 		
-	if ( isset( $leenkme_settings['yourls_password'] ) )
+	if ( !empty( $leenkme_settings['yourls_password'] ) )
 		$yourls_password = $leenkme_settings['yourls_password'];
 	else
 		$yourls_password = '';	
 		
-	if ( isset( $leenkme_settings['yourls_signature'] ) )
+	if ( !empty( $leenkme_settings['yourls_signature'] ) )
 		$yourls_signature = $leenkme_settings['yourls_signature'];
 	else
 		$yourls_signature = '';	
@@ -335,7 +335,7 @@ function leenkme_show_tflp_options() {
 	
 	} else {
 	
-		echo "";	
+		echo '';	
 		
 	}
 	

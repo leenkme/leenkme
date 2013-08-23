@@ -51,34 +51,42 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 			
 			if ( isset( $_REQUEST['update_linkedin_settings'] ) ) {
 				
-				if ( isset( $_REQUEST['linkedin_profile'] ) )
+				if ( !empty( $_REQUEST['linkedin_profile'] ) )
 					$user_settings['linkedin_profile'] = true;
 				else
 					$user_settings['linkedin_profile'] = false;
 				
-				if ( isset( $_REQUEST['linkedin_group'] ) )
+				if ( !empty( $_REQUEST['linkedin_group'] ) )
 					$user_settings['linkedin_group'] = true;
 				else
 					$user_settings['linkedin_group'] = false;
 				
-				if ( isset( $_REQUEST['linkedin_comment'] ) )
+				if ( !empty( $_REQUEST['linkedin_comment'] ) )
 					$user_settings['linkedin_comment'] = $_REQUEST['linkedin_comment'];
+				else
+					$user_settings['linkedin_comment'] = '';
 	
-				if ( isset( $_REQUEST['linkedin_title'] ) )
+				if ( !empty( $_REQUEST['linkedin_title'] ) )
 					$user_settings['linkedin_title'] = $_REQUEST['linkedin_title'];
+				else
+					$user_settings['linkedin_title'] = '';
 	
-				if ( isset( $_REQUEST['linkedin_description'] ) )
+				if ( !empty( $_REQUEST['linkedin_description'] ) )
 					$user_settings['linkedin_description'] = $_REQUEST['linkedin_description'];
+				else
+					$user_settings['linkedin_description'] = '';
 				
-				if ( isset( $_REQUEST['default_image'] ) )
+				if ( !empty( $_REQUEST['default_image'] ) )
 					$user_settings['default_image'] = $_REQUEST['default_image'];
+				else
+					$user_settings['default_image'] = '';
 				
-				if ( isset( $_REQUEST['force_linkedin_image'] ) )
+				if ( !empty( $_REQUEST['force_linkedin_image'] ) )
 					$user_settings['force_linkedin_image'] = true;
 				else
 					$user_settings['force_linkedin_image'] = false;
 	
-				if ( isset( $_REQUEST['clude'] ) && isset( $_REQUEST['share_cats'] ) ) {
+				if ( !empty( $_REQUEST['clude'] ) && !empty( $_REQUEST['share_cats'] ) ) {
 					
 					$user_settings['clude'] = $_REQUEST['clude'];
 					$user_settings['share_cats'] = $_REQUEST['share_cats'];
@@ -90,8 +98,10 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 					
 				}
 				
-				if ( isset( $_REQUEST['message_preference'] ) )
+				if ( !empty( $_REQUEST['message_preference'] ) )
 					$user_settings['message_preference'] = $_REQUEST['message_preference'];
+				else
+					$user_settings['message_preference'] = '';
 				
 				update_user_option( $user_id, 'leenkme_linkedin', $user_settings );
 				
@@ -253,7 +263,7 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 			
 		}
 		
-		function leenkme_linkedin_meta_tags( $post_id ) {
+		function leenkme_linkedin_meta_tags( $new_status, $old_status, $post ) {
 			
 			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
 				return;
@@ -261,40 +271,48 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 			if ( isset( $_REQUEST['_inline_edit'] ) || isset( $_REQUEST['doing_wp_cron'] ) )
 				return;
 	
-			if ( isset( $_REQUEST['linkedin_exclude'] ) )
-				update_post_meta( $post_id, '_linkedin_exclude', $_REQUEST['linkedin_exclude'] );
-			else
-				delete_post_meta( $post_id, '_linkedin_exclude' );
-	
-			if ( isset( $_REQUEST["linkedin_exclude_group"] ) )
-				update_post_meta( $post_id, 'linkedin_exclude_group', $_REQUEST["linkedin_exclude_group"] );
-			else
-				delete_post_meta( $post_id, 'linkedin_exclude_group' );
+			if ( !empty( $_REQUEST['lm_linkedin_type'] ) ) {
+				$manual = true;
+				update_post_meta( $post->ID, '_lm_linkedin_type', true );
+			} else {
+				$manual = false;
+				delete_post_meta( $post->ID, '_lm_linkedin_type' );
+			}
 			
-			if ( isset( $_REQUEST['linkedin_comment'] ) && !empty( $_REQUEST['linkedin_comment'] ) )
-				update_post_meta( $post_id, '_linkedin_comment', $_REQUEST['linkedin_comment'] );
-			else
-				delete_post_meta( $post_id, '_linkedin_comment' );
-			
-			if ( isset( $_REQUEST['linkedin_title'] ) && !empty( $_REQUEST['linkedin_title'] ) )
-				update_post_meta( $post_id, '_linkedin_title', $_REQUEST['linkedin_title'] );
-			else
-				delete_post_meta( $post_id, '_linkedin_title' );
-			
-			if ( isset( $_REQUEST['linkedin_description'] ) && !empty( $_REQUEST['linkedin_description'] ) )
-				update_post_meta( $post_id, '_linkedin_description', $_REQUEST['linkedin_description'] );
-			else
-				delete_post_meta( $post_id, '_linkedin_description' );
+			if ( $manual ) {
+				
+				if ( !empty( $_REQUEST['linkedin_comment'] ) )
+					update_post_meta( $post->ID, '_linkedin_comment', $_REQUEST['linkedin_comment'] );
+				else
+					delete_post_meta( $post->ID, '_linkedin_comment' );
+				
+				if ( !empty( $_REQUEST['linkedin_title'] ) )
+					update_post_meta( $post->ID, '_linkedin_title', $_REQUEST['linkedin_title'] );
+				else
+					delete_post_meta( $post->ID, '_linkedin_title' );
+				
+				if ( !empty( $_REQUEST['linkedin_description'] ) )
+					update_post_meta( $post->ID, '_linkedin_description', $_REQUEST['linkedin_description'] );
+				else
+					delete_post_meta( $post->ID, '_linkedin_description' );
+		
+				if ( !empty( $_REQUEST['linkedin_image'] ) )
+					update_post_meta( $post->ID, '_linkedin_image', $_REQUEST['linkedin_image'] );
+				else
+					delete_post_meta( $post->ID, '_linkedin_image' );
+				
+			}
+				
 	
-			if ( isset($_REQUEST["linkedin_image"] ) && !empty( $_REQUEST["linkedin_image"] ) )
-				update_post_meta( $post_id, '_linkedin_image', $_REQUEST["linkedin_image"] );
+			if ( !empty( $_REQUEST['linkedin_exclude'] ) )
+				update_post_meta( $post->ID, '_linkedin_exclude', $_REQUEST['linkedin_exclude'] );
 			else
-				delete_post_meta( $post_id, '_linkedin_image' );
+				delete_post_meta( $post->ID, '_linkedin_exclude' );
 	
-			if ( isset($_REQUEST["lm_linkedin_type"] ) && !empty( $_REQUEST["lm_linkedin_type"] ) )
-				update_post_meta( $post_id, '_lm_linkedin_type', $_REQUEST["lm_linkedin_type"] );
+			if ( !empty( $_REQUEST['linkedin_exclude_group'] ) )
+				update_post_meta( $post->ID, '_linkedin_exclude_group', $_REQUEST['linkedin_exclude_group'] );
 			else
-				delete_post_meta( $post_id, '_lm_linkedin_type' );
+				delete_post_meta( $post->ID, '_linkedin_exclude_group' );
 				
 		}
 		
@@ -312,16 +330,16 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 				
 				
 			}
-			$linkedin_exclude = get_post_meta( $post->ID, 'linkedin_exclude', true ); 
+			$linkedin_exclude = get_post_meta( $post->ID, '_linkedin_exclude', true ); 
 			
-			if ( $linkedin_exclude_group = get_post_meta( $post->ID, 'linkedin_exclude_group', true ) ) {
+			if ( $linkedin_exclude_group = get_post_meta( $post->ID, '_linkedin_exclude_group', true ) ) {
 				
 				delete_post_meta( $post->ID, 'linkedin_exclude_group', true );
 				update_post_meta( $post->ID, '_linkedin_exclude_group', $linkedin_exclude_group );
 				
 				
 			}
-			$linkedin_exclude_group = get_post_meta( $post->ID, 'linkedin_exclude_group', true ); 
+			$linkedin_exclude_group = get_post_meta( $post->ID, '_linkedin_exclude_group', true ); 
 			
 			if ( $linkedin_array['comment'] = get_post_meta( $post->ID, 'linkedin_comment', true ) ) {
 				
@@ -503,7 +521,7 @@ function leenkme_ajax_reshare() {
 
 	check_ajax_referer( 'leenkme' );
 	
-	if ( isset( $_REQUEST['id'] ) ) {
+	if ( !empty( $_REQUEST['id'] ) ) {
 
 		if ( get_post_meta( $_REQUEST['id'], '_linkedin_exclude', true )
 				&& get_post_meta( $_REQUEST['id'], '_linkedin_exclude_group', true ) ) {
@@ -514,7 +532,7 @@ function leenkme_ajax_reshare() {
 			
 			$results = leenkme_ajax_connect( leenkme_publish_to_linkedin( array(), array( 'ID' => $_REQUEST['id'], 'post_author' => $_REQUEST['post_author'] ), $_REQUEST['linkedin_array'], true ) );
 	
-			if ( isset( $results ) ) {		
+			if ( !empty( $results ) ) {		
 				
 				foreach( $results as $result ) {	
 		
@@ -522,7 +540,7 @@ function leenkme_ajax_reshare() {
 		
 						$out[] = "<p>" . $result->get_error_message() . "</p>";
 		
-					} else if ( isset( $result['response']['code'] ) ) {
+					} else if ( !empty( $result['response']['code'] ) ) {
 		
 						$response = json_decode( $result['body'] );
 						$out[] = $response[1];
@@ -580,23 +598,23 @@ function leenkme_ajax_li() {
 		$connect_arr[$api_key]['li_desc'] = $description;
 		$connect_arr[$api_key]['li_code'] = $code;
 						
-		if ( isset( $_REQUEST['linkedin_profile'] ) 
+		if ( !empty( $_REQUEST['linkedin_profile'] ) 
 				&& ( 'true' === $_REQUEST['linkedin_profile'] || 'checked' === $_REQUEST['linkedin_profile'] ) )
 			$connect_arr[$api_key]['linkedin_profile'] = true;
 		
-		if ( isset( $_REQUEST['linkedin_group'] ) 
+		if ( !empty( $_REQUEST['linkedin_group'] ) 
 				&& ( 'true' === $_REQUEST['linkedin_group'] || 'checked' === $_REQUEST['linkedin_group'] ) )
 			$connect_arr[$api_key]['linkedin_group'] = true;
 		
 		$result = leenkme_ajax_connect($connect_arr);
 		
-		if ( isset( $result[$api_key] ) ) {	
+		if ( !empty( $result[$api_key] ) ) {	
 				
 			if ( is_wp_error( $result[$api_key] ) ) {
 				
 				die( $result[$api_key]->get_error_message() );	
 				
-			} else if ( isset( $result[$api_key]['response']['code'] ) ) {
+			} else if ( !empty( $result[$api_key]['response']['code'] ) ) {
 				
 				$response = json_decode( $result[$api_key]['body'] );
 				die( $response[1] );
@@ -675,7 +693,7 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 				$options = $dl_pluginleenkmeLinkedIn->get_user_settings( $leenkme_user->ID );
 				if ( !empty( $options ) ) {
 					
-					if ( !empty( $options['share_cats'] ) && isset( $options['clude'] )
+					if ( !empty( $options['share_cats'] ) && !empty( $options['clude'] )
 							&& !( 'in' == $options['clude'] && in_array( '0', $options['share_cats'] ) ) ) {
 						
 						if ( 'ex' == $options['clude'] && in_array( '0', $options['share_cats'] ) ) {
@@ -727,7 +745,7 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 						$connect_arr[$api_key]['linkedin_group'] = true;
 					
 					if ( $leenkme_user->ID != $post['post_author'] && ( 'mine' == $options['message_preference'] 
-						|| ( 'manual' == $options['message_preference']  && '' == get_post_meta( $post['ID'], '_lm_linkedin_type', true ) ) ) )
+						|| ( 'manual' == $options['message_preference']  && !get_post_meta( $post['ID'], '_lm_linkedin_type', true ) ) ) )
 						$prefer_user = true;
 					else
 						$prefer_user = false;
@@ -740,7 +758,7 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 					
 						$prefer_linkedin_array = get_leenkme_expanded_li_post( $post['ID'], $prefer_linkedin_array, false, false, $leenkme_user->ID );
 													
-						if ( isset( $prefer_linkedin_array['picture'] ) && !empty( $prefer_linkedin_array['picture'] ) )
+						if ( !empty( $prefer_linkedin_array['picture'] ) )
 							$connect_arr[$api_key]['li_image'] = $prefer_linkedin_array['picture'];
 						
 						$connect_arr[$api_key]['li_comment'] 	= stripslashes( html_entity_decode( $prefer_linkedin_array['comment'], ENT_COMPAT, get_bloginfo('charset') ) );
@@ -751,22 +769,30 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 						
 					} else {
 						
-						if ( !$linkedin_array || empty( $linkedin_array ) ) {
+						$manual = get_post_meta( $post['ID'], '_lm_linkedin_type', true );
 						
-							if ( !( $linkedin_array['comment'] = get_post_meta( $post['ID'], '_linkedin_comment', true ) ) || $prefer_user )
+						if ( $manual ) {
+							
+							$linkedin_array['comment']     = get_post_meta( $post['ID'], '_linkedin_comment', true );
+							$linkedin_array['linktitle']   = get_post_meta( $post['ID'], '_linkedin_title', true );
+							$linkedin_array['description'] = get_post_meta( $post['ID'], '_linkedin_description', true );
+							
+						} else {
+												
+							if ( empty( $linkedin_array['comment'] ) )
 								$linkedin_array['comment'] = $options['linkedin_comment'];
 							
-							if ( !( $linkedin_array['linktitle'] = get_post_meta( $post['ID'], '_linkedin_title', true ) ) || $prefer_user )
+							if ( empty( $linkedin_array['linktitle'] ) )
 								$linkedin_array['linktitle'] = $options['linkedin_title'];
 							
-							if ( !( $linkedin_array['description'] = get_post_meta( $post['ID'], '_linkedin_description', true ) ) || $prefer_user )
+							if ( empty( $linkedin_array['description'] ) )
 								$linkedin_array['description'] = $options['linkedin_description'];
 						
 							$linkedin_array = get_leenkme_expanded_li_post( $post['ID'], $linkedin_array, false, false, $leenkme_user->ID );
-							
+													
 						}
 													
-						if ( isset( $linkedin_array['picture'] ) && !empty( $linkedin_array['picture'] ) )
+						if ( !empty( $linkedin_array['picture'] ) )
 							$connect_arr[$api_key]['li_image'] = $linkedin_array['picture'];
 						else
 							$connect_arr[$api_key]['li_image'] = leenkme_get_picture( $user_settings, $post['ID'], 'linkedin' );
@@ -792,10 +818,12 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 }
 
 // Actions and filters	
-if ( isset( $dl_pluginleenkmeLinkedIn ) ) {
+if ( !empty( $dl_pluginleenkmeLinkedIn ) ) {
 	
-	add_action( 'save_post', array( $dl_pluginleenkmeLinkedIn, 'leenkme_linkedin_meta_tags' ) );
-	
+	//This use to be 'save_post' but the save_post action happens AFTER the 'transition_post_status' action
+	//which means the leenkme_connect function was running before the leenk.me meta data was being saved!
+	add_action( 'transition_post_status', array( $dl_pluginleenkmeLinkedIn, 'leenkme_linkedin_meta_tags' ), 10, 3 );
+
 	// Whenever you publish a post, post to LinkedIn
 	add_filter('leenkme_connect', 'leenkme_publish_to_linkedin', 20, 2);
 	

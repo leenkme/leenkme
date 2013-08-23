@@ -330,3 +330,26 @@ if ( !function_exists( 'leenkme_get_users' ) ) {
 	}
 	
 }
+
+if ( !function_exists( 'wp_print_r' ) ) { 
+
+	/**
+	 * Helper function used for printing out debug information
+	 *
+	 * HT: Glenn Ansley @ iThemes.com
+	 *
+	 * @since 0.0.1
+	 *
+	 * @param int $args Arguments to pass to print_r
+	 * @param bool $die TRUE to die else FALSE (default TRUE)
+	 */
+    function wp_print_r( $args, $die = true ) { 
+	
+        $echo = '<pre>' . print_r( $args, true ) . '</pre>';
+		
+        if ( $die ) die( $echo );
+        	else echo $echo;
+		
+    }   
+	
+}
