@@ -317,16 +317,27 @@ if ( !function_exists( 'leenkme_rate_limit' ) ) {
 if ( !function_exists( 'leenkme_get_users' ) ) {
 
 	function leenkme_get_users() {
-		
-		$args = array( 
-					'meta_query' => array( 
-										'meta_value' => 'leenkme_API', 
-										'meta_compare' => 'LIKE' 
-									) 
-				);
-				
-		return get_users( apply_filters( 'leenkme_user_args', $args ) );
-		
+		global $wpdb;
+
+		$args = array(
+			'meta_query' => array( 
+				'relation' => 'AND',
+				array(
+					'key'     =>  $wpdb->get_blog_prefix() . 'leenkme',
+					'value'   => 'leenkme_API',
+					'compare' => 'LIKE'
+				),
+				array(
+					'key'     =>  $wpdb->get_blog_prefix() . 'leenkme',
+					'value'   => 0,
+					'compare' => '!='
+				)
+			)
+		);
+
+		$users = get_users( $args );
+		return $users;
+
 	}
 	
 }
