@@ -3,13 +3,13 @@ Contributors: layotte
 Tags: publish, automatic, facebook, twitter, linkedin, friendfeed, fan page, groups, publicize, open graph, social media, social media tools
 Requires at least: 3.1
 Tested up to: 3.8
-Stable tag: 2.1.6
+Stable tag: 2.2.0
 
 leenk.me empowers you to publicize your WordPress content to your Twitter, Facebook, LinkedIn, & FriendFeed accounts automatically.
 
 == Description ==
 
-leenk.me automatically publishes a tweet to your Twitter account, a status update to your Facebook profile/fan page/group walls, a share on your LinkedIn profile, and an entry on your FriendFeed profile/group whenever you publish a new post in your WordPress website.
+leenk.me automatically publishes a tweet to your Twitter account, a status update to your Facebook profile/fan page/group walls, a share on your LinkedIn profile/group/company, and an entry on your FriendFeed profile/group whenever you publish a new post in your WordPress website.
 
 What can you do with leenk.me?
 
@@ -63,7 +63,7 @@ Yes, just be sure to check the box to Tweet/Publish/Share/Feed all authors in th
 
 = Can I add multiple Twitter/Facebook/LinkedIn/FriendFeed accounts to a single leenk.me account? =
 
-Yes, now you can. If you have a Personal account, you can add up to 3 leenk.me API keys each API key can support 1 Twitter account, Facebook Profile, Facebook Page, Facebook Group, LinkedIn Profile, LinkedIn Group, Friendfeed profile, and Friendfeed group. If you have a Business account you can add up to 10 leenk.me API keys.
+Yes, now you can. If you have a Personal account, you can add up to 3 leenk.me API keys each API key can support 1 Twitter account, Facebook Profile, Facebook Page, Facebook Group, LinkedIn Profile, LinkedIn Group, LinkedIn Company, Friendfeed profile, and Friendfeed group. If you have a Business account you can add up to 10 leenk.me API keys.
 
 = How to use the leenk.me Twitter plugin =
 
@@ -90,6 +90,9 @@ Feel free to use the leenk.me [contact form](http://leenk.me/contact) and we wil
 Yes, there is now a GUI interface for this in the main leenk.me settings, but if you can still use your own custom URL shortener by using the WordPress action hook 'leenkme_url_shortener' to change the URL shortener used. I wrote a post detailing [how to use the bit.ly URL shortener](http://leenk.me/2011/03/22/how-to-use-the-bit-ly-url-shortener-in-leenk-me/).
 
 == Changelog ==
+= 2.2.0 =
+* Added LinkedIn Companies functionality
+
 = 2.1.6 =
 * Fixed search for leenkme users, timing out on sites with large subscriber base 
 
