@@ -122,6 +122,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 			action:		'li_share',
 			'linkedin_profile':	$('input#linkedin_profile').attr('checked'),
 			'linkedin_group':	$('input#linkedin_group').attr('checked'),
+			'linkedin_company':	$('input#linkedin_company').attr('checked'),
 			_wpnonce:	$('input#li_share_wpnonce').val()
 		};
 		

@@ -28,6 +28,7 @@ $lm_post_linkedin_jquery(document).ready(function($) {
 			'comment':			$( 'textarea#lm_li_comment' ).val(),
 			'linkedin_profile':	$('input#linkedin_profile').attr('checked'),
 			'linkedin_group':	$('input#linkedin_group').attr('checked'),
+			'linkedin_company':	$('input#linkedin_company').attr('checked'),
 			'linktitle':		$( 'input#lm_li_linktitle' ).val(),
 			'description':		$( 'textarea#lm_li_description' ).val(),
 			'picture':			$( 'input[name=linkedin_image]' ).val()

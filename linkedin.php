@@ -21,6 +21,7 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 			$defaults = array(
 								'linkedin_profile'		=> true,
 								'linkedin_group'		=> false,
+								'linkedin_company'		=> false,
 								'linkedin_comment'		=> '%TITLE%',
 								'linkedin_title'		=> '%WPSITENAME%',
 								'linkedin_description'	=> '%EXCERPT%',
@@ -60,6 +61,11 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 					$user_settings['linkedin_group'] = true;
 				else
 					$user_settings['linkedin_group'] = false;
+				
+				if ( !empty( $_REQUEST['linkedin_company'] ) )
+					$user_settings['linkedin_company'] = true;
+				else
+					$user_settings['linkedin_company'] = false;
 				
 				if ( !empty( $_REQUEST['linkedin_comment'] ) )
 					$user_settings['linkedin_comment'] = $_REQUEST['linkedin_comment'];
@@ -131,6 +137,7 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 						
 							<p><?php _e( 'Share to Personal Profile?', 'leenkme' ); ?> <input type="checkbox" id="linkedin_profile" name="linkedin_profile" <?php checked( $user_settings['linkedin_profile'] ); ?> /></p>
 							<p><?php _e( 'Share to Group?', 'leenkme' ); ?> <input type="checkbox" id="linkedin_group" name="linkedin_group" <?php checked( $user_settings['linkedin_group'] ); ?> /></p>
+							<p><?php _e( 'Share to Company?', 'leenkme' ); ?> <input type="checkbox" id="linkedin_company" name="linkedin_company" <?php checked( $user_settings['linkedin_company'] ); ?> /></p>
                         
                             <p>
                                 <input type="button" class="button" name="verify_linkedin_connect" id="li_share" value="<?php _e( 'Share a Test Message', 'leenkme' ) ?>" />
@@ -313,6 +320,11 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 				update_post_meta( $post->ID, '_linkedin_exclude_group', $_REQUEST['linkedin_exclude_group'] );
 			else
 				delete_post_meta( $post->ID, '_linkedin_exclude_group' );
+
+			if ( !empty( $_REQUEST['linkedin_exclude_company'] ) )
+				update_post_meta( $post->ID, '_linkedin_exclude_company', $_REQUEST['linkedin_exclude_company'] );
+			else
+				delete_post_meta( $post->ID, '_linkedin_exclude_company' );
 				
 		}
 		
@@ -340,6 +352,15 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 				
 			}
 			$linkedin_exclude_group = get_post_meta( $post->ID, '_linkedin_exclude_group', true ); 
+
+			if ( $linkedin_exclude_company = get_post_meta( $post->ID, '_linkedin_exclude_company', true ) ) {
+				
+				delete_post_meta( $post->ID, 'linkedin_exclude_company', true );
+				update_post_meta( $post->ID, '_linkedin_exclude_company', $linkedin_exclude_company );
+				
+				
+			}
+			$linkedin_exclude_company = get_post_meta( $post->ID, '_linkedin_exclude_company', true ); 
 			
 			if ( $linkedin_array['comment'] = get_post_meta( $post->ID, 'linkedin_comment', true ) ) {
 				
@@ -441,6 +462,11 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
                     <?php _e( 'Exclude from Group:', 'leenkme' ) ?>
                     <input type="checkbox" name="linkedin_exclude_group" <?php checked( $linkedin_exclude_group || "on" == $linkedin_exclude_group ); ?> />
                     <?php } ?>
+                    <br />
+					<?php if ( $user_settings['linkedin_company'] ) { ?>
+                    <?php _e( 'Exclude from Group:', 'leenkme' ) ?>
+                    <input type="checkbox" name="linkedin_exclude_company" <?php checked( $linkedin_exclude_company || "on" == $linkedin_exclude_company ); ?> />
+                    <?php } ?>
                 </div>
                 
                 <div id="lm_li_reshare">
@@ -524,7 +550,8 @@ function leenkme_ajax_reshare() {
 	if ( !empty( $_REQUEST['id'] ) ) {
 
 		if ( get_post_meta( $_REQUEST['id'], '_linkedin_exclude', true )
-				&& get_post_meta( $_REQUEST['id'], '_linkedin_exclude_group', true ) ) {
+				&& get_post_meta( $_REQUEST['id'], '_linkedin_exclude_group', true )
+				&& get_post_meta( $_REQUEST['id'], '_linkedin_exclude_company', true ) ) {
 
 			die( __( 'You have excluded this post from sharing to your LinkedIn profile. If you would like to share it, edit the post and remove the appropriate exclude check box.', 'leenkme' ) );
 
@@ -606,6 +633,10 @@ function leenkme_ajax_li() {
 				&& ( 'true' === $_REQUEST['linkedin_group'] || 'checked' === $_REQUEST['linkedin_group'] ) )
 			$connect_arr[$api_key]['linkedin_group'] = true;
 		
+		if ( !empty( $_REQUEST['linkedin_company'] ) 
+				&& ( 'true' === $_REQUEST['linkedin_company'] || 'checked' === $_REQUEST['linkedin_company'] ) )
+			$connect_arr[$api_key]['linkedin_company'] = true;
+		
 		$result = leenkme_ajax_connect($connect_arr);
 		
 		if ( !empty( $result[$api_key] ) ) {	
@@ -654,8 +685,13 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 		$linkedin_exclude_group = true;
 	else
 		$linkedin_exclude_group = false;
+
+	if ( get_post_meta( $post['ID'], '_linkedin_exclude_company', true ) )
+		$linkedin_exclude_company = true;
+	else
+		$linkedin_exclude_company = false;
 	
-	if ( !( $linkedin_exclude && $linkedin_exclude_group ) ) {
+	if ( !( $linkedin_exclude && $linkedin_exclude_group && $linkedin_exclude_company ) ) {
 		
 		$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
 		
@@ -733,16 +769,20 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 						}
 					}
 						
-					if ( !$options['linkedin_profile'] && !$options['linkedin_group'])
+					if ( !$options['linkedin_profile'] && !$options['linkedin_group'] && !$options['linkedin_company'] )
 						continue;	//Skip this user if they don't have Profile or Page checked in plugins Facebook Settings
 	
-					// Added facebook profile to connection array if enabled
+					// Added LinkedIn profile to connection array if enabled
 					if ( $options['linkedin_profile'] && !$exclude_profile )
 						$connect_arr[$api_key]['linkedin_profile'] = true;
 	
-					// Added facebook page to connection array if enabled
+					// Added LinkedIn group to connection array if enabled
 					if ( $options['linkedin_group'] && !$linkedin_exclude_group )
 						$connect_arr[$api_key]['linkedin_group'] = true;
+
+					// Added LinkedIn company to connection array if enabled
+					if ( $options['linkedin_company'] && !$linkedin_exclude_company )
+						$connect_arr[$api_key]['linkedin_company'] = true;
 					
 					if ( $leenkme_user->ID != $post['post_author'] && ( 'mine' == $options['message_preference'] 
 						|| ( 'manual' == $options['message_preference']  && !get_post_meta( $post['ID'], '_lm_linkedin_type', true ) ) ) )
