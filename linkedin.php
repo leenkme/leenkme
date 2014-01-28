@@ -126,7 +126,7 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
             
 				<form id="leenkme" method="post" action="">
                 
-					<h2 style='margin-bottom: 10px;' ><img src='<?php echo $dl_pluginleenkme->base_url; ?>/leenkme-logo-32x32.png' style='vertical-align: top;' /> LinkedIn <?php _e( 'Settings', 'leenkme' ); ?> (<a href="http://leenk.me/2010/12/01/how-to-use-the-leenk-me-linkedin-plugin-for-wordpress/" target="_blank"><?php _e( 'help', 'leenkme' ); ?></a>)</h2>
+					<h2 style='margin-bottom: 10px;' ><img src='<?php echo $dl_pluginleenkme->base_url; ?>/images/leenkme-logo-32x32.png' style='vertical-align: top;' /> LinkedIn <?php _e( 'Settings', 'leenkme' ); ?> (<a href="http://leenk.me/2010/12/01/how-to-use-the-leenk-me-linkedin-plugin-for-wordpress/" target="_blank"><?php _e( 'help', 'leenkme' ); ?></a>)</h2>
                     
                     <div id="post-types" class="postbox">
 					
