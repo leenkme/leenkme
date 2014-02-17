@@ -1037,18 +1037,22 @@ if ( class_exists( 'leenkme' ) ) {
 	require_once( 'includes/url-shortener.php' );
 	
 	$dl_pluginleenkme = new leenkme();
+
+	if ( is_admin() ) {
 	
-	if ( $dl_pluginleenkme->plugin_enabled( 'twitter' ) )
-		require_once( 'twitter.php' );
+		if ( $dl_pluginleenkme->plugin_enabled( 'twitter' ) )
+			require_once( 'twitter.php' );
 	
-	if ( $dl_pluginleenkme->plugin_enabled( 'facebook' ) )
-		require_once( 'facebook.php' );
+		if ( $dl_pluginleenkme->plugin_enabled( 'facebook' ) )
+			require_once( 'facebook.php' );
 	
-	if ( $dl_pluginleenkme->plugin_enabled( 'linkedin' ) )
-		require_once( 'linkedin.php' );
+		if ( $dl_pluginleenkme->plugin_enabled( 'linkedin' ) )
+			require_once( 'linkedin.php' );
 	
-	if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) )
-		require_once( 'friendfeed.php' );
+		if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) )
+			require_once( 'friendfeed.php' );
+	
+	}
 }
 
 // Initialize the admin panel if the plugin has been activated
