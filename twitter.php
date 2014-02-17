@@ -319,7 +319,7 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 		if ( preg_match( '/%TITLE%/i', $tweet ) ) {
 			
 			$title = stripcslashes( $title );
-			
+						
 			$titleLen = strlen( utf8_decode( $title ) ); 
 			$tweetLen = strlen( utf8_decode( $tweet ) );
 			$diffLen = $maxLen - $tweetLen;
@@ -340,12 +340,12 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 			if ( false === $cats ) 
 				$post_categories = wp_get_post_categories( $post_id );
 			else if ( !empty( $cats ) )
-				$post_categories = split( ',', $cats );
+				$post_categories = explode( ',', $cats );
 			
 			foreach( $post_categories as $c ) {
 				
 				$cat = get_category( $c );
-				$cat_array[] = "#" . preg_replace( '/\W/', '', $cat->name );
+				$cat_array[] = "#" . preg_replace( '/[^\p{L}\p{N}]/u', '', $cat->name );
 				
 			}
 			$cat_str = trim( join( ' ', $cat_array ) );
@@ -386,13 +386,13 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 				foreach( (array)$post_tags as $t ) {
 					
 					$tag = get_tag( $t );
-					$tag_array[] = "#" . preg_replace( '/\W/', '', $tag->name );
+					$tag_array[] = "#" . preg_replace( '/[^\p{L}\p{N}]/u', '', $tag->name );
 					
 				}
 				
 			} else if ( !empty( $tags ) ) {
 				
-				$post_tags = split( ',', $tags );
+				$post_tags = explode( ',', $tags );
 			
 				$tag_str = "";
 				foreach($post_tags as $t){
