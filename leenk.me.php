@@ -186,7 +186,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 					if ( !empty( $_REQUEST['post_types'] ) )
 						$leenkme_settings['post_types'] = $_REQUEST['post_types'];
 					else
-						$leenkme_settings['post_types'] = '';
+						$leenkme_settings['post_types'] = array( 'post' );
 					
 					if ( !empty( $_REQUEST['url_shortener'] ) )
 						$leenkme_settings['url_shortener'] = $_REQUEST['url_shortener'];
@@ -426,8 +426,7 @@ if ( ! class_exists( 'leenkme' ) ) {
                             <th rowspan="1"><?php _e( 'Select Your Post Types', 'leenkme' ); ?></th>
                             <td class="leenkme_post_type_name"><?php _e( 'Post:', 'leenkme' ); ?></td>
                             <td class="leenkme_module_checkbox">
-                                <input type="checkbox" value="post" name="post_types[]" checked="checked" readonly="readonly" disabled="disabled" />
-                                <input type="hidden" value="post" name="post_types[]" />
+                                <input type="checkbox" value="post" name="post_types[]" <?php checked( in_array( 'post', $leenkme_settings['post_types'] ) ); ?> />
                             </td>
                         </tr>
                         <?php if ( version_compare( $this->wp_version, '2.9', '>' ) ) {
