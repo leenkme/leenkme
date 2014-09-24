@@ -799,7 +799,7 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 						$prefer_linkedin_array = get_leenkme_expanded_li_post( $post['ID'], $prefer_linkedin_array, false, false, $leenkme_user->ID );
 
 						foreach( $prefer_linkedin_array as $key => $value ) {
-							$prefer_linkedin_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', function( $m ) { return mb_convert_encoding( $m[1], 'UTF-8', 'HTML-ENTITIES' ); }, $value );
+							$prefer_linkedin_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', 'leenkme_utf8_html_entities', $value );
 						}
 													
 						if ( !empty( $prefer_linkedin_array['picture'] ) )
@@ -837,7 +837,7 @@ function leenkme_publish_to_linkedin( $connect_arr = array(), $post, $linkedin_a
 						}
 						
 						foreach( $linkedin_array as $key => $value ) {
-							$linkedin_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', function( $m ) { return mb_convert_encoding( $m[1], 'UTF-8', 'HTML-ENTITIES' ); }, $value );
+							$linkedin_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', 'leenkme_utf8_html_entities', $value );
 						}
 
 						if ( !empty( $linkedin_array['picture'] ) )

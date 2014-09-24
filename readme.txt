@@ -41,6 +41,8 @@ You will need a [leenk.me API key](http://leenk.me) to use the leenk.me plugin. 
 
 Have questions? Contact me through the leenk.me [support](http://leenk.me/contact) form.
 
+You can follow the development of this plugin at [GitHub](https://github.com/leenkme/leenkme)!
+
 == Installation ==
 
 This section describes how to install the plugin and get it working.

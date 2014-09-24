@@ -364,3 +364,11 @@ if ( !function_exists( 'wp_print_r' ) ) {
     }   
 	
 }
+
+if ( !function_exists( 'leenkme_utf8_html_entities' ) ) {
+	
+	function leenkme_utf8_html_entities( $matches ) {
+		return mb_convert_encoding( $matches[1], 'UTF-8', 'HTML-ENTITIES' );
+	}
+	
+}

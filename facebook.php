@@ -820,7 +820,7 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 						$facebook_array = get_leenkme_expanded_fb_post( $post['ID'], $facebook_array, false, false, $leenkme_user->ID );
 						
 						foreach( $facebook_array as $key => $value ) {
-							$facebook_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', function( $m ) { return mb_convert_encoding( $m[1], 'UTF-8', 'HTML-ENTITIES' ); }, $value );
+							$facebook_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', 'leenkme_utf8_html_entities', $value );
 						}
 
 						if ( !empty( $facebook_array['picture'] ) )
@@ -862,7 +862,7 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 						}
 						
 						foreach( $facebook_array as $key => $value ) {
-							$facebook_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', function( $m ) { return mb_convert_encoding( $m[1], 'UTF-8', 'HTML-ENTITIES' ); }, $value );
+							$facebook_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', 'leenkme_utf8_html_entities', $value );
 						}
 																					
 						if ( !empty( $facebook_array['picture'] ) )
