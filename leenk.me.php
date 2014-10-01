@@ -1036,8 +1036,8 @@ if ( class_exists( 'leenkme' ) ) {
 	require_once( 'includes/url-shortener.php' );
 	
 	$dl_pluginleenkme = new leenkme();
-
-	if ( is_admin() ) {
+	
+	if ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
 	
 		if ( $dl_pluginleenkme->plugin_enabled( 'twitter' ) )
 			require_once( 'twitter.php' );
@@ -1272,7 +1272,7 @@ function leenkme_connect( $new_status, $old_status, $post ) {
 		if ( leenkme_rate_limit() ) {
 		
 			$connect_arr = apply_filters( 'leenkme_connect', array(), array( 'ID' => $post->ID, 'post_author' => $post->post_author ) );
-		
+
 			if ( !empty( $connect_arr ) ) {
 				
 				foreach ( $connect_arr as $api_key => $body ) {

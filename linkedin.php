@@ -873,7 +873,7 @@ if ( !empty( $dl_pluginleenkmeLinkedIn ) ) {
 	add_action( 'transition_post_status', array( $dl_pluginleenkmeLinkedIn, 'leenkme_linkedin_meta_tags' ), 10, 3 );
 
 	// Whenever you publish a post, post to LinkedIn
-	add_filter('leenkme_connect', 'leenkme_publish_to_linkedin', 20, 2);
+	add_filter( 'leenkme_connect', 'leenkme_publish_to_linkedin', 20, 2);
 	
 	add_action( 'wp_ajax_li_share', 'leenkme_ajax_li' );
 	add_action( 'wp_ajax_reshare', 'leenkme_ajax_reshare' );
