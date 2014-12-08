@@ -473,7 +473,6 @@ if ( ! class_exists( 'leenkme' ) ) {
                                     <option value="yourls" <?php selected( 'yourls', $leenkme_settings['url_shortener'] ); ?>>YOURLS</option>
                                     <option value="isgd" <?php selected( 'isgd', $leenkme_settings['url_shortener'] ); ?>>is.gd</option>
                                     <option value="wpme" <?php selected( 'wpme', $leenkme_settings['url_shortener'] ); ?>>wp.me</option>
-                                    <option value="owly" <?php selected( 'owly', $leenkme_settings['url_shortener'] ); ?>>ow.ly</option>
                                     <option value="tinyurl" <?php selected( 'tinyurl', $leenkme_settings['url_shortener'] ); ?>>TinyURL</option>
                                     <option value="tflp" <?php selected( 'tflp', $leenkme_settings['url_shortener'] ); ?>>Twitter Friendly Links Plugin</option>
                                     <option value="wppostid" <?php selected( 'wppostid', $leenkme_settings['url_shortener'] ); ?>>WordPress Post ID</option>

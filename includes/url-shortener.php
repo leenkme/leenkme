@@ -27,10 +27,6 @@ function leenkme_url_shortener( $post_id ) {
 			$short_url = leenkme_get_wpme_url( $post_id );
 			break;
 		
-		case 'owly' :
-			$short_url = leenkme_get_owly_url( $url );
-			break;
-		
 		case 'tinyurl' :
 			$short_url = leenkme_get_tinyurl_url( $url );
 			break;
@@ -173,24 +169,6 @@ function leenkme_get_wpme_url( $post_id ) {
 		return $url;
 	
 	}
-	
-}
-
-function leenkme_get_owly_url( $url ) {
-	
-	// curl -G "http://ow.ly/api/1.0/url/shorten?apiKey=GS90ormTrXy715xE8ADTn&longUrl=http://www.hootsuite.com"
-	$owly_api = "http://ow.ly/api/1.0/url/shorten"; 
-  
-    $owly_args = array(  
-                            'longUrl' => $url,  
-               				'apiKey' => 'GS90ormTrXy715xE8ADTn' 
-                        );  
-  
-    $owly_query = $owly_api . '?' .  http_build_query( $owly_args ); 
-	
-	$result = json_decode( leenkme_get_shortened_url( $owly_query, $url ) );
-	
-	return $result->results->shortUrl;
 	
 }
 
