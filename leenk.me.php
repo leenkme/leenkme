@@ -28,6 +28,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 			$this->timeout	= '5000';		// in miliseconds
 			
 			add_image_size( 'leenkme_thumbnail', 150, 150 );
+			add_image_size( 'leenkme_facebook_image', 1200, 630 );
 		
 			add_action( 'init', array( &$this, 'upgrade' ) );
 			add_action( 'admin_enqueue_scripts', 				array( &$this, 'leenkme_admin_enqueue_scripts' ) );

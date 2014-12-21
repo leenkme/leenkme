@@ -214,16 +214,22 @@ if ( !function_exists( 'leenkme_get_picture' ) ) {
 		
 		} else if ( !( $picture = apply_filters( $type . '_image', false, $post_id ) ) ) {
 			
+			if ( 'facebook' === $type ) {
+				$image_type = 'leenkme_facebook_image';
+			} else {
+				$image_type = 'leenkme_thumbnail';
+			}
+			
 			if ( function_exists( 'has_post_thumbnail' ) && has_post_thumbnail( $post_id ) ) {
 				
 				$post_thumbnail_id = get_post_thumbnail_id( $post_id );
-				list( $picture, $width, $height ) = wp_get_attachment_image_src( $post_thumbnail_id, 'leenkme_thumbnail' );
+				list( $picture, $width, $height ) = wp_get_attachment_image_src( $post_thumbnail_id, $image_type );
 				
 			} else if ( $images = get_children( 'post_parent=' . $post_id . '&post_type=attachment&post_mime_type=image&numberposts=1' ) ) {
 				
 				foreach ( $images as $attachment_id => $attachment ) {
 					
-					list( $picture, $width, $height ) = wp_get_attachment_image_src( $attachment_id, 'leenkme_thumbnail' );
+					list( $picture, $width, $height ) = wp_get_attachment_image_src( $attachment_id, $image_type );
 					break;
 					
 				}
