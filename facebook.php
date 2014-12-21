@@ -197,6 +197,7 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
                             <tr>
                                 <td colspan="2">                   
                                     <div class="facebook-image-warning" style="margin-left: 50px;">
+	                                    <p class="description"><?php _e( 'Facebook recommends images that are at least 1200 x 630 pixels for the best display on high resolution devices. Images that are 600 x 315 pixels or larger will post with larger images on Facebook. Images that are smaller than 600 x 315 px will post with smaller images on Facebook.', 'leenkme' ); ?></p>
                                         <p style="font-size: 11px; margin-bottom: 0px;"><?php _e( 'NOTE: Do not use an image URL hosted by Facebook. Facebook will reject your message.', 'leenkme' ); ?></p>
                                     </div>
                                 </td>
