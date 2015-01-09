@@ -698,7 +698,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 			
 			global $wpdb;
 			
-			$user_ids = $wpdb->get_col( $wpdb->prepare( 'SELECT ID FROM '. $wpdb->users ) );
+			$user_ids = $wpdb->get_col( 'SELECT ID FROM '. $wpdb->users );
 			
 			foreach ( (array)$user_ids as $user_id ) {
 				
