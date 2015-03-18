@@ -96,25 +96,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 		
 	});
 	/* End leenk.me Facebook Settings */
-	
-	/* Start leenk.me Friendfeed Settings */
-	$('input#ff_publish').live('click', function() {
 		
-		var friendfeed_myfeed = $('input#friendfeed_myfeed').attr('checked')
-		var friendfeed_group = $('input#friendfeed_group').attr('checked')
-		
-		var data = {
-			action:				'ff_publish',
-			friendfeed_myfeed:	friendfeed_myfeed,
-			friendfeed_group:	friendfeed_group,
-			_wpnonce:			$('input#ff_publish_wpnonce').val()
-		};
-		
-		ajax_response(data);
-		
-	});
-	/* End leenk.me Friendfeed Settings */
-	
 	/* Start leenk.me LinkedIn Settings */
 	$('input#li_share').live('click', function() {
 		

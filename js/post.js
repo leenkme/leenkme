@@ -65,24 +65,13 @@ $lm_post_jquery(document).ready(function($) {
 			};
 			
 		}
-		
-		friendfeed_array = new Array;
-		
-		if ( 0 == ( $( 'input[name=lm_friendfeed_type]' ).val() ) ) {
-			
-			friendfeed_array = {
-				'body':				$( 'input[name=friendfeed_body_format]' ).val(),
-			};
-		
-		}
-		
+				
 		data = {
 			'action': 			'get_leenkme_expanded_post',
 			'post_id': 			$( 'input#post_ID' ).val(),
 			'tweet': 			tweet_format,
 			'facebook_array': 	facebook_array,
 			'linkedin_array': 	linkedin_array,
-			'friendfeed_array': friendfeed_array,
 			'title': 			$( 'input#title' ).val(),
 			'cats': 			cats.join( ',' ),
 			'tags': 			$( '.the-tags' ).val(),
@@ -143,24 +132,7 @@ $lm_post_jquery(document).ready(function($) {
 				}
 			
 			}
-			
-			if ( 0 != data['friendfeed'].length ) {
-			
-				if ( 0 == ( $( 'input[name=lm_friendfeed_type]' ).val() ) ) {
-					
-					$( 'textarea#lm_ff_body' ).val( data['friendfeed']['body'] );
-					$( 'img#lm_ff_image_src' ).attr( 'src', data['friendfeed']['picture'] );
-					$( 'input[name=friendfeed_image]' ).val( data['friendfeed']['picture'] );
-					
-				} else {
-					
-					$( 'img#lm_ff_image_src' ).attr( 'src', data['friendfeed']['picture'] );
-					$( 'input[name=friendfeed_image]' ).val( data['friendfeed']['picture'] );
-					
-				}
-			
-			}
-			
+						
 		});
 		
 	});

@@ -6,7 +6,7 @@ Description: Automatically publish to your Twitter, Facebook Profile/Fan Page/Gr
 Author: Lew Ayotte @ leenk.me
 Version: 2.2.7
 Author URI: http://leenk.me/about/
-Tags: publish, automatic, facebook, twitter, linkedin, friendfeed, fan page, groups, publicize, open graph, social media, social media tools
+Tags: publish, automatic, facebook, twitter, linkedin, fan page, groups, publicize, open graph, social media, social media tools
 */
 
 define( 'LEENKME_VERSION' , '2.2.7' );
@@ -16,7 +16,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 	class leenkme {
 		
 		// Class members
-		var $adminpages = array( 'leenkme', 'leenkme_twitter', 'leenkme_facebook', 'leenkme_linkedin', 'leenkme_friendfeed' );
+		var $adminpages = array( 'leenkme', 'leenkme_twitter', 'leenkme_facebook', 'leenkme_linkedin' );
 		
 		function leenkme() {
 			
@@ -48,7 +48,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 								'twitter' 					=> false,
 								'facebook' 					=> false,
 								'linkedin' 					=> false,
-								'friendfeed'				=> false,
 								'post_types'				=> array( 'post' ),
 								'url_shortener'				=> 'tinyurl',
 								'use_og_meta_tags'			=> false,
@@ -92,7 +91,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 											'toplevel_page_leenkme', 
 											'leenk-me_page_leenkme_twitter', 
 											'leenk-me_page_leenkme_facebook', 
-											'leenk-me_page_leenkme_friendfeed', 
 											'leenk-me_page_leenkme_linkedin' 
 										);
 										
@@ -135,10 +133,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 				
 				if ( $this->plugin_enabled( 'linkedin' ) )
 					wp_enqueue_script( 'leenkme_linkedin_post_js', $this->base_url . 'js/post-linkedin.js', array( 'leenkme_post_js' ), LEENKME_VERSION );
-				
-				if ( $this->plugin_enabled( 'friendfeed' ) )
-					wp_enqueue_script( 'leenkme_friendfeed_post_js', $this->base_url . 'js/post-friendfeed.js', array( 'leenkme_post_js' ), LEENKME_VERSION );
-					
+									
 			}
 			
 		}
@@ -178,11 +173,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 						$leenkme_settings['linkedin'] = true;
 					else
 						$leenkme_settings['linkedin'] = false;
-					
-					if ( !empty( $_REQUEST['friendfeed'] ) )
-						$leenkme_settings['friendfeed'] = true;
-					else
-						$leenkme_settings['friendfeed'] = false;
 					
 					if ( !empty( $_REQUEST['post_types'] ) )
 						$leenkme_settings['post_types'] = $_REQUEST['post_types'];
@@ -413,11 +403,6 @@ if ( ! class_exists( 'leenkme' ) ) {
                                 <td class="leenkme_plugin_name">LinkedIn: </td>
                                 <td class="leenkme_plugin_button"><input type="checkbox" name="linkedin" <?php checked( $leenkme_settings['linkedin'] ); ?> /></td>
                                 <td class="leenkme_plugin_settings"> <?php if ( $leenkme_settings['linkedin'] ) { ?><a href="admin.php?page=leenkme_linkedin">LinkedIn Settings</a><?php } ?></td>
-                            </tr>
-                            <tr>
-                                <td id="leenkme_plugin_name">FriendFeed: </td>
-                                <td id="leenkme_plugin_button"><input type="checkbox" name="friendfeed" <?php checked( $leenkme_settings['friendfeed'] ); ?> /></td>
-                                <td id="leenkme_plugin_settings"> <?php if ( $leenkme_settings['friendfeed'] ) { ?><a href="admin.php?page=leenkme_friendfeed">Friendfeed Settings</a><?php } ?></td>
                             </tr>
                         </table>
                         
@@ -850,12 +835,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 					
 				}
 				
-				if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) ) {
-					
-					echo '<li><a href="#leenkme_friendfeed_meta_content"><img src="' . $this->base_url . '/images/friendfeed-16x16.png" alt="FriendFeed" /></a></li>';
-					
-				}
-				
 				echo '</ul>';
 				
 				echo '<div class="leenkme_tab_container">';
@@ -892,18 +871,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 					echo '</div>';
 					
 				}
-				
-				if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) ) {
-					
-					echo '<div id="leenkme_friendfeed_meta_content" class="leenkme_tab_content">';
-					
-					global $dl_pluginleenkmeFriendFeed;
-					echo $dl_pluginleenkmeFriendFeed->leenkme_friendfeed_meta_box();
-					
-					echo '</div>';
-					
-				}
-				
+								
 				echo '</div>';
 				
 				echo "<div style='clear: both;'></div>";
@@ -1047,10 +1015,7 @@ if ( class_exists( 'leenkme' ) ) {
 	
 		if ( $dl_pluginleenkme->plugin_enabled( 'linkedin' ) )
 			require_once( 'linkedin.php' );
-	
-		if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) )
-			require_once( 'friendfeed.php' );
-	
+		
 	}
 }
 
@@ -1088,12 +1053,6 @@ function leenkme_ap() {
 		
 	}
 	
-	if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) ) {
-		
-		global $dl_pluginleenkmeFriendFeed;
-		add_submenu_page( 'leenkme', __( 'FriendFeed Settings', 'leenkme' ), __( 'FriendFeed', 'leenkme' ), 'leenkme_edit_user_settings', 'leenkme_friendfeed', array( &$dl_pluginleenkmeFriendFeed, 'print_friendfeed_settings_page' ) );
-		
-	}
 }
 
 function leenkme_ajax_verify() {
@@ -1175,13 +1134,7 @@ function leenkme_ajax_leenkme_row_action() {
 		$out .= '<label><input type="checkbox" class="lm_releenk_networks_' . $_REQUEST['id'] . '" name="lm_releenk[]" value="linkedin" /> LinkedIn</label><br />';
 		
 	}
-	
-	if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) ) {
 		
-		$out .= '<label><input type="checkbox" class="lm_releenk_networks_' . $_REQUEST['id'] . '" name="lm_releenk[]" value="friendfeed" /> Friendfeed</label><br />';
-		
-	}
-	
 	$out .= '<p class="submit inline-leenkme">';
 	$out .= '<a class="button-secondary cancel alignleft inline-leenkme-cancel" title="Cancel" post_id="' . $_REQUEST['id'] .'" href="#inline-releenk">' . __( 'Cancel', 'leenkme' ) . '</a>';
 	$out .= '<a style="margin-left: 10px;" class="button-primary save alignleft inline-leenkme-releenk" title="ReLeenk" post_id="' . $_REQUEST['id'] .'"  post_author="' . $_REQUEST['post_author'] . '" href="#inline-releenk">' . __( 'ReLeenk', 'leenkme' ) . '</a>';
@@ -1222,12 +1175,6 @@ function leenkme_ajax_releenk() {
 		
 	}
 		
-	if ( in_array( 'friendfeed', $_REQUEST['networks'] ) ) {
-	
-		$connect_array = leenkme_publish_to_friendfeed( $connect_array, $post_array, false, true );
-		
-	}
-	
 	$results = leenkme_ajax_connect( $connect_array );
 	
 	if ( !empty( $results ) ) {		
@@ -1407,11 +1354,6 @@ function get_leenkme_expanded_post_ajax() {
 	else
 		$return_array['linkedin'] = array();
 		
-	if ( $dl_pluginleenkme->plugin_enabled( 'friendfeed' ) && !empty( $_REQUEST['friendfeed_array'] ) )
-		$return_array['friendfeed'] = get_leenkme_expanded_ff_post( $post_id, $_REQUEST['friendfeed_array'], $title, $excerpt );
-	else
-		$return_array['friendfeed'] = array();
-
 	die( json_encode( $return_array ) );
 	
 }
@@ -1423,8 +1365,7 @@ function leenkme_help_list( $contextual_help, $screen ) {
 		$contextual_help[$screen->id] = __( '<p>Need help working with the leenk.me plugin? Try these links for more information:</p>', 'leenkme' ) 
 			. '<a href="http://leenk.me/2010/09/04/how-to-use-the-leenk-me-twitter-plugin-for-wordpress/" target="_blank">Twitter</a> | '
 			. '<a href="http://leenk.me/2010/09/04/how-to-use-the-leenk-me-facebook-plugin-for-wordpress/" target="_blank">Facebook</a> | '
-			. '<a href="http://leenk.me/2010/12/01/how-to-use-the-leenk-me-linkedin-plugin-for-wordpress/" target="_blank">LinkedIn</a> | '
-			. '<a href="http://leenk.me/2011/04/08/how-to-use-the-leenk-me-friendfeed-plugin-for-wordpress/" target="_blank">FriendFeed</a>';
+			. '<a href="http://leenk.me/2010/12/01/how-to-use-the-leenk-me-linkedin-plugin-for-wordpress/" target="_blank">LinkedIn</a>';
 
 	}
 
