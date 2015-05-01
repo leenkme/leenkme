@@ -38,14 +38,15 @@ if ( !class_exists( 'LeenkMe' ) ) {
 			
 			add_action( 'init', array( $this, 'addon_init' ) );
 			add_action( 'admin_init', array( $this, 'upgrade' ) );
+			add_action( 'admin_init', array( $this, 'process_requests' ), 15 );
 			
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_wp_enqueue_scripts' ), 999 );
 			add_action( 'admin_print_styles', array( $this, 'admin_wp_print_styles' ), 999 );
-			add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ), 999 );
 					
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 			
 			add_action( 'wp_ajax_verify', array( $this, 'api_ajax_verify' ) );
+			add_action( 'wp_ajax_add_social_network_account', array( $this, 'add_social_network_account' ) );
 			
 			add_action( 'transition_post_status', array( $this, 'transition_post_status' ), 100, 3 );
 			
@@ -56,6 +57,41 @@ if ( !class_exists( 'LeenkMe' ) ) {
 				add_action( 'wp_head', array( $this, 'output_og_meta_tags' ) );
 			}
 			
+		}
+		
+		function process_requests() {
+			if ( current_user_can( 'edit_posts' ) ) {
+				if ( !empty( $_REQUEST['add_new_leenkme_connection'] ) ) {
+					if ( wp_verify_nonce( $_REQUEST['add_account_wpnonce'], 'add_account' ) ) {
+						$args = array(
+							'action' 	=> 'verify',
+							'api-key' 	=> $_REQUEST['leenkme-api-key'],	
+						);
+						$verified = $this->api_request( $args );
+						if ( $verified ) {
+							wp_redirect( 'https://leenk.me/' );
+						}
+						exit;
+					} else {
+						wp_die( 'unable to verify nonce' );
+					}
+				}
+			}
+		}
+		
+		function api_request( $args ) {
+			$data = array(
+				'method' 		=> 'POST',
+				'timeout' 		=> 45,
+				'redirection' 	=> 5,
+				'httpversion' 	=> '1.0',
+				'blocking' 		=> true,
+				'headers' 		=> array(),
+				'body' 			=> json_encode( $args ),
+				'cookies' 		=> array()
+			);
+			$response = wp_remote_post( LEENKME_API_URL, $data );
+			wp_print_r( $response );
 		}
 		
 		function addon_init() {
@@ -101,15 +137,15 @@ if ( !class_exists( 'LeenkMe' ) ) {
 			
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 				
-			if ( isset( $_REQUEST['post_type'] ) ) {
+			if ( !empty( $_REQUEST['post_type'] ) ) {
 				
 				$post_type = $_REQUEST['post_type'];
 				
 			} else {
 				
-				if ( isset( $_REQUEST['post'] ) )
+				if ( !empty( $_REQUEST['post'] ) )
 					$post_id = (int) $_REQUEST['post'];
-				elseif ( isset( $_REQUEST['post_ID'] ) )
+				elseif ( !empty( $_REQUEST['post_ID'] ) )
 					$post_id = (int) $_REQUEST['post_ID'];
 				else
 					$post_id = 0;
@@ -117,7 +153,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 				if ( $post_id )
 					$post = get_post( $post_id );
 				
-				if ( isset( $post ) && !empty( $post ) )
+				if ( !empty( $post ) )
 					$post_type = $post->post_type;
 				
 			}
@@ -137,15 +173,15 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			
-			if ( isset( $_REQUEST['post_type'] ) ) {
+			if ( !empty( $_REQUEST['post_type'] ) ) {
 				
 				$post_type = $_REQUEST['post_type'];
 				
 			} else {
 				
-				if ( isset( $_REQUEST['post'] ) )
+				if ( !empty( $_REQUEST['post'] ) )
 					$post_id = (int) $_REQUEST['post'];
-				elseif ( isset( $_REQUEST['post_ID'] ) )
+				elseif ( !empty( $_REQUEST['post_ID'] ) )
 					$post_id = (int) $_REQUEST['post_ID'];
 				else
 					$post_id = 0;
@@ -153,7 +189,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 				if ( $post_id )
 					$post = get_post( $post_id );
 				
-				if ( isset( $post ) && !empty( $post ) )
+				if ( !empty( $post ) && !empty( $post ) )
 					$post_type = $post->post_type;
 				
 			}
@@ -244,13 +280,20 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 * @uses do_action() To call 'leenkme_settings_page' for future addons
 		 */
 		function settings_page() {
-			// Get the leenk.me options
+			$user_override = false;
 			$user_id = get_current_user_id();
+			
+			if ( current_user_can( 'manage_options' ) ) {
+				if ( !empty( $_GET['user-id'] ) && is_numeric( $_GET['user-id'] ) ) {
+					$user_id = $_GET['user-id'];
+					$user_override = true;
+				}
+			}
 			
 			$leenkme_settings = $this->get_leenkme_settings();
 			$user_settings = $this->get_user_settings( $user_id );
 			
-			if ( isset( $_REQUEST['update_leenkme_settings'] ) ) {
+			if ( !empty( $_REQUEST['update_leenkme_settings'] ) ) {
 				
 				if ( !empty( $_REQUEST['leenkme_API'] ) ) {
 					$user_settings['leenkme_API'] = $_REQUEST['leenkme_API'];
@@ -335,7 +378,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 					$this->update_leenkme_settings( $leenkme_settings );
 
 					?>
-					<div class="updated"><p><strong><?php _e( "General Settings Updated.", "leenkme" );?></strong></p></div>
+					<div class="updated"><p><strong><?php _e( 'General Settings Updated.', 'leenkme' );?></strong></p></div>
 					<?php
 					
 				}
@@ -350,7 +393,15 @@ if ( !class_exists( 'LeenkMe' ) ) {
             <div class="meta-box-sortables ui-droppable">
             
                 <form id="leenkme" method="post" action="">
-                    <h2 style='margin-bottom: 10px;' ><img src='<?php echo LEENKME_PLUGIN_URL; ?>/images/leenkme-logo-32x32.png' style='vertical-align: top;' /> <?php _e( 'General Settings', 'leenkme' ); ?></h2>
+                    <h2 style='margin-bottom: 10px;' >
+	                    <img src='<?php echo LEENKME_PLUGIN_URL; ?>/images/leenkme-logo-32x32.png' style='vertical-align: top;' /> <?php _e( 'General Settings', 'leenkme' ); ?>
+	                    <?php
+						if ( $user_override ) {
+							$user = get_user_by( 'id', $user_id );
+							printf( __( ' (for %s)', 'leenkme' ), $user->user_login );
+						}	                    
+	                    ?>
+                    </h2>
                     
                     <div id="api-key" class="postbox">
                     
@@ -441,7 +492,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 										echo '<p>';
 										echo '<input id="' . $addon . '" type="checkbox" value="' . $addon . '" name="' . $addon . '" ' . checked( !empty( $leenkme_settings[$addon] ), true, false ) . ' /> &nbsp; ';
 										echo '<label for="' . $addon . '" >' . ucfirst( $addon ) . '</label> &nbsp; ';
-										echo '<a href="admin.php?page=leenkme_' . $addon . '">' . ucfirst( $addon ) . ' Settings</a>';
+										echo '<a href="admin.php?page=leenkme-' . $addon . '">' . ucfirst( $addon ) . ' Settings</a>';
 										echo '</p>';
 									}
 	                                ?>
@@ -537,7 +588,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 			// Get the leenk.me options
 			$leenkme_settings = $this->get_leenkme_settings();
 			
-			if ( isset( $_REQUEST['update_leenkme_opengraph_settings'] ) ) {
+			if ( !empty( $_REQUEST['update_leenkme_opengraph_settings'] ) ) {
 				
 				if ( current_user_can( 'manage_options' ) ) {
 					
@@ -757,7 +808,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 			$settings = $this->get_leenkme_settings();
 			
 			/* Plugin Version Changes */
-			if ( isset( $settings['version'] ) )
+			if ( !empty( $settings['version'] ) )
 				$old_version = $settings['version'];
 			else
 				$old_version = 0;
@@ -797,33 +848,6 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 */
 		function transition_post_status( $new_status, $old_status, $post ) {
 		
-			if ( 'post' !== $post->post_type )
-				return;
-			
-			if ( 'publish' === $new_status ) {
-			
-				do_action( 'leenkme_transition_post_status_' . $old_status . '_to_publish', $post );
-
-				switch ( $old_status ) {
-				
-					case 'publish':
-					case 'trash':
-						return;
-						
-					case 'draft':
-					case 'pending':
-					case 'future':
-					default:
-						do_leenkme_wp_post_campaigns( $post->ID );
-						return;
-					
-				}
-				
-			} else {
-			
-				do_leenkme_remove_wp_post_from_digest_campaigns( $post->ID );
-				
-			}
 			
 		}
 		
