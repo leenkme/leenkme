@@ -2,14 +2,14 @@
 Contributors: layotte
 Tags: publish, automatic, facebook, twitter, linkedin, friendfeed, fan page, groups, publicize, open graph, social media, social media tools
 Requires at least: 3.1
-Tested up to: 4.1
-Stable tag: 2.2.7
+Tested up to: 4.2
+Stable tag: 2.3.0
 
-leenk.me empowers you to publicize your WordPress content to your Twitter, Facebook, LinkedIn, & FriendFeed accounts automatically.
+leenk.me empowers you to publicize your WordPress content to your Twitter, Facebook, and LinkedIn accounts automatically.
 
 == Description ==
 
-leenk.me automatically publishes a tweet to your Twitter account, a status update to your Facebook profile/fan page/group walls, a share on your LinkedIn profile/group/company, and an entry on your FriendFeed profile/group whenever you publish a new post in your WordPress website.
+leenk.me automatically publishes a tweet to your Twitter account, a status update to your Facebook profile/fan page/group walls, and a share on your LinkedIn profile/company whenever you publish a new post in your WordPress website.
 
 What can you do with leenk.me?
 
@@ -26,7 +26,6 @@ What can you do with leenk.me?
 * Add a filter to [use your own custom URL shortener](http://leenk.me/2011/03/22/how-to-use-the-bit-ly-url-shortener-in-leenk-me/), like bit.ly
 * Customize your Facebook post for individual posts.
 * Customize your LinkedIn shares for individual posts.
-* Customize your FriendFeed entries for individual posts.
 
 What sets leenk.me apart from others?
 
@@ -63,9 +62,9 @@ Yes, the leenk.me plugin hooks into the schedule-to-publish action that WordPres
 
 Yes, just be sure to check the box to Tweet/Publish/Share/Feed all authors in the leenk.me plugins.
 
-= Can I add multiple Twitter/Facebook/LinkedIn/FriendFeed accounts to a single leenk.me account? =
+= Can I add multiple Twitter/Facebook/LinkedIn accounts to a single leenk.me account? =
 
-Yes, now you can. If you have a Personal account, you can add up to 3 leenk.me API keys each API key can support 1 Twitter account, Facebook Profile, Facebook Page, Facebook Group, LinkedIn Profile, LinkedIn Group, LinkedIn Company, Friendfeed profile, and Friendfeed group. If you have a Business account you can add up to 10 leenk.me API keys.
+Yes, now you can. If you have a Personal account, you can add up to 3 leenk.me API keys each API key can support 1 Twitter account, Facebook Profile, Facebook Page, Facebook Group, LinkedIn Profile, and LinkedIn Company. If you have a Business account you can add up to 10 leenk.me API keys.
 
 = How to use the leenk.me Twitter plugin =
 
@@ -79,10 +78,6 @@ http://leenk.me/2010/09/04/how-to-use-the-leenk-me-facebook-plugin-for-wordpress
 
 http://leenk.me/2010/12/01/how-to-use-the-leenk-me-linkedin-plugin-for-wordpress/
 
-= How to use the leenk.me FriendFeed plugin =
-
-http://leenk.me/2011/04/08/how-to-use-the-leenk-me-friendfeed-plugin-for-wordpress/
-
 = Where can I find additional help or make suggestions? =
 
 Feel free to use the leenk.me [contact form](http://leenk.me/contact) and we will respond as soon as possible.
@@ -92,6 +87,10 @@ Feel free to use the leenk.me [contact form](http://leenk.me/contact) and we wil
 Yes, there is now a GUI interface for this in the main leenk.me settings, but if you can still use your own custom URL shortener by using the WordPress action hook 'leenkme_url_shortener' to change the URL shortener used. I wrote a post detailing [how to use the bit.ly URL shortener](http://leenk.me/2011/03/22/how-to-use-the-bit-ly-url-shortener-in-leenk-me/).
 
 == Changelog ==
+= 2.3.0 =
+* Removed FriendFeed references (Service no longer available)
+* Removed LinkedIn Groups referenced (no longer supported by LinkedIn)
+
 = 2.2.7 =
 * Fixing deprecated wpdb->prepare call from old upgrade routine
 
