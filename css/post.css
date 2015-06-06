@@ -122,7 +122,7 @@ span.manual_format {
 	color: darkorange;
 }
 
-div#fb_format_options, div#li_format_options, div#ff_format_options {
+div#fb_format_options, div#li_format_options {
 	width: 500px;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -131,20 +131,20 @@ div#fb_format_options, div#li_format_options, div#ff_format_options {
 	font-size: 11px;
 }
 
-div#lm_facebook_box, div#lm_linkedin_box, div#lm_friendfeed_box {
+div#lm_facebook_box, div#lm_linkedin_box {
 	border: 1px solid #B4BBCD;
 	width: 500px;
 	margin-left: auto;
 	margin-right: auto;	
 }
-textarea#leenkme_tweet, textarea#lm_fb_message, textarea#lm_li_comment, textarea#lm_ff_body {
+textarea#leenkme_tweet, textarea#lm_fb_message, textarea#lm_li_comment {
 	padding-top: 5px;
 	min-height: 48px;
 	width: 99%;
 	resize: none;
 }
 
-div#lm_fb_attachment_meta_area, div#lm_li_attachment_meta_area, div#lm_ff_attachment_meta_area {
+div#lm_fb_attachment_meta_area, div#lm_li_attachment_meta_area {
 	margin-top: 5px;
 	padding: 5px;
 	border-top: 1px dashed #B4BBCD;
@@ -152,12 +152,12 @@ div#lm_fb_attachment_meta_area, div#lm_li_attachment_meta_area, div#lm_ff_attach
 	font-size: 11px;
 }
 
-#lm_fb_image, #lm_li_image, #lm_ff_image {
+#lm_fb_image, #lm_li_image {
 	padding: 0 12px 12px 0;	
 	float: left;
 }
 
-#lm_fb_image img, #lm_li_image img, #lm_ff_image img {
+#lm_fb_image img, #lm_li_image img {
 	max-width: 100px;
 	max-height: 100px;
 }
@@ -197,7 +197,7 @@ textarea#lm_fb_description, textarea#lm_li_description {
 	resize: none;
 }
 
-div#lm_facebook_options, div#lm_linkedin_options, div#lm_friendfeed_options {
+div#lm_facebook_options, div#lm_linkedin_options {
 	width: 500px;
 	margin-left: auto;
 	margin-right: auto;
