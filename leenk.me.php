@@ -4,12 +4,12 @@ Plugin Name: leenk.me
 Plugin URI: http://leenk.me/
 Description: Automatically publish to your Twitter, Facebook Profile/Fan Page/Group, and LinkedIn whenever you publish a new post on your WordPress website with the leenk.me social network connector. You need a <a href="http://leenk.me/">leenk.me API key</a> to use this plugin.
 Author: Lew Ayotte @ leenk.me
-Version: 2.2.7
+Version: 2.3.0
 Author URI: http://leenk.me/about/
 Tags: publish, automatic, facebook, twitter, linkedin, fan page, groups, publicize, open graph, social media, social media tools
 */
 
-define( 'LEENKME_VERSION' , '2.2.7' );
+define( 'LEENKME_VERSION' , '2.3.0' );
 
 if ( ! class_exists( 'leenkme' ) ) {
 	
@@ -173,7 +173,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 						$leenkme_settings['linkedin'] = true;
 					else
 						$leenkme_settings['linkedin'] = false;
-					
+
 					if ( !empty( $_REQUEST['post_types'] ) )
 						$leenkme_settings['post_types'] = $_REQUEST['post_types'];
 					else
@@ -834,7 +834,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 					echo '<li><a href="#leenkme_linkedin_meta_content"><img src="' . $this->base_url . '/images/linkedin-16x16.png" alt="LinkedIn" /></a></li>';
 					
 				}
-				
+								
 				echo '</ul>';
 				
 				echo '<div class="leenkme_tab_container">';
@@ -1015,7 +1015,7 @@ if ( class_exists( 'leenkme' ) ) {
 	
 		if ( $dl_pluginleenkme->plugin_enabled( 'linkedin' ) )
 			require_once( 'linkedin.php' );
-		
+	
 	}
 }
 
@@ -1052,7 +1052,6 @@ function leenkme_ap() {
 		add_submenu_page( 'leenkme', __( 'LinkedIn Settings', 'leenkme' ), __( 'LinkedIn', 'leenkme' ), 'leenkme_edit_user_settings', 'leenkme_linkedin', array( &$dl_pluginleenkmeLinkedIn, 'print_linkedin_settings_page' ) );
 		
 	}
-	
 }
 
 function leenkme_ajax_verify() {
@@ -1134,7 +1133,7 @@ function leenkme_ajax_leenkme_row_action() {
 		$out .= '<label><input type="checkbox" class="lm_releenk_networks_' . $_REQUEST['id'] . '" name="lm_releenk[]" value="linkedin" /> LinkedIn</label><br />';
 		
 	}
-		
+	
 	$out .= '<p class="submit inline-leenkme">';
 	$out .= '<a class="button-secondary cancel alignleft inline-leenkme-cancel" title="Cancel" post_id="' . $_REQUEST['id'] .'" href="#inline-releenk">' . __( 'Cancel', 'leenkme' ) . '</a>';
 	$out .= '<a style="margin-left: 10px;" class="button-primary save alignleft inline-leenkme-releenk" title="ReLeenk" post_id="' . $_REQUEST['id'] .'"  post_author="' . $_REQUEST['post_author'] . '" href="#inline-releenk">' . __( 'ReLeenk', 'leenkme' ) . '</a>';
