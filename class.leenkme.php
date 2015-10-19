@@ -34,7 +34,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 */
 		function __construct() {
 			
-			$settings = $this->get_leenkme_settings();
+			$settings = $this->get_settings();
 			
 			add_action( 'init', array( $this, 'addon_init' ) );
 			add_action( 'admin_init', array( $this, 'upgrade' ) );
@@ -76,12 +76,11 @@ if ( !class_exists( 'LeenkMe' ) ) {
 				'action' 	=> 'verify',
 				'api-key' 	=> $api_key,	
 			);
-			return $this->api_request_post( $args );
+			return $this->api_remote_post( $args );
 		}
 		
-		function api_request_post( $args ) {
+		function api_remote_post( $args ) {
 			$data = array(
-				'method' 		=> 'POST',
 				'timeout' 		=> 45,
 				'redirection' 	=> 5,
 				'httpversion' 	=> '1.0',
@@ -104,6 +103,9 @@ if ( !class_exists( 'LeenkMe' ) ) {
 						'success' => true,
 						'message' => stripslashes( $body->message ),
 					);
+					if( !empty( $body->results ) ) {
+						$return['results'] = $body->results;
+					}
 				} else {
 					$return['message'] = stripslashes( $body->message );
 				}
@@ -112,7 +114,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		}
 		
 		function addon_init() {
-			$settings = $this->get_leenkme_settings();
+			$settings = $this->get_settings();
 			foreach ( $this->addon_map as $addon => $class ) {
 				if ( !empty( $settings[$addon] ) ) {
 					require_once( 'class.' . $addon . '.php' );
@@ -187,7 +189,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 *        so we only load the CSS on the proper page(s)
 		 */
 		function admin_wp_enqueue_scripts( $hook_suffix ) {
-		
+			//hereherehere add min versions!
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			
 			if ( !empty( $_REQUEST['post_type'] ) ) {
@@ -211,10 +213,24 @@ if ( !class_exists( 'LeenkMe' ) ) {
 				
 			}
 			
+			wp_register_script( 'leenkme_admin_js', LEENKME_PLUGIN_URL . 'js/admin.js', array( 'jquery' ), LEENKME_PLUGIN_VERSION );
+			
 			if ( 'toplevel_page_leenkme' === $hook_suffix ) {
-				wp_enqueue_script( 'leenkme_admin_js', LEENKME_PLUGIN_URL . 'js/admin.js', array( 'jquery' ), LEENKME_PLUGIN_VERSION );
+				wp_enqueue_script( 'leenkme_admin_js' );
 			}
-						
+
+			if ( 'leenk-me_page_leenkme-twitter' === $hook_suffix ) {
+				wp_enqueue_script( 'leenkme_admin_js' );
+				wp_enqueue_script( 'leenkme_admin_twitter_js', LEENKME_PLUGIN_URL . 'js/admin-twitter.js', array( 'jquery', 'leenkme_admin_js' ), LEENKME_PLUGIN_VERSION );
+			}
+			if ( 'leenk-me_page_leenkme-facebook' === $hook_suffix ) {
+				wp_enqueue_script( 'leenkme_admin_js' );
+				wp_enqueue_script( 'leenkme_admin_facebook_js', LEENKME_PLUGIN_URL . 'js/admin-facebook.js', array( 'jquery', 'leenkme_admin_js' ), LEENKME_PLUGIN_VERSION );
+			}
+			if ( 'leenk-me_page_leenkme-linkedin' === $hook_suffix ) {
+				wp_enqueue_script( 'leenkme_admin_js' );
+				wp_enqueue_script( 'leenkme_admin_linkedin_js', LEENKME_PLUGIN_URL . 'js/admin-linkedin.js', array( 'jquery', 'leenkme_admin_js' ), LEENKME_PLUGIN_VERSION );
+			}
 		}
 		
 		/**
@@ -226,7 +242,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 *
 		 * return array leenk.me settings
 		 */
-		function get_leenkme_settings() {
+		function get_settings() {
 			$defaults = array( 
 				'twitter' 					=> false,
 				'facebook' 					=> false,
@@ -312,7 +328,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 				}
 			}
 			
-			$leenkme_settings = $this->get_leenkme_settings();
+			$leenkme_settings = $this->get_settings();
 			$user_settings = $this->get_user_settings( $user_id );
 			
 			if ( !empty( $_REQUEST['update_leenkme_settings'] ) ) {
@@ -626,7 +642,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 */
 		function open_graph_settings_page() {
 			// Get the leenk.me options
-			$leenkme_settings = $this->get_leenkme_settings();
+			$leenkme_settings = $this->get_settings();
 			
 			if ( !empty( $_REQUEST['update_leenkme_opengraph_settings'] ) ) {
 				
@@ -834,7 +850,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 */
 		function help_page() {
 			// Get the leenk.me options
-			$settings = $this->get_leenkme_settings();
+			$settings = $this->get_settings();
 			
 			do_action( 'leenkme_help_page' );	
 		}
@@ -845,7 +861,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 * @since 3.0.0
 		 */
 		function upgrade() {
-			$settings = $this->get_leenkme_settings();
+			$settings = $this->get_settings();
 			
 			/* Plugin Version Changes */
 			if ( !empty( $settings['version'] ) )

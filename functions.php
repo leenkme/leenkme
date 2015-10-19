@@ -1,4 +1,26 @@
 <?php
+
+if ( !function_exists( 'leenkme_get_settings' ) ) {
+	function leenkme_get_settings() {
+		global $leenkme;
+		return $leenkme->get_settings();
+	}
+}
+
+if ( !function_exists( 'leenkme_verify_api_key' ) ) {
+	function leenkme_verify_api_key( $api_key ) {
+		global $leenkme;
+		return $leenkme->verify_api_key( $api_key );
+	}
+}
+
+if ( !function_exists( 'leenkme_api_remote_post' ) ) {
+	function leenkme_api_remote_post( $args ) {
+		global $leenkme;
+		return $leenkme->api_remote_post( $args );
+	}
+}
+
 /**
  * Registers leenk.me helper functions
  *

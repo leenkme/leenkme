@@ -203,17 +203,38 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
                         
                         <div class="inside">
 	                        <?php
-	                        foreach( $user_settings['accounts'] as $account ) {
-		                        
-	                        }
+		                        $user_settings['accounts'] = array(); //this should be populated by default somewhere
 	                        $leenkme_user_settings = $leenkme->get_user_settings( $user_id );
 	                        if ( !empty( $leenkme_user_settings['leenkme_API'] ) ) {
+		                        $args = array(
+									'api-key' => $leenkme_user_settings['leenkme_API'],
+									'action'  => 'get-accounts',
+									'network' => 'twitter',
+		                        );
+		                        $twitter_accounts = leenkme_api_remote_post( $args );
+			                    echo '<div id="connected-accounts">';
+								if ( !empty( $twitter_accounts['results'] ) ) {
+				                    foreach( $twitter_accounts['results'] as $account_id => $data ) {
+					                    if ( !empty( $data->selected ) || in_array( $account_id, $user_settings['accounts'] ) ) {
+						                    $selected_class = 'selected';
+					                    } else {
+						                    $selected_class = '';
+					                    }
+					                    echo '<div style="float: left; margin-right: 15px;" class="account ' . $selected_class . '">';
+					                    echo '<img src="' . $data->profile_image_url . '" alt="' . $data->screen_name . '" title="' . $data->screen_name . '" />';
+					                    echo '<span class="remove">&times;</span>';
+					                    echo '<input type="hidden" name="accounts[' . $account_id . ']" value="' . (bool)$selected_class . '" />';
+										echo '</div>';
+				                    }
+			                    }
+								echo '</div>';
 	                        ?>
+	                        <div style="clear: both;"></div>
 							<p>
-								<input type="hidden" name="leenkme-api-key" value="<?php echo $leenkme_user_settings['leenkme_API']; ?>" />
-								<input type="hidden" name="service" value="twitter" />
-                                <input class="button-primary" type="submit" name="add_new_leenkme_connection" value="<?php _e( 'Add New Twitter Account', 'leenkme' ) ?>" />
-								<?php wp_nonce_field( 'add_account', 'add_account_wpnonce' ); ?>
+								<input id="leenkme-api-key" type="hidden" name="leenkme-api-key" value="<?php echo $leenkme_user_settings['leenkme_API']; ?>" />
+								<input id="network" type="hidden" name="network" value="twitter" />
+                                <input id="add_new_twitter_account" class="button-primary" type="submit" name="add_new_twitter_account" value="<?php _e( 'Add New Twitter Account', 'leenkme' ) ?>" />
+								<?php wp_nonce_field( 'add_account', 'leenkme_add_account_wpnonce' ); ?>
                             </p>
                             <?php
 	                        } else {

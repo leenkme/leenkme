@@ -1,12 +1,12 @@
-var $lm_plugin_jquery = jQuery.noConflict();
+var $leenkme_admin_jquery = jQuery.noConflict();
 
-$lm_plugin_jquery( document ).ready( function($) {
+$leenkme_admin_jquery( document ).ready( function($) {
 	
-	$('input#api').live('click', function() {
+	$('input#api').on('click', function() {
 		$('input#api').css('background-color', 'white');
 	});
 
-	$('input#verify').live('click', function() {
+	$('input#verify').on('click', function() {
 		var leenkme_API = $('input#api').val();
 		var error = false;
 		
@@ -40,7 +40,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 		
 	});
 
-	$( 'input.yourls_auth_type' ).live( 'change', function() {
+	$( 'input.yourls_auth_type' ).on( 'change', function() {
 		
 		if ( 1 == $( 'input.yourls_auth_type:checked' ).val() ) {
 				
@@ -58,7 +58,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 	/* End leenk.me General Settings */
 
 	/* Start leenk.me Twitter Settings */
-	$('input#tweet').live('click', function() {
+	$('input#tweet').on('click', function() {
 		
 		var data = {
 			action: 	'tweet',
@@ -71,7 +71,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 	/* End leenk.me Twitter Settings */
 	
 	/* Start leenk.me Facebook Settings */
-	$('input#fb_publish').live('click', function() {
+	$('input#fb_publish').on('click', function() {
 		
 		var facebook_profile = $('input#facebook_profile').attr('checked')
 		var facebook_page = $('input#facebook_page').attr('checked')
@@ -91,7 +91,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 	/* End leenk.me Facebook Settings */
 	
 	/* Start leenk.me Friendfeed Settings */
-	$('input#ff_publish').live('click', function() {
+	$('input#ff_publish').on('click', function() {
 		
 		var friendfeed_myfeed = $('input#friendfeed_myfeed').attr('checked')
 		var friendfeed_group = $('input#friendfeed_group').attr('checked')
@@ -109,7 +109,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 	/* End leenk.me Friendfeed Settings */
 	
 	/* Start leenk.me LinkedIn Settings */
-	$('input#li_share').live('click', function() {
+	$('input#li_share').on('click', function() {
 		
 		var data = {
 			action:		'li_share',
@@ -124,7 +124,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 	});
 	/* End leenk.me LinkedIn Settings */
 		
-	$('a.releenk_row_action').live('click', function(e) {
+	$('a.releenk_row_action').on('click', function(e) {
 		
 		e.preventDefault();
 		
@@ -132,7 +132,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 		
 	});
 	
-	$( 'a.inline-leenkme-cancel' ).live('click', function(e) {
+	$( 'a.inline-leenkme-cancel' ).on('click', function(e) {
 		
 		e.preventDefault();
 		
@@ -144,7 +144,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 		
 	});
 	
-	$( 'a.inline-leenkme-releenk' ).live('click', function(e) {
+	$( 'a.inline-leenkme-releenk' ).on('click', function(e) {
 		
 		e.preventDefault();
 		
