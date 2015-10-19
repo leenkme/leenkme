@@ -63,35 +63,52 @@ if ( !class_exists( 'LeenkMe' ) ) {
 			if ( current_user_can( 'edit_posts' ) ) {
 				if ( !empty( $_REQUEST['add_new_leenkme_connection'] ) ) {
 					if ( wp_verify_nonce( $_REQUEST['add_account_wpnonce'], 'add_account' ) ) {
-						$args = array(
-							'action' 	=> 'verify',
-							'api-key' 	=> $_REQUEST['leenkme-api-key'],	
-						);
-						$verified = $this->api_request( $args );
-						if ( $verified ) {
-							wp_redirect( 'https://leenk.me/' );
-						}
-						exit;
+						//do stuff here
 					} else {
-						wp_die( 'unable to verify nonce' );
+						//do stuff here
 					}
 				}
 			}
 		}
 		
-		function api_request( $args ) {
+		function verify_api_key( $api_key ) {
+			$args = array(
+				'action' 	=> 'verify',
+				'api-key' 	=> $api_key,	
+			);
+			return $this->api_request_post( $args );
+		}
+		
+		function api_request_post( $args ) {
 			$data = array(
 				'method' 		=> 'POST',
 				'timeout' 		=> 45,
 				'redirection' 	=> 5,
 				'httpversion' 	=> '1.0',
 				'blocking' 		=> true,
-				'headers' 		=> array(),
+				'headers' 		=> array( 'Content-Type' => 'application/json' ),
 				'body' 			=> json_encode( $args ),
 				'cookies' 		=> array()
 			);
-			$response = wp_remote_post( LEENKME_API_URL, $data );
-			wp_print_r( $response );
+			$response = wp_safe_remote_post( LEENKME_API_URL, $data );
+			$return = array(
+				'success' => false,
+				'message' => __( 'Unknown Error. Please try again', 'leenkme' ),
+			);
+			if ( is_wp_error( $response ) ) {
+			   $return['message'] = $response->get_error_message();
+			} else {
+				$body = json_decode( wp_remote_retrieve_body( $response ) );
+				if ( !empty( $response['response']['code'] ) && 200 === $response['response']['code'] ) {
+					$return = array(
+						'success' => true,
+						'message' => stripslashes( $body->message ),
+					);
+				} else {
+					$return['message'] = stripslashes( $body->message );
+				}
+			}
+			return $return;
 		}
 		
 		function addon_init() {
@@ -193,6 +210,10 @@ if ( !class_exists( 'LeenkMe' ) ) {
 					$post_type = $post->post_type;
 				
 			}
+			
+			if ( 'toplevel_page_leenkme' === $hook_suffix ) {
+				wp_enqueue_script( 'leenkme_admin_js', LEENKME_PLUGIN_URL . 'js/admin.js', array( 'jquery' ), LEENKME_PLUGIN_VERSION );
+			}
 						
 		}
 		
@@ -282,6 +303,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		function settings_page() {
 			$user_override = false;
 			$user_id = get_current_user_id();
+			$errors = array();
 			
 			if ( current_user_can( 'manage_options' ) ) {
 				if ( !empty( $_GET['user-id'] ) && is_numeric( $_GET['user-id'] ) ) {
@@ -296,7 +318,13 @@ if ( !class_exists( 'LeenkMe' ) ) {
 			if ( !empty( $_REQUEST['update_leenkme_settings'] ) ) {
 				
 				if ( !empty( $_REQUEST['leenkme_API'] ) ) {
-					$user_settings['leenkme_API'] = $_REQUEST['leenkme_API'];
+					$api_key = trim( $_REQUEST['leenkme_API'] );
+					$response = $this->verify_api_key( $api_key );
+					if ( $response['success'] ) {
+						$user_settings['leenkme_API'] = $api_key;
+					} else {
+						$errors[] = $response;
+					}
 				} else {
 					$user_settings['leenkme_API'] = '';
 				}
@@ -375,11 +403,22 @@ if ( !class_exists( 'LeenkMe' ) ) {
 						$leenkme_settings['yourls_signature'] = '';
 					}
 					
-					$this->update_leenkme_settings( $leenkme_settings );
 
-					?>
-					<div class="updated"><p><strong><?php _e( 'General Settings Updated.', 'leenkme' );?></strong></p></div>
-					<?php
+					if ( !empty( $errors ) ) {
+						?>
+						<div class="error"><?php
+							foreach( $errors as $error ) {
+								echo '<p><strong>' . $error . '</strong></p>';
+							}	
+						?>
+						</div>
+						<?php
+					} else {
+						$this->update_leenkme_settings( $leenkme_settings );
+						?>
+						<div class="updated"><p><strong><?php _e( 'General Settings Updated.', 'leenkme' );?></strong></p></div>
+						<?php
+					}
 					
 				}
 				
@@ -412,8 +451,8 @@ if ( !class_exists( 'LeenkMe' ) ) {
                         <div class="inside">
                         <p>
                         <?php _e( 'leenk.me API Key', 'leenkme' ); ?>: <input type="text" id="api" class="regular-text" name="leenkme_API" value="<?php echo htmlspecialchars( stripcslashes( $user_settings['leenkme_API'] ) ); ?>" />
-                        <input type="button" class="button" name="verify_leenkme_api" id="verify" value="<?php _e( 'Verify leenk.me API', 'leenkme' ) ?>" />
-                        <?php wp_nonce_field( 'verify', 'leenkme_verify_wpnonce' ); ?>
+                        <input type="button" class="button" name="verify_leenkme_api" id="verify" value="<?php _e( 'Verify', 'leenkme' ) ?>" />
+                        <?php wp_nonce_field( 'verify', 'leenkme_verify_api_key_wpnonce' ); ?>
                         </p>
                         
                         <?php if ( empty( $user_settings['leenkme_API'] ) ) { ?>
@@ -491,9 +530,11 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		                            foreach ( $this->addon_map as $addon => $class ) {
 										echo '<p>';
 										echo '<input id="' . $addon . '" type="checkbox" value="' . $addon . '" name="' . $addon . '" ' . checked( !empty( $leenkme_settings[$addon] ), true, false ) . ' /> &nbsp; ';
-										echo '<label for="' . $addon . '" >' . ucfirst( $addon ) . '</label> &nbsp; ';
-										echo '<a href="admin.php?page=leenkme-' . $addon . '">' . ucfirst( $addon ) . ' Settings</a>';
-										echo '</p>';
+										echo '<label for="' . $addon . '" >' . ucfirst( $addon );
+										if ( !empty( $leenkme_settings[$addon] ) ) {
+											echo ' (<a href="admin.php?page=leenkme-' . $addon . '">' . __( 'settings', 'leenkme' ) . '</a>)';
+										}
+										echo '</label></p>';
 									}
 	                                ?>
                                 </td>
@@ -507,14 +548,13 @@ if ( !class_exists( 'LeenkMe' ) ) {
 	                                <?php
 		                            $hidden_post_types = apply_filters( 'leenkme_hidden_post_types', array( 'attachment', 'revision', 'nav_menu_item' ) );
 		                            $post_types = get_post_types( array(), 'objects' );
+									echo '<select name="post_types[]" multiple="multiple" size="5">';
 		                            foreach ( $post_types as $post_type ) {
 		                                if ( in_array( $post_type->name, $hidden_post_types ) ) 
 		                                    continue;
-										echo '<p>';
-										echo '<input id="' . $post_type->name . '" type="checkbox" value="' . $post_type->name . '" name="post_types[]" ' . checked( in_array( $post_type->name, $leenkme_settings['post_types'] ), true, false ) . ' /> &nbsp; ';
-										echo '<label for="' . $post_type->name . '" >' . ucfirst( $post_type->name ) . '</label>';
-										echo '</p>';
+										echo '<option value="' . $post_type->name . '" ' . selected( in_array( $post_type->name, $leenkme_settings['post_types'] ), true, false ) . ' />' . $post_type->labels->name . '</option>';
 									}
+									echo '</select>';
 	                                ?>
 	                            </td>
 	                        </tr>
@@ -816,9 +856,9 @@ if ( !class_exists( 'LeenkMe' ) ) {
 			if ( version_compare( $old_version, '3.0.0', '<' ) )
 				$this->upgrade_to_3_0_0();
 			
-			$settings['version'] = LEENKME_VERSION;
+			$settings['version'] = LEENKME_PLUGIN_VERSION;
 			
-			$settings['db_version'] = LEENKME_DB_VERSION;
+			$settings['db_version'] = LEENKME_PLUGIN_DB_VERSION;
 			
 			$this->update_leenkme_settings( $settings );
 			

@@ -2,33 +2,26 @@ var $lm_plugin_jquery = jQuery.noConflict();
 
 $lm_plugin_jquery( document ).ready( function($) {
 	
-	/* Start leenk.me General Settings */
 	$('input#api').live('click', function() {
-		
 		$('input#api').css('background-color', 'white');
-		
 	});
 
 	$('input#verify').live('click', function() {
-		
 		var leenkme_API = $('input#api').val();
 		var error = false;
 		
-		if (leenkme_API == "") {
-			
+		if ( "" == leenkme_API) {
 			$('input#api').css('background-color', 'red');
 			return false;
-			
 		}
 	
 		var data = {
-			action: 	'verify',
-			leenkme_API: leenkme_API,
-			_wpnonce: 	$('input#leenkme_verify_wpnonce').val()
+			action:   'leenkme_verify_api_key',
+			api_key:  leenkme_API,
+			_wpnonce: $('input#leenkme_verify_api_key_wpnonce').val()
 		};
 		
 		ajax_response(data);
-		
 	});
 
 	$( 'select#leenkme_url_shortener_select' ).change( function() {

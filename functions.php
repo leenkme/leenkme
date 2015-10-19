@@ -47,12 +47,13 @@ if ( !function_exists( 'wp_print_r' ) ) {
 	 * @param bool $die
 	 */
     function wp_print_r( $args, $die = false ) { 
-	
         $echo = '<pre>' . print_r( $args, true ) . '</pre>';
 		
-        if ( $die ) die( $echo );
-        	else echo $echo;
-		
+        if ( $die ) {
+	        die( $echo );
+    	} else {
+	    	echo $echo;
+		}
     }   
 	
 }

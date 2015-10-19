@@ -22,12 +22,13 @@ http://www.minifycss.com/css-compressor/
 */
 
 //Define global variables...
-define( 'LEENKME_VERSION' , 	'3.0.0' );
-define( 'LEENKME_DB_VERSION', 	'3.0.0' );
 define( 'LEENKME_API_URL', 		'https://leenk.me/api/3.0/' );
+
+define( 'LEENKME_PLUGIN_VERSION' , 	'3.0.0' );
+define( 'LEENKME_PLUGIN_DB_VERSION', 	'3.0.0' );
 define( 'LEENKME_PLUGIN_URL', 	plugin_dir_url( __FILE__ ) );
 define( 'LEENKME_PLUGIN_PATH', 	plugin_dir_path( __FILE__ ) );
-define( 'LEENKME_REL_DIR', 		dirname( plugin_basename( __FILE__ ) ) );
+define( 'LEENKME_PLUGIN_REL_DIR', 		dirname( plugin_basename( __FILE__ ) ) );
 
 /**
  * Instantiate leenk.me class, require helper files
@@ -35,16 +36,17 @@ define( 'LEENKME_REL_DIR', 		dirname( plugin_basename( __FILE__ ) ) );
  * @since 0.0.1
  */
 function leenkme_plugins_loaded() {
-	require_once( LEENKME_PLUGIN_PATH . '/class.php' );
+	require_once( LEENKME_PLUGIN_PATH . '/class.leenkme.php' );
 
 	// Instantiate the leenk.me class
 	if ( class_exists( 'LeenkMe' ) ) {
 		global $leenkme;
 		$leenkme = new LeenkMe();
 		require_once( LEENKME_PLUGIN_PATH . 'functions.php' );
+		require_once( LEENKME_PLUGIN_PATH . 'ajax-hooks.php' );
 			
 		//Internationalization
-		load_plugin_textdomain( 'leenkme', false, LEENKME_REL_DIR . '/i18n/' );
+		load_plugin_textdomain( 'leenkme', false, LEENKME_PLUGIN_REL_DIR . '/i18n/' );
 	}
 }
 add_action( 'plugins_loaded', 'leenkme_plugins_loaded', 4815162342 ); //wait for the plugins to be loaded before init

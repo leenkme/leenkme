@@ -28,7 +28,6 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
 		 */
 		function __construct() {
 			$settings = $this->get_twitter_settings();
-			
 			add_action( 'wp', array( $this, 'process_requests' ) );
 			add_action( 'leenkme_admin_menu', array( $this, 'leenkme_admin_menu' ) );
 		}
@@ -235,10 +234,10 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
                             
                             <p style="font-size: 11px;;"><?php _e( 'Format Options:', 'leenkme' ); ?></p>
                             <ul style="font-size: 11px; margin-left: 50px;">
-                                <li>%TITLE% - <?php _e( 'Displays Title of your post in your Twitter feed.*', 'leenkme' ); ?></li>
-                                <li>%URL% - <?php _e( 'Displays TinyURL of your post in your Twitter feed.*', 'leenkme' ); ?></li>
-                                <li>%CATS% - <?php _e( 'Displays the categories of your post in your Twitter feed as a hashtag.*', 'leenkme' ); ?></li>
-                                <li>%TAGS% - <?php _e( 'Displays ags your post in your Twitter feed as a hashtag.*', 'leenkme' ); ?></li>
+                                <li>%TITLE% - <?php _e( 'Displays Title of your post in your Twitter feed.', 'leenkme' ); ?></li>
+                                <li>%URL% - <?php _e( 'Displays TinyURL of your post in your Twitter feed.', 'leenkme' ); ?></li>
+                                <li>%CATS% - <?php _e( 'Displays the categories of your post in your Twitter feed as a hashtag.', 'leenkme' ); ?></li>
+                                <li>%TAGS% - <?php _e( 'Displays tags your post in your Twitter feed as a hashtag.', 'leenkme' ); ?></li>
                             </ul>
 							<p class="description"><?php _e( 'Twitter only allows a maximum of 140 characters per tweet. If your format is too long to accommodate %TITLE% and/or %URL% then this plugin will cut off your title to fit and/or remove the URL. URL is given preference (since it is either all or nothing). So if your TITLE ends up making your Tweet go over the 140 characters, it will take a substring of your title (plus some ellipsis). If you use the %CATS% or %TAGS% variable, categories are given priority, it will display every category that will fit within the tweet length limitation. After adding the categories leenk.me moves onto tags and will add every tag that will fit within the tweet length limitation. leenk.me will also strip out any non-word character from the Twitter hashtag.', 'leenkme' ); ?></p>
 							<p>
@@ -262,7 +261,7 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
 			</div>
 			<?php
 
-			do_action( 'leenkme_settings_page' );			
+			do_action( 'leenkme_twitter_settings_page' );			
 		}
 		
 	}
