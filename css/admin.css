@@ -100,3 +100,36 @@ table#leenkme_leenkme_post_type_to_publish td.leenkme_post_type_name {
 table#leenkme_leenkme_social_network_modules td.leenkme_module_checkbox {
 	width: 25px;
 }
+
+/* new */
+
+#connected-accounts ul li.account {
+	position: relative;
+	float: left;
+	margin-right: 15px;
+}
+
+#connected-accounts ul li.account .selected img {
+	-webkit-box-shadow: 0px 0px 5px 2px rgba(0,147,68,0.75);
+	-moz-box-shadow: 0px 0px 5px 2px rgba(0,147,68,0.75);
+	box-shadow: 0px 0px 5px 2px rgba(0,147,68,0.75);
+}
+
+#connected-accounts ul li.account div.remove {
+	position: absolute;
+	top: -7px;
+	right: -7px;
+	font-size: 1.2em;
+	background-color: white;
+	width: 1em;
+	height: 1em;
+	line-height: 1em;
+	text-align: center;
+	vertical-align: middle;
+	border: 1px solid #000000;
+	border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	cursor: pointer;
+	z-index: 10;
+}

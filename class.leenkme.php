@@ -151,32 +151,15 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 * @uses wp_enqueue_style to enqueue the necessary leenk.me style sheets
 		 */
 		function admin_wp_print_styles() {
-		
 			global $hook_suffix;
-			
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-				
-			if ( !empty( $_REQUEST['post_type'] ) ) {
-				
-				$post_type = $_REQUEST['post_type'];
-				
-			} else {
-				
-				if ( !empty( $_REQUEST['post'] ) )
-					$post_id = (int) $_REQUEST['post'];
-				elseif ( !empty( $_REQUEST['post_ID'] ) )
-					$post_id = (int) $_REQUEST['post_ID'];
-				else
-					$post_id = 0;
-				
-				if ( $post_id )
-					$post = get_post( $post_id );
-				
-				if ( !empty( $post ) )
-					$post_type = $post->post_type;
-				
-			}
+			$post_type = get_post_type();
 			
+			wp_register_style( 'leenkme_admin_css', LEENKME_PLUGIN_URL . 'css/admin.css', array(), LEENKME_PLUGIN_VERSION );
+			
+			if ( 'leenk-me_page_leenkme-twitter' === $hook_suffix ) {
+				wp_enqueue_style( 'leenkme_admin_css' );
+			}
 		}
 		
 		/**
@@ -191,29 +174,10 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		function admin_wp_enqueue_scripts( $hook_suffix ) {
 			//hereherehere add min versions!
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			//$post_type = get_post_type();
 			
-			if ( !empty( $_REQUEST['post_type'] ) ) {
-				
-				$post_type = $_REQUEST['post_type'];
-				
-			} else {
-				
-				if ( !empty( $_REQUEST['post'] ) )
-					$post_id = (int) $_REQUEST['post'];
-				elseif ( !empty( $_REQUEST['post_ID'] ) )
-					$post_id = (int) $_REQUEST['post_ID'];
-				else
-					$post_id = 0;
-				
-				if ( $post_id )
-					$post = get_post( $post_id );
-				
-				if ( !empty( $post ) && !empty( $post ) )
-					$post_type = $post->post_type;
-				
-			}
-			
-			wp_register_script( 'leenkme_admin_js', LEENKME_PLUGIN_URL . 'js/admin.js', array( 'jquery' ), LEENKME_PLUGIN_VERSION );
+			wp_register_script( 'leenkme_admin_js', LEENKME_PLUGIN_URL . 'js/admin' . $suffix . '.js', array( 'jquery' ), LEENKME_PLUGIN_VERSION );
+			wp_register_script( 'leenkme_admin_networks_js', LEENKME_PLUGIN_URL . 'js/admin-networks' . $suffix . '.js', array( 'jquery' ), LEENKME_PLUGIN_VERSION );
 			
 			if ( 'toplevel_page_leenkme' === $hook_suffix ) {
 				wp_enqueue_script( 'leenkme_admin_js' );
@@ -221,15 +185,15 @@ if ( !class_exists( 'LeenkMe' ) ) {
 
 			if ( 'leenk-me_page_leenkme-twitter' === $hook_suffix ) {
 				wp_enqueue_script( 'leenkme_admin_js' );
-				wp_enqueue_script( 'leenkme_admin_twitter_js', LEENKME_PLUGIN_URL . 'js/admin-twitter.js', array( 'jquery', 'leenkme_admin_js' ), LEENKME_PLUGIN_VERSION );
+				wp_enqueue_script( 'leenkme_admin_networks_js' );
 			}
 			if ( 'leenk-me_page_leenkme-facebook' === $hook_suffix ) {
 				wp_enqueue_script( 'leenkme_admin_js' );
-				wp_enqueue_script( 'leenkme_admin_facebook_js', LEENKME_PLUGIN_URL . 'js/admin-facebook.js', array( 'jquery', 'leenkme_admin_js' ), LEENKME_PLUGIN_VERSION );
+				wp_enqueue_script( 'leenkme_admin_networks_js' );
 			}
 			if ( 'leenk-me_page_leenkme-linkedin' === $hook_suffix ) {
 				wp_enqueue_script( 'leenkme_admin_js' );
-				wp_enqueue_script( 'leenkme_admin_linkedin_js', LEENKME_PLUGIN_URL . 'js/admin-linkedin.js', array( 'jquery', 'leenkme_admin_js' ), LEENKME_PLUGIN_VERSION );
+				wp_enqueue_script( 'leenkme_admin_networks_js' );
 			}
 		}
 		

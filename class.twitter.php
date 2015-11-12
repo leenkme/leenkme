@@ -213,6 +213,7 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
 		                        );
 		                        $twitter_accounts = leenkme_api_remote_post( $args );
 			                    echo '<div id="connected-accounts">';
+			                    echo '<ul>';
 								if ( !empty( $twitter_accounts['results'] ) ) {
 				                    foreach( $twitter_accounts['results'] as $account_id => $data ) {
 					                    if ( !empty( $data->selected ) || in_array( $account_id, $user_settings['accounts'] ) ) {
@@ -220,21 +221,29 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
 					                    } else {
 						                    $selected_class = '';
 					                    }
-					                    echo '<div style="float: left; margin-right: 15px;" class="account ' . $selected_class . '">';
+					                    echo '<li id="account-id-' . $account_id . '" class="account">';
+					                    echo '<div class="' . $selected_class . '">';
+					                    echo '<div class="thumbnail">';
 					                    echo '<img src="' . $data->profile_image_url . '" alt="' . $data->screen_name . '" title="' . $data->screen_name . '" />';
-					                    echo '<span class="remove">&times;</span>';
+					                    echo '</div>';
+					                    echo '<div class="remove" data-account-id="' . $account_id . '">&times;</div>';
 					                    echo '<input type="hidden" name="accounts[' . $account_id . ']" value="' . (bool)$selected_class . '" />';
-										echo '</div>';
+					                    echo '</div>';
+					                    echo '</li>';
 				                    }
 			                    }
+			                    echo '</ul>';
 								echo '</div>';
 	                        ?>
 	                        <div style="clear: both;"></div>
 							<p>
 								<input id="leenkme-api-key" type="hidden" name="leenkme-api-key" value="<?php echo $leenkme_user_settings['leenkme_API']; ?>" />
 								<input id="network" type="hidden" name="network" value="twitter" />
-                                <input id="add_new_twitter_account" class="button-primary" type="submit" name="add_new_twitter_account" value="<?php _e( 'Add New Twitter Account', 'leenkme' ) ?>" />
+                                <input id="add_new_account" class="button-secondary" type="submit" name="add_new_account" value="<?php _e( 'Add New Twitter Account', 'leenkme' ) ?>" />
 								<?php wp_nonce_field( 'add_account', 'leenkme_add_account_wpnonce' ); ?>
+								<?php wp_nonce_field( 'remove_account', 'leenkme_remove_account_wpnonce' ); ?>
+								<?php wp_nonce_field( 'tweet', 'tweet_wpnonce' ); ?>
+                                <input class="button-primary" type="submit" name="update_twitter_settings" value="<?php _e( 'Save Settings', 'leenkme' ) ?>" />
                             </p>
                             <?php
 	                        } else {
@@ -263,7 +272,6 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
 							<p class="description"><?php _e( 'Twitter only allows a maximum of 140 characters per tweet. If your format is too long to accommodate %TITLE% and/or %URL% then this plugin will cut off your title to fit and/or remove the URL. URL is given preference (since it is either all or nothing). So if your TITLE ends up making your Tweet go over the 140 characters, it will take a substring of your title (plus some ellipsis). If you use the %CATS% or %TAGS% variable, categories are given priority, it will display every category that will fit within the tweet length limitation. After adding the categories leenk.me moves onto tags and will add every tag that will fit within the tweet length limitation. leenk.me will also strip out any non-word character from the Twitter hashtag.', 'leenkme' ); ?></p>
 							<p>
 								<input type="button" class="button" name="verify_twitter_connect" id="tweet" value="<?php _e( 'Send a Test Tweet', 'leenkme' ) ?>" />
-								<?php wp_nonce_field( 'tweet', 'tweet_wpnonce' ); ?>
                                 
                                 <input class="button-primary" type="submit" name="update_twitter_settings" value="<?php _e( 'Save Settings', 'leenkme' ) ?>" />
                             </p>
