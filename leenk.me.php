@@ -18,8 +18,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 		// Class members
 		var $adminpages = array( 'leenkme', 'leenkme_twitter', 'leenkme_facebook', 'leenkme_linkedin' );
 		
-		function leenkme() {
-			
+		function __construct() {
 			global $wp_version;
 			
 			$this->wp_version = $wp_version;
@@ -39,7 +38,11 @@ if ( ! class_exists( 'leenkme' ) ) {
 			
 			if ( $leenkme_settings['use_og_meta_tags'] )
 				add_action( 'wp_head', array( &$this, 'output_leenkme_og_meta_tags' ) );
-	
+		}
+
+		// Deprecated Constructor
+		function leenkme() {
+			self::__construct();
 		}
 		
 		function get_leenkme_settings() {

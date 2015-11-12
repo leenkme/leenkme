@@ -6,8 +6,14 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 	class leenkme_LinkedIn {
 	
 		// Constructor
+		function __construct() {
+			//Not Currently Needed
+		}
+		
+		// Deprecated Constructor
 		function leenkme_LinkedIn() {
 			//Not Currently Needed
+			self::__construct();
 		}
 		
 		/*--------------------------------------------------------------------
