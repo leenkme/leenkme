@@ -47,9 +47,9 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 		
 		// Print the admin page for the plugin
 		function print_facebook_settings_page() {
-			global $dl_pluginleenkme, $current_user;
+			global $dl_pluginleenkme;
 			
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 			
 			// Get the user options
@@ -348,9 +348,9 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 		
 		function leenkme_facebook_meta_box() {
 			
-			global $post, $current_user;
+			global $post;
 			
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 			
 			if ( $exclude_profile = get_post_meta( $post->ID, 'facebook_exclude_profile', true ) ) {
@@ -524,11 +524,11 @@ function get_leenkme_expanded_fb_post( $post_id, $facebook_array, $post_title = 
 	
 	if ( !empty( $facebook_array ) ) {
 
-		global $current_user, $dl_pluginleenkmeFacebook;
+		global $dl_pluginleenkmeFacebook;
 		
 		if ( !$user_id ) {
 				
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 			
 		}
@@ -633,8 +633,7 @@ function leenkme_ajax_fb() {
 	
 	check_ajax_referer( 'fb_publish' );
 	
-	global $current_user;
-	get_currentuserinfo();
+	$current_user = wp_get_current_user();
 	$user_id = $current_user->ID;
 	
 	global $dl_pluginleenkme;

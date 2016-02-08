@@ -46,9 +46,9 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 		
 		// Print the admin page for the plugin
 		function print_linkedin_settings_page() {
-			global $dl_pluginleenkme, $current_user;
+			global $dl_pluginleenkme;
 			
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 			
 			// Get the user options
@@ -324,9 +324,9 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 		
 		function leenkme_linkedin_meta_box()  {
 			
-			global $post, $current_user;
+			global $post;
 		
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 			
 			if ( $linkedin_exclude = get_post_meta( $post->ID, 'linkedin_exclude', true ) ) {
@@ -475,11 +475,11 @@ function get_leenkme_expanded_li_post( $post_id, $linkedin_array, $post_title = 
 	
 	if ( !empty( $linkedin_array ) ) {
 
-		global $current_user, $dl_pluginleenkmeLinkedIn;
+		global $dl_pluginleenkmeLinkedIn;
 		
 		if ( !$user_id ) {
 			
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 
 		}
@@ -581,8 +581,7 @@ function leenkme_ajax_li() {
 
 	check_ajax_referer( 'li_share' );
 
-	global $current_user;
-	get_currentuserinfo();
+	$current_user = wp_get_current_user();
 	$user_id = $current_user->ID;
 	
 	global $dl_pluginleenkme;

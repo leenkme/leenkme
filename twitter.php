@@ -43,8 +43,7 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 			
 			global $dl_pluginleenkme;
 			
-			global $current_user;
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 			
 			// Get the user options
@@ -211,8 +210,7 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 			
 			global $post;
 			
-			global $current_user;
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 			
 			// Get the user options
@@ -450,8 +448,7 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 function leenkme_ajax_tweet() {
 	
 	check_ajax_referer( 'tweet' );
-	global $current_user;
-	get_currentuserinfo();
+	$current_user = wp_get_current_user();
 	$user_id = $current_user->ID;
 	
 	global $dl_pluginleenkme;

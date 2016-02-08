@@ -143,8 +143,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 		
 		function leenkme_settings_page() {
 			
-			global $current_user;
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 			
 			$leenkme_settings = $this->get_leenkme_settings();
@@ -809,9 +808,9 @@ if ( ! class_exists( 'leenkme' ) ) {
 		
 		function leenkme_meta_box() {
 			
-			global $dl_pluginleenkme, $post, $current_user;
+			global $dl_pluginleenkme, $post;
 			
-			get_currentuserinfo();
+			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
 	
 			echo '<div id="leenkme_meta_box">';
