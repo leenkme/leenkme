@@ -61,11 +61,34 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		
 		function process_requests() {
 			if ( current_user_can( 'edit_posts' ) ) {
-				if ( !empty( $_REQUEST['add_new_leenkme_connection'] ) ) {
-					if ( wp_verify_nonce( $_REQUEST['add_account_wpnonce'], 'add_account' ) ) {
-						//do stuff here
-					} else {
-						//do stuff here
+				$user_id = get_current_user_id();
+				$user_settings = $this->get_user_settings( $user_id );
+				
+				if ( !empty( $_REQUEST['action'] ) && !empty( $_REQUEST['network'] ) ) {
+					if ( !empty( $_REQUEST['action-nonce'] ) && wp_verify_nonce( $_REQUEST['action-nonce'], $_REQUEST['action'] ) 
+						&& !empty( $_REQUEST['service-nonce'] ) && wp_verify_nonce( $_REQUEST['service-nonce'], $_REQUEST['action'] . '-' . $_REQUEST['network'] ) ) {
+							
+						switch( $_REQUEST['action'] ) {
+							case 'add-account':
+								$args = array(
+									'api-key' 		=> $user_settings['leenkme_API'],
+									'action' 		=> 'get-authorization',
+									'for' 			=> 'add-account',
+									'siteurl' 		=> site_url(),
+									'redirect_url' 	=> menu_page_url( 'leenkme-' . $_REQUEST['network'], false ),
+									'userid' 		=> $user_id,
+									'network' 		=> $_REQUEST['network'],
+								);
+								$response = leenkme_api_remote_post( $args );
+								if ( !empty( $response['success'] ) ) {
+									$response['results']->authentication = rawurlencode( $response['results']->authentication );
+									wp_redirect( add_query_arg( (array)$response['results'], LEENKME_API_URL ) );
+									exit;
+								}
+								wp_print_r( $response, true );
+							break;
+						}
+						
 					}
 				}
 			}
@@ -103,7 +126,7 @@ if ( !class_exists( 'LeenkMe' ) ) {
 						'success' => true,
 						'message' => stripslashes( $body->message ),
 					);
-					if( !empty( $body->results ) ) {
+					if ( !empty( $body->results ) ) {
 						$return['results'] = $body->results;
 					}
 				} else {
@@ -850,7 +873,79 @@ if ( !class_exists( 'LeenkMe' ) ) {
 		 * @since 3.0.0
 		 */
 		function upgrade_to_3_0_0() {
+			$leenkme_users = leenkme_get_users();
 			
+			if ( !empty( $leenkme_users ) ) {
+			
+				foreach( $leenkme_users as $user ) {
+								
+					$leenkme_user_settings = $this->get_user_settings( $user->ID );
+					
+					if ( empty( $leenkme_user_settings['leenkme_API'] ) )
+						continue;	//Skip user if they do not have an API key set
+						
+		            $args = array(
+						'api-key' => $leenkme_user_settings['leenkme_API'],
+						'action'  => 'get-api-settings',
+		            );
+		            $api_settings = leenkme_api_remote_post( $args );
+		            
+		            if ( !empty( $api_settings['twitter-account'] ) && 'default' !== $api_settings['twitter-account'] ) {
+			            $account_id = $api_settings['twitter-account'];
+						$twitter_settings = get_user_option( 'leenkme_twitter', $user_id );
+			            $twitter_settings['accounts'][$account_id] = 1;
+						update_user_option( $user_id, 'leenkme_twitter', $twitter_settings );
+		            }
+		            
+					$facebook_settings = get_user_option( 'leenkme_facebook', $user_id );
+		            if ( !empty( $api_settings['facebook-account'] ) && 'default' !== $api_settings['facebook-account'] ) {
+			            $account_id = $api_settings['facebook-account'];
+						if ( !empty( $facebook_settings ) ) {
+							if ( !empty( $facebook_settings['facebook_profile'] ) ) {
+					            $facebook_settings['accounts'][$account_id]['enabled'] = 1;
+							} else {
+					            $facebook_settings['accounts'][$account_id]['enabled'] = 0;
+							}
+				            if ( !empty( $api_settings['facebook-page'] ) && 'default' !== $api_settings['facebook-page'] ) {
+								if ( !empty( $facebook_settings['facebook_page'] ) ) {
+						            $facebook_settings['accounts'][$account_id]['pages'][$api_settings['facebook-page']] = 1;
+								} else {
+						            $facebook_settings['accounts'][$account_id]['pages'][$api_settings['facebook-page']] = 0;
+								}
+							}
+				            if ( !empty( $api_settings['facebook-group'] ) && 'default' !== $api_settings['facebook-group'] ) {
+								if ( !empty( $facebook_settings['facebook_group'] ) ) {
+						            $facebook_settings['accounts'][$account_id]['groups'][$api_settings['facebook-group']] = 1;
+								} else {
+						            $facebook_settings['accounts'][$account_id]['groups'][$api_settings['facebook-group']] = 0;
+								}
+							}
+							update_user_option( $user_id, 'leenkme_facebook', $facebook_settings );
+						}
+		            }
+		            
+					$linkedin_settings = get_user_option( 'leenkme_linkedin', $user_id );
+		            if ( !empty( $api_settings['linkedin-account'] ) && 'default' !== $api_settings['linkedin-account'] ) {
+						if ( !empty( $linkedin_settings ) ) {
+							if ( !empty( $linkedin_settings['linkedin_profile'] ) ) {
+					            $facebook_settings['accounts'][$api_settings['linkedin-account']]['enabled'] = 1;
+							} else {
+					            $facebook_settings['accounts'][$api_settings['linkedin-account']]['enabled'] = 0;
+							}
+				            if ( !empty( $api_settings['linkedin-company'] ) && 'default' !== $api_settings['linkedin-company'] ) {
+								if ( !empty( $facebook_settings['facebook_company'] ) ) {
+						            $facebook_settings['accounts'][$account_id]['companies'][$api_settings['linkedin-company']] = 1;
+								} else {
+						            $facebook_settings['accounts'][$account_id]['companies'][$api_settings['linkedin-company']] = 0;
+								}
+							}
+							update_user_option( $user_id, 'leenkme_linkedin', $facebook_settings );
+						}
+		            }		            
+									
+				}
+				
+			}
 		}
 				
 		/**

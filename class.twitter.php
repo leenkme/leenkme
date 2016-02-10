@@ -132,6 +132,12 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
 			$user_override = false;
 			$user_id = get_current_user_id();
 			
+			if ( !empty( $_GET['clearcache'] ) ) {
+				$clear_cache = true;
+			} else {
+				$clear_cache = false;
+			}
+			
 			if ( current_user_can( 'manage_options' ) ) {
 				if ( !empty( $_GET['user-id'] ) && is_numeric( $_GET['user-id'] ) ) {
 					$user_id = $_GET['user-id'];
@@ -203,31 +209,37 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
                         
                         <div class="inside">
 	                        <?php
-		                        $user_settings['accounts'] = array(); //this should be populated by default somewhere
 	                        $leenkme_user_settings = $leenkme->get_user_settings( $user_id );
 	                        if ( !empty( $leenkme_user_settings['leenkme_API'] ) ) {
-		                        $args = array(
-									'api-key' => $leenkme_user_settings['leenkme_API'],
-									'action'  => 'get-accounts',
-									'network' => 'twitter',
-		                        );
-		                        $twitter_accounts = leenkme_api_remote_post( $args );
+		                        $twitter_accounts = get_user_meta( $user_id, 'leenkme_twitter_account_cache', true );
+		                        $twitter_cache_expiry = get_user_meta( $user_id, 'leenkme_twitter_cache_expiry', true );
+		                        if ( empty( $twitter_accounts ) || empty( $twitter_cache_expiry ) || (int)$twitter_cache_expiry < time() || $clear_cache ) {
+			                        $args = array(
+										'api-key' => $leenkme_user_settings['leenkme_API'],
+										'action'  => 'get-accounts',
+										'network' => 'twitter',
+			                        );
+			                        $twitter_accounts = leenkme_api_remote_post( $args );
+			                        update_user_meta( $user_id, 'leenkme_twitter_account_cache', $twitter_accounts );
+			                        update_user_meta( $user_id, 'leenkme_twitter_cache_expiry', time() + ( 60 * 60 * 60 ) );
+		                        }
+		                        
 			                    echo '<div id="connected-accounts">';
 			                    echo '<ul>';
 								if ( !empty( $twitter_accounts['results'] ) ) {
 				                    foreach( $twitter_accounts['results'] as $account_id => $data ) {
-					                    if ( !empty( $data->selected ) || in_array( $account_id, $user_settings['accounts'] ) ) {
+					                    if ( !empty( $user_settings['accounts'][$account_id] ) ) {
 						                    $selected_class = 'selected';
 					                    } else {
 						                    $selected_class = '';
 					                    }
-					                    echo '<li id="account-id-' . $account_id . '" class="account">';
-					                    echo '<div class="' . $selected_class . '">';
+					                    echo '<li id="account-id-' . $account_id . '" class="account" data-account-id="' . $account_id . '">';
+					                    echo '<div class="select-class ' . $selected_class . '">';
 					                    echo '<div class="thumbnail">';
 					                    echo '<img src="' . $data->profile_image_url . '" alt="' . $data->screen_name . '" title="' . $data->screen_name . '" />';
 					                    echo '</div>';
-					                    echo '<div class="remove" data-account-id="' . $account_id . '">&times;</div>';
-					                    echo '<input type="hidden" name="accounts[' . $account_id . ']" value="' . (bool)$selected_class . '" />';
+					                    echo '<div class="remove" data-account-name="' . $data->screen_name . '" data-account-id="' . $account_id . '">&times;</div>';
+					                    echo '<input type="hidden" id="selected-' . $account_id . '" name="accounts[' . $account_id . ']" value="' . (bool)$selected_class . '" />';
 					                    echo '</div>';
 					                    echo '</li>';
 				                    }
@@ -239,9 +251,9 @@ if ( !class_exists( 'LeenkMe_Twitter' ) ) {
 							<p>
 								<input id="leenkme-api-key" type="hidden" name="leenkme-api-key" value="<?php echo $leenkme_user_settings['leenkme_API']; ?>" />
 								<input id="network" type="hidden" name="network" value="twitter" />
-                                <input id="add_new_account" class="button-secondary" type="submit" name="add_new_account" value="<?php _e( 'Add New Twitter Account', 'leenkme' ) ?>" />
-								<?php wp_nonce_field( 'add_account', 'leenkme_add_account_wpnonce' ); ?>
-								<?php wp_nonce_field( 'remove_account', 'leenkme_remove_account_wpnonce' ); ?>
+								<input id="user-id" type="hidden" name="user-id" value="<?php echo $user_id; ?>" />
+                                <a id="add_account" class="button-secondary" href="<?php echo leenkme_api_get_request_url( 'add-account', 'twitter' ); ?>"><?php _e( 'Add New Twitter Account', 'leenkme' ) ?></a>
+								<?php wp_nonce_field( 'remove_account', 'remove_account_wpnonce' ); ?>
 								<?php wp_nonce_field( 'tweet', 'tweet_wpnonce' ); ?>
                                 <input class="button-primary" type="submit" name="update_twitter_settings" value="<?php _e( 'Save Settings', 'leenkme' ) ?>" />
                             </p>

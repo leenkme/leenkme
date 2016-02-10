@@ -21,6 +21,17 @@ if ( !function_exists( 'leenkme_api_remote_post' ) ) {
 	}
 }
 
+if ( !function_exists( 'leenkme_api_connect_url' ) ) {
+	function leenkme_api_get_request_url( $action, $network ) {
+		return add_query_arg( array(
+			'action'        => $action,
+			'network'       => $network,
+			'action-nonce'  => wp_create_nonce( 'add-account' ),
+			'service-nonce' => wp_create_nonce( 'add-account-' . $network ),
+		), menu_page_url( 'leenkme-' . $network, false ) );
+	}
+}
+
 /**
  * Registers leenk.me helper functions
  *
