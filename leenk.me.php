@@ -148,7 +148,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 			
 			$leenkme_settings = $this->get_leenkme_settings();
 			
-			if ( isset( $_REQUEST['update_leenkme_settings'] ) ) {
+			if ( !empty( $_REQUEST['update_leenkme_settings'] ) ) {
 					
 				$user_settings = $this->get_user_settings( $user_id );
 				
@@ -160,141 +160,151 @@ if ( ! class_exists( 'leenkme' ) ) {
 				update_user_option( $user_id, 'leenkme', $user_settings );
 				
 				if ( current_user_can( 'leenkme_manage_all_settings' ) ) { //we're dealing with the main Admin options
-				
-					if ( !empty( $_REQUEST['twitter'] ) )
-						$leenkme_settings['twitter'] = true;
-					else
-						$leenkme_settings['twitter'] = false;
 					
-					if ( !empty( $_REQUEST['facebook'] ) )
-						$leenkme_settings['facebook'] = true;
-					else
-						$leenkme_settings['facebook'] = false;
-					
-					if ( !empty( $_REQUEST['linkedin'] ) )
-						$leenkme_settings['linkedin'] = true;
-					else
-						$leenkme_settings['linkedin'] = false;
+					if ( ! empty( $_REQUEST['leenkme_general_options_nonce'] ) && wp_verify_nonce( $_REQUEST['leenkme_general_options_nonce'], 'leenkme_general_options' ) ) {	
 
-					if ( !empty( $_REQUEST['post_types'] ) )
-						$leenkme_settings['post_types'] = $_REQUEST['post_types'];
-					else
-						$leenkme_settings['post_types'] = array( 'post' );
-					
-					if ( !empty( $_REQUEST['url_shortener'] ) )
-						$leenkme_settings['url_shortener'] = $_REQUEST['url_shortener'];
-					else
-						$leenkme_settings['url_shortener'] = '';
-					
-					if ( !empty( $_REQUEST['bitly_username'] ) )
-						$leenkme_settings['bitly_username'] = $_REQUEST['bitly_username'];
-					else
-						$leenkme_settings['bitly_username'] = '';
-					
-					if ( !empty( $_REQUEST['bitly_apikey'] ) )
-						$leenkme_settings['bitly_apikey'] = $_REQUEST['bitly_apikey'];
-					else
-						$leenkme_settings['bitly_apikey'] = '';
-					
-					if ( !empty( $_REQUEST['yourls_auth_type'] ) )
-						$leenkme_settings['yourls_auth_type'] = $_REQUEST['yourls_auth_type'];
-					else
-						$leenkme_settings['yourls_auth_type'] = '';
-					
-					if ( !empty( $_REQUEST['yourls_api_url'] ) )
-						$leenkme_settings['yourls_api_url'] = $_REQUEST['yourls_api_url'];
-					else
-						$leenkme_settings['yourls_api_url'] = '';
-					
-					if ( !empty( $_REQUEST['yourls_username'] ) )
-						$leenkme_settings['yourls_username'] = $_REQUEST['yourls_username'];
-					else
-						$leenkme_settings['yourls_username'] = '';
-					
-					if ( !empty( $_REQUEST['yourls_password'] ) )
-						$leenkme_settings['yourls_password'] = $_REQUEST['yourls_password'];
-					else
-						$leenkme_settings['yourls_password'] = '';
-					
-					if ( !empty( $_REQUEST['yourls_signature'] ) )
-						$leenkme_settings['yourls_signature'] = $_REQUEST['yourls_signature'];
-					else
-						$leenkme_settings['yourls_signature'] = '';
-					
-					if ( !empty( $_REQUEST['use_og_meta_tags'] ) )
-						$leenkme_settings['use_og_meta_tags'] = true;
-					else
-						$leenkme_settings['use_og_meta_tags'] = false;
-					
-					if ( !empty( $_REQUEST['og_type'] ) )
-						$leenkme_settings['og_type'] = $_REQUEST['og_type'];
-					else
-						$leenkme_settings['og_type'] = '';
-					
-					if ( !empty( $_REQUEST['og_sitename'] ) )
-						$leenkme_settings['og_sitename'] = $_REQUEST['og_sitename'];
-					else
-						$leenkme_settings['og_sitename'] = '';
-					
-					if ( !empty( $_REQUEST['og_description'] ) )
-						$leenkme_settings['og_description'] = $_REQUEST['og_description'];
-					else
-						$leenkme_settings['og_description'] = '';
-					
-					if ( !empty( $_REQUEST['og_image'] ) )
-						$leenkme_settings['og_image'] = $_REQUEST['og_image'];
-					else
-						$leenkme_settings['og_image'] = '';
-					
-					if ( !empty( $_REQUEST['use_single_og_meta_tags'] ) )
-						$leenkme_settings['use_single_og_meta_tags'] = true;
-					else
-						$leenkme_settings['use_single_og_meta_tags'] = false;
-					
-					if ( !empty( $_REQUEST['og_single_title'] ) )
-						$leenkme_settings['og_single_title'] = $_REQUEST['og_single_title'];
-					else
-						$leenkme_settings['og_single_title'] = '';
-					
-					if ( !empty( $_REQUEST['og_single_sitename'] ) )
-						$leenkme_settings['og_single_sitename'] = $_REQUEST['og_single_sitename'];
-					else
-						$leenkme_settings['og_single_sitename'] = '';
-					
-					if ( !empty( $_REQUEST['og_single_description'] ) )
-						$leenkme_settings['og_single_description'] = $_REQUEST['og_single_description'];
-					else
-						$leenkme_settings['og_single_description'] = '';
-					
-					if ( !empty( $_REQUEST['og_single_image'] ) )
-						$leenkme_settings['og_single_image'] = $_REQUEST['og_single_image'];
-					else
-						$leenkme_settings['og_single_image'] = '';
-					
-					if ( !empty( $_REQUEST['force_og_image'] ) )
-						$leenkme_settings['force_og_image'] = true;
-					else
-						$leenkme_settings['force_og_image'] = false;
-					
-					update_option( 'leenkme', $leenkme_settings );
-					
-					// It's not pretty, but the easiest way to get the menu to refresh after save...
-					?>
-						<script type="text/javascript">
-						<!--
-						window.location = "<?php add_query_arg( array( 'page' => 'leenkme', 'settings_saved' => 1 ) ); ?>"
-						//-->
-						</script>
-					<?php
+						if ( !empty( $_REQUEST['twitter'] ) )
+							$leenkme_settings['twitter'] = true;
+						else
+							$leenkme_settings['twitter'] = false;
+						
+						if ( !empty( $_REQUEST['facebook'] ) )
+							$leenkme_settings['facebook'] = true;
+						else
+							$leenkme_settings['facebook'] = false;
+						
+						if ( !empty( $_REQUEST['linkedin'] ) )
+							$leenkme_settings['linkedin'] = true;
+						else
+							$leenkme_settings['linkedin'] = false;
+	
+						if ( !empty( $_REQUEST['post_types'] ) )
+							$leenkme_settings['post_types'] = $_REQUEST['post_types'];
+						else
+							$leenkme_settings['post_types'] = array( 'post' );
+						
+						if ( !empty( $_REQUEST['url_shortener'] ) )
+							$leenkme_settings['url_shortener'] = $_REQUEST['url_shortener'];
+						else
+							$leenkme_settings['url_shortener'] = '';
+						
+						if ( !empty( $_REQUEST['bitly_username'] ) )
+							$leenkme_settings['bitly_username'] = $_REQUEST['bitly_username'];
+						else
+							$leenkme_settings['bitly_username'] = '';
+						
+						if ( !empty( $_REQUEST['bitly_apikey'] ) )
+							$leenkme_settings['bitly_apikey'] = $_REQUEST['bitly_apikey'];
+						else
+							$leenkme_settings['bitly_apikey'] = '';
+						
+						if ( !empty( $_REQUEST['yourls_auth_type'] ) )
+							$leenkme_settings['yourls_auth_type'] = $_REQUEST['yourls_auth_type'];
+						else
+							$leenkme_settings['yourls_auth_type'] = '';
+						
+						if ( !empty( $_REQUEST['yourls_api_url'] ) )
+							$leenkme_settings['yourls_api_url'] = $_REQUEST['yourls_api_url'];
+						else
+							$leenkme_settings['yourls_api_url'] = '';
+						
+						if ( !empty( $_REQUEST['yourls_username'] ) )
+							$leenkme_settings['yourls_username'] = $_REQUEST['yourls_username'];
+						else
+							$leenkme_settings['yourls_username'] = '';
+						
+						if ( !empty( $_REQUEST['yourls_password'] ) )
+							$leenkme_settings['yourls_password'] = $_REQUEST['yourls_password'];
+						else
+							$leenkme_settings['yourls_password'] = '';
+						
+						if ( !empty( $_REQUEST['yourls_signature'] ) )
+							$leenkme_settings['yourls_signature'] = $_REQUEST['yourls_signature'];
+						else
+							$leenkme_settings['yourls_signature'] = '';
+						
+						if ( !empty( $_REQUEST['use_og_meta_tags'] ) )
+							$leenkme_settings['use_og_meta_tags'] = true;
+						else
+							$leenkme_settings['use_og_meta_tags'] = false;
+						
+						if ( !empty( $_REQUEST['og_type'] ) )
+							$leenkme_settings['og_type'] = $_REQUEST['og_type'];
+						else
+							$leenkme_settings['og_type'] = '';
+						
+						if ( !empty( $_REQUEST['og_sitename'] ) )
+							$leenkme_settings['og_sitename'] = $_REQUEST['og_sitename'];
+						else
+							$leenkme_settings['og_sitename'] = '';
+						
+						if ( !empty( $_REQUEST['og_description'] ) )
+							$leenkme_settings['og_description'] = $_REQUEST['og_description'];
+						else
+							$leenkme_settings['og_description'] = '';
+						
+						if ( !empty( $_REQUEST['og_image'] ) )
+							$leenkme_settings['og_image'] = $_REQUEST['og_image'];
+						else
+							$leenkme_settings['og_image'] = '';
+						
+						if ( !empty( $_REQUEST['use_single_og_meta_tags'] ) )
+							$leenkme_settings['use_single_og_meta_tags'] = true;
+						else
+							$leenkme_settings['use_single_og_meta_tags'] = false;
+						
+						if ( !empty( $_REQUEST['og_single_title'] ) )
+							$leenkme_settings['og_single_title'] = $_REQUEST['og_single_title'];
+						else
+							$leenkme_settings['og_single_title'] = '';
+						
+						if ( !empty( $_REQUEST['og_single_sitename'] ) )
+							$leenkme_settings['og_single_sitename'] = $_REQUEST['og_single_sitename'];
+						else
+							$leenkme_settings['og_single_sitename'] = '';
+						
+						if ( !empty( $_REQUEST['og_single_description'] ) )
+							$leenkme_settings['og_single_description'] = $_REQUEST['og_single_description'];
+						else
+							$leenkme_settings['og_single_description'] = '';
+						
+						if ( !empty( $_REQUEST['og_single_image'] ) )
+							$leenkme_settings['og_single_image'] = $_REQUEST['og_single_image'];
+						else
+							$leenkme_settings['og_single_image'] = '';
+						
+						if ( !empty( $_REQUEST['force_og_image'] ) )
+							$leenkme_settings['force_og_image'] = true;
+						else
+							$leenkme_settings['force_og_image'] = false;
+						
+						update_option( 'leenkme', $leenkme_settings );
+						
+						// It's not pretty, but the easiest way to get the menu to refresh after save...
+						?>
+							<script type="text/javascript">
+							<!--
+							window.location = "<?php echo add_query_arg( array( 'page' => 'leenkme', 'settings_saved' => 1 ) ); ?>"
+							//-->
+							</script>
+						<?php
+						
+					} else {
+						
+						?>
+						<div class="error"><p><strong><?php _e( 'Error Validate Security Token. Please try again.', 'leenkme' );?></strong></p></div>
+						<?php
+							
+					}
 					
 				}
 				
 			}
 			
-			if ( isset( $_REQUEST['update_leenkme_settings'] ) || isset( $_GET['settings_saved'] ) ) {
+			if ( !empty( $_GET['settings_saved'] ) ) {
 				
 				// update settings notification ?>
-				<div class="updated"><p><strong><?php _e( "leenk.me Settings Updated.", "leenkme" );?></strong></p></div>
+				<div class="updated"><p><strong><?php _e( 'leenk.me Settings Updated.', "leenkme" );?></strong></p></div>
 				<?php
 				
 			}

@@ -50,35 +50,45 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 			$user_settings = $this->get_user_settings( $user_id );
 			$twitter_settings = get_option( 'leenkme_twitter' );
 			
-			if ( isset( $_REQUEST['update_twitter_settings'] ) ) {		
+			if ( isset( $_REQUEST['update_twitter_settings'] ) ) {	
 				
-				if ( !empty( $_REQUEST['leenkme_tweetformat'] ) )
-					$user_settings['tweetFormat'] = $_REQUEST['leenkme_tweetformat'];
-				else
-					$user_settings['tweetFormat'] = '';
-				
-				if ( !empty( $_REQUEST['clude'] ) && !empty( $_REQUEST['tweetCats'] ) ) {
+				if ( ! empty( $_REQUEST['tweet_wpnonce'] ) && wp_verify_nonce( $_REQUEST['tweet_wpnonce'], 'tweet' ) ) {	
 					
-					$user_settings['clude'] = $_REQUEST['clude'];
-					$user_settings['tweetCats'] = $_REQUEST['tweetCats'];
+					if ( !empty( $_REQUEST['leenkme_tweetformat'] ) )
+						$user_settings['tweetFormat'] = $_REQUEST['leenkme_tweetformat'];
+					else
+						$user_settings['tweetFormat'] = '';
 					
+					if ( !empty( $_REQUEST['clude'] ) && !empty( $_REQUEST['tweetCats'] ) ) {
+						
+						$user_settings['clude'] = $_REQUEST['clude'];
+						$user_settings['tweetCats'] = $_REQUEST['tweetCats'];
+						
+					} else {
+						
+						$user_settings['clude'] = 'in';
+						$user_settings['tweetCats'] = array( '0' );
+						
+					}
+					
+					if ( !empty( $_REQUEST['message_preference'] ) )
+						$user_settings['message_preference'] = $_REQUEST['message_preference'];
+					else
+						$user_settings['message_preference'] = '';
+					
+					update_user_option( $user_id, 'leenkme_twitter', $user_settings );
+					
+					// update settings notification ?>
+					<div class="updated"><p><strong><?php _e( 'Settings Updated.', 'leenkme' );?></strong></p></div>
+					<?php
+						
 				} else {
 					
-					$user_settings['clude'] = 'in';
-					$user_settings['tweetCats'] = array( '0' );
-					
+					?>
+					<div class="error"><p><strong><?php _e( 'Error Validate Security Token. Please try again.', 'leenkme' );?></strong></p></div>
+					<?php
+						
 				}
-				
-				if ( !empty( $_REQUEST['message_preference'] ) )
-					$user_settings['message_preference'] = $_REQUEST['message_preference'];
-				else
-					$user_settings['message_preference'] = '';
-				
-				update_user_option( $user_id, 'leenkme_twitter', $user_settings );
-				
-				// update settings notification ?>
-				<div class="updated"><p><strong><?php _e( 'Settings Updated.', 'leenkme' );?></strong></p></div>
-				<?php
 			}
 			// Display HTML form for the options below
 			?>

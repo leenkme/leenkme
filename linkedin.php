@@ -56,64 +56,74 @@ if ( ! class_exists( 'leenkme_LinkedIn' ) ) {
 			$linkedin_settings = get_option( 'leenkme_linkedin' );
 			
 			if ( isset( $_REQUEST['update_linkedin_settings'] ) ) {
-				
-				if ( !empty( $_REQUEST['linkedin_profile'] ) )
-					$user_settings['linkedin_profile'] = true;
-				else
-					$user_settings['linkedin_profile'] = false;
-				
-				if ( !empty( $_REQUEST['linkedin_company'] ) )
-					$user_settings['linkedin_company'] = true;
-				else
-					$user_settings['linkedin_company'] = false;
-				
-				if ( !empty( $_REQUEST['linkedin_comment'] ) )
-					$user_settings['linkedin_comment'] = $_REQUEST['linkedin_comment'];
-				else
-					$user_settings['linkedin_comment'] = '';
-	
-				if ( !empty( $_REQUEST['linkedin_title'] ) )
-					$user_settings['linkedin_title'] = $_REQUEST['linkedin_title'];
-				else
-					$user_settings['linkedin_title'] = '';
-	
-				if ( !empty( $_REQUEST['linkedin_description'] ) )
-					$user_settings['linkedin_description'] = $_REQUEST['linkedin_description'];
-				else
-					$user_settings['linkedin_description'] = '';
-				
-				if ( !empty( $_REQUEST['default_image'] ) )
-					$user_settings['default_image'] = $_REQUEST['default_image'];
-				else
-					$user_settings['default_image'] = '';
-				
-				if ( !empty( $_REQUEST['force_linkedin_image'] ) )
-					$user_settings['force_linkedin_image'] = true;
-				else
-					$user_settings['force_linkedin_image'] = false;
-	
-				if ( !empty( $_REQUEST['clude'] ) && !empty( $_REQUEST['share_cats'] ) ) {
+
+				if ( ! empty( $_REQUEST['li_share_wpnonce'] ) && wp_verify_nonce( $_REQUEST['li_share_wpnonce'], 'li_share' ) ) {	
 					
-					$user_settings['clude'] = $_REQUEST['clude'];
-					$user_settings['share_cats'] = $_REQUEST['share_cats'];
+					if ( !empty( $_REQUEST['linkedin_profile'] ) )
+						$user_settings['linkedin_profile'] = true;
+					else
+						$user_settings['linkedin_profile'] = false;
 					
+					if ( !empty( $_REQUEST['linkedin_company'] ) )
+						$user_settings['linkedin_company'] = true;
+					else
+						$user_settings['linkedin_company'] = false;
+					
+					if ( !empty( $_REQUEST['linkedin_comment'] ) )
+						$user_settings['linkedin_comment'] = $_REQUEST['linkedin_comment'];
+					else
+						$user_settings['linkedin_comment'] = '';
+		
+					if ( !empty( $_REQUEST['linkedin_title'] ) )
+						$user_settings['linkedin_title'] = $_REQUEST['linkedin_title'];
+					else
+						$user_settings['linkedin_title'] = '';
+		
+					if ( !empty( $_REQUEST['linkedin_description'] ) )
+						$user_settings['linkedin_description'] = $_REQUEST['linkedin_description'];
+					else
+						$user_settings['linkedin_description'] = '';
+					
+					if ( !empty( $_REQUEST['default_image'] ) )
+						$user_settings['default_image'] = $_REQUEST['default_image'];
+					else
+						$user_settings['default_image'] = '';
+					
+					if ( !empty( $_REQUEST['force_linkedin_image'] ) )
+						$user_settings['force_linkedin_image'] = true;
+					else
+						$user_settings['force_linkedin_image'] = false;
+		
+					if ( !empty( $_REQUEST['clude'] ) && !empty( $_REQUEST['share_cats'] ) ) {
+						
+						$user_settings['clude'] = $_REQUEST['clude'];
+						$user_settings['share_cats'] = $_REQUEST['share_cats'];
+						
+					} else {
+						
+						$user_settings['clude'] = 'in';
+						$user_settings['share_cats'] = array( '0' );
+						
+					}
+					
+					if ( !empty( $_REQUEST['message_preference'] ) )
+						$user_settings['message_preference'] = $_REQUEST['message_preference'];
+					else
+						$user_settings['message_preference'] = '';
+					
+					update_user_option( $user_id, 'leenkme_linkedin', $user_settings );
+					
+					// update settings notification ?>
+					<div class="updated"><p><strong><?php _e( 'Settings Updated.', 'leenkme' );?></strong></p></div>
+					<?php
+						
 				} else {
 					
-					$user_settings['clude'] = 'in';
-					$user_settings['share_cats'] = array( '0' );
-					
+					?>
+					<div class="error"><p><strong><?php _e( 'Error Validate Security Token. Please try again.', 'leenkme' );?></strong></p></div>
+					<?php
+						
 				}
-				
-				if ( !empty( $_REQUEST['message_preference'] ) )
-					$user_settings['message_preference'] = $_REQUEST['message_preference'];
-				else
-					$user_settings['message_preference'] = '';
-				
-				update_user_option( $user_id, 'leenkme_linkedin', $user_settings );
-				
-				// update settings notification ?>
-				<div class="updated"><p><strong><?php _e( 'Settings Updated.', 'leenkme' );?></strong></p></div>
-				<?php
 				
 			}
 			

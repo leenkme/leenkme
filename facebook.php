@@ -57,74 +57,84 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 			$facebook_settings = get_option( 'leenkme_facebook' );
 			
 			if ( isset( $_REQUEST['update_facebook_settings'] ) ) {
-				
-				if ( !empty( $_REQUEST['facebook_profile'] ) )
-					$user_settings['facebook_profile'] = true;
-				else
-					$user_settings['facebook_profile'] = false;
-				
-				if ( !empty( $_REQUEST['facebook_page'] ) )
-					$user_settings['facebook_page'] = true;
-				else
-					$user_settings['facebook_page'] = false;
-				
-				if ( !empty( $_REQUEST['facebook_group'] ) )
-					$user_settings['facebook_group'] = true;
-				else
-					$user_settings['facebook_group'] = false;
-				
-				if ( !empty( $_REQUEST['facebook_message'] ) )
-					$user_settings['facebook_message'] = $_REQUEST['facebook_message'];
-				else
-					$user_settings['facebook_message'] = '';
-	
-				if ( !empty( $_REQUEST['facebook_linkname'] ) )
-					$user_settings['facebook_linkname'] = $_REQUEST['facebook_linkname'];
-				else
-					$user_settings['facebook_linkname'] = '';
-				
-				if ( !empty( $_REQUEST['facebook_caption'] ) )
-					$user_settings['facebook_caption'] = $_REQUEST['facebook_caption'];
-				else
-					$user_settings['facebook_caption'] = '';
-				
-				if ( !empty( $_REQUEST['facebook_description'] ) )
-					$user_settings['facebook_description'] = $_REQUEST['facebook_description'];
-				else
-					$user_settings['facebook_description'] = '';
-				
-				if ( !empty( $_REQUEST['default_image'] ) )
-					$user_settings['default_image'] = $_REQUEST['default_image'];
-				else
-					$user_settings['default_image'] = '';
-				
-				if ( !empty( $_REQUEST['force_facebook_image'] ) )
-					$user_settings['force_facebook_image'] = true;
-				else
-					$user_settings['force_facebook_image'] = false;
-	
-				if ( !empty( $_REQUEST['clude'] ) && !empty( $_REQUEST['publish_cats'] ) ) {
+
+				if ( ! empty( $_REQUEST['fb_publish_wpnonce'] ) && wp_verify_nonce( $_REQUEST['fb_publish_wpnonce'], 'fb_publish' ) ) {	
+									
+					if ( !empty( $_REQUEST['facebook_profile'] ) )
+						$user_settings['facebook_profile'] = true;
+					else
+						$user_settings['facebook_profile'] = false;
 					
-					$user_settings['clude'] = $_REQUEST['clude'];
-					$user_settings['publish_cats'] = $_REQUEST['publish_cats'];
+					if ( !empty( $_REQUEST['facebook_page'] ) )
+						$user_settings['facebook_page'] = true;
+					else
+						$user_settings['facebook_page'] = false;
 					
+					if ( !empty( $_REQUEST['facebook_group'] ) )
+						$user_settings['facebook_group'] = true;
+					else
+						$user_settings['facebook_group'] = false;
+					
+					if ( !empty( $_REQUEST['facebook_message'] ) )
+						$user_settings['facebook_message'] = $_REQUEST['facebook_message'];
+					else
+						$user_settings['facebook_message'] = '';
+		
+					if ( !empty( $_REQUEST['facebook_linkname'] ) )
+						$user_settings['facebook_linkname'] = $_REQUEST['facebook_linkname'];
+					else
+						$user_settings['facebook_linkname'] = '';
+					
+					if ( !empty( $_REQUEST['facebook_caption'] ) )
+						$user_settings['facebook_caption'] = $_REQUEST['facebook_caption'];
+					else
+						$user_settings['facebook_caption'] = '';
+					
+					if ( !empty( $_REQUEST['facebook_description'] ) )
+						$user_settings['facebook_description'] = $_REQUEST['facebook_description'];
+					else
+						$user_settings['facebook_description'] = '';
+					
+					if ( !empty( $_REQUEST['default_image'] ) )
+						$user_settings['default_image'] = $_REQUEST['default_image'];
+					else
+						$user_settings['default_image'] = '';
+					
+					if ( !empty( $_REQUEST['force_facebook_image'] ) )
+						$user_settings['force_facebook_image'] = true;
+					else
+						$user_settings['force_facebook_image'] = false;
+		
+					if ( !empty( $_REQUEST['clude'] ) && !empty( $_REQUEST['publish_cats'] ) ) {
+						
+						$user_settings['clude'] = $_REQUEST['clude'];
+						$user_settings['publish_cats'] = $_REQUEST['publish_cats'];
+						
+					} else {
+						
+						$user_settings['clude'] = 'in';
+						$user_settings['publish_cats'] = array( '0' );
+						
+					}
+					
+					if ( !empty( $_REQUEST['message_preference'] ) )
+						$user_settings['message_preference'] = $_REQUEST['message_preference'];
+					else
+						$user_settings['message_preference'] = '';
+					
+					update_user_option( $user_id, 'leenkme_facebook', $user_settings );
+					
+					// update settings notification ?>
+					<div class="updated"><p><strong><?php _e( 'Settings Updated.', 'leenkme' );?></strong></p></div>
+					<?php
+						
 				} else {
 					
-					$user_settings['clude'] = 'in';
-					$user_settings['publish_cats'] = array( '0' );
-					
+					?>
+					<div class="error"><p><strong><?php _e( 'Error Validate Security Token. Please try again.', 'leenkme' );?></strong></p></div>
+					<?php
+						
 				}
-				
-				if ( !empty( $_REQUEST['message_preference'] ) )
-					$user_settings['message_preference'] = $_REQUEST['message_preference'];
-				else
-					$user_settings['message_preference'] = '';
-				
-				update_user_option( $user_id, 'leenkme_facebook', $user_settings );
-				
-				// update settings notification ?>
-				<div class="updated"><p><strong><?php _e( 'Settings Updated.', 'leenkme' );?></strong></p></div>
-				<?php
 				
 			}
 			// Display HTML form for the options below
