@@ -3,13 +3,13 @@ var $lm_plugin_jquery = jQuery.noConflict();
 $lm_plugin_jquery( document ).ready( function($) {
 	
 	/* Start leenk.me General Settings */
-	$('input#api').live('click', function() {
+	$('.toplevel_page_leenkme').on( 'click', 'input#api', function() {
 		
 		$('input#api').css('background-color', 'white');
 		
 	});
 
-	$('input#verify').live('click', function() {
+	$('.toplevel_page_leenkme').on( 'click', 'input#verify', function() {
 		
 		var leenkme_API = $('input#api').val();
 		var error = false;
@@ -27,11 +27,11 @@ $lm_plugin_jquery( document ).ready( function($) {
 			_wpnonce: 	$('input#leenkme_verify_wpnonce').val()
 		};
 		
-		ajax_response(data);
+		ajax_response( data );
 		
 	});
 
-	$( 'select#leenkme_url_shortener_select' ).change( function() {
+	$( '.toplevel_page_leenkme' ).on( 'change', 'select#leenkme_url_shortener_select', function() {
 		
 		var data = {
 			action: 		'show_lm_shortener_options',
@@ -47,7 +47,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 		
 	});
 
-	$( 'input.yourls_auth_type' ).live( 'change', function() {
+	$( '.toplevel_page_leenkme' ).on( 'change', 'input.yourls_auth_type', function() {
 		
 		if ( 1 == $( 'input.yourls_auth_type:checked' ).val() ) {
 				
@@ -65,20 +65,20 @@ $lm_plugin_jquery( document ).ready( function($) {
 	/* End leenk.me General Settings */
 
 	/* Start leenk.me Twitter Settings */
-	$('input#tweet').live('click', function() {
+	$('.toplevel_page_leenkme_twitter').on( 'click', 'input#tweet', function() {
 		
 		var data = {
 			action: 	'tweet',
 			_wpnonce: 	$('input#tweet_wpnonce').val()
 		};
 		
-		ajax_response(data);
+		ajax_response( data );
 		
 	});
 	/* End leenk.me Twitter Settings */
 	
 	/* Start leenk.me Facebook Settings */
-	$('input#fb_publish').live('click', function() {
+	$('.toplevel_page_leenkme_facebook').on( 'click', 'input#fb_publish', function() {
 		
 		var facebook_profile = $('input#facebook_profile').attr('checked')
 		var facebook_page = $('input#facebook_page').attr('checked')
@@ -92,13 +92,13 @@ $lm_plugin_jquery( document ).ready( function($) {
 			_wpnonce:			$('input#fb_publish_wpnonce').val()
 		};
 		
-		ajax_response(data);
+		ajax_response( data );
 		
 	});
 	/* End leenk.me Facebook Settings */
 		
 	/* Start leenk.me LinkedIn Settings */
-	$('input#li_share').live('click', function() {
+	$('.toplevel_page_leenkme_linkedin').on( 'click', 'input#li_share', function() {
 		
 		var data = {
 			action:		'li_share',
@@ -108,12 +108,12 @@ $lm_plugin_jquery( document ).ready( function($) {
 			_wpnonce:	$('input#li_share_wpnonce').val()
 		};
 		
-		ajax_response(data);
+		ajax_response( data );
 		
 	});
 	/* End leenk.me LinkedIn Settings */
 		
-	$('a.releenk_row_action').live('click', function(e) {
+	$('.edit-php').on( 'click', 'a.releenk_row_action', function( e ) {
 		
 		e.preventDefault();
 		
@@ -121,7 +121,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 		
 	});
 	
-	$( 'a.inline-leenkme-cancel' ).live('click', function(e) {
+	$( '.edit-php' ).on( 'click', 'a.inline-leenkme-cancel', function( e ) {
 		
 		e.preventDefault();
 		
@@ -133,7 +133,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 		
 	});
 	
-	$( 'a.inline-leenkme-releenk' ).live('click', function(e) {
+	$( '.edit-php' ).on( 'click', 'a.inline-leenkme-releenk', function( e ) {
 		
 		e.preventDefault();
 		
@@ -190,7 +190,7 @@ $lm_plugin_jquery( document ).ready( function($) {
 
 });
 
-function ajax_response(data) {
+function ajax_response( data ) {
 	
 	var style = "position: fixed; " +
 				"display: none; " +
