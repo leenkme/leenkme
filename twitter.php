@@ -263,7 +263,7 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 				?>
                 
 				<tr><td colspan="2">
-                <textarea id="leenkme_tweet" name="leenkme_tweet" cols="65" rows="1" maxlength="140"><?php echo $expanded_tweet; ?></textarea>
+                <textarea id="leenkme_tweet" name="leenkme_tweet" cols="65" rows="1" maxlength="115"><?php echo $expanded_tweet; ?></textarea>
                 </td></tr>
                 
 				<tr><td scope="row" style="text-align:left; padding-top: 5px; padding-bottom:5px; padding-right:10px; line-height: 15px; font-size: 11px;"><?php _e( 'Exclude from Twitter:', 'leenkme' ) ?> <input type="checkbox" name="twitter_exclude" <?php checked( $exclude || "on" == $exclude ); ?> />
@@ -271,7 +271,7 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
                 
 				<td style="text-align: right;">
                 <?php 
-				$tweet_len = 140 - strlen( $expanded_tweet );
+				$tweet_len = 140 - 25 - strlen( $expanded_tweet );
 				
 				if ( 10 > $tweet_len )
 					$tweet_len_class = 'lm_tweet_count_superwarn';
@@ -309,26 +309,22 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 	if ( !empty( $tweet ) ) {
 		
 		$maxLen = 140;
-	
-		if ( has_filter( 'get_shortlink', 'leenkme_get_shortlink_handler', 1, 4 ) ) {
-				
-			if ( !( $url = get_post_meta( $post_id, '_leenkme_shortened_url', true ) ) )
-				$url = leenkme_url_shortener( $post_id );
-					
-			if ( preg_match( '/%URL%/i', $tweet ) ) {
-				
-				$urlLen = strlen( $url );
-				$tweetLen = strlen( utf8_decode( $tweet ) );
-				$totalLen = $urlLen + $tweetLen - 5; // subtract 5 for "%URL%".
-				
-				if ( $totalLen <= $maxLen )
-					$tweet = str_ireplace( "%URL%", $url, $tweet );
-				else
-					$tweet = str_ireplace( "%URL%", "", $tweet ); // Too Long (need to get rid of URL).
-				
-			}
+		
+		//if ( preg_match( '/%URL%/i', $tweet ) ) {
 			
-		}
+			//$url = get_permalink( $post_id );
+			//$short_url_length = 25; //From Twitter
+			//
+			//$urlLen = $short_url_length;
+			//$tweetLen = strlen( utf8_decode( $tweet ) );
+			//$totalLen = $urlLen + $tweetLen - 5; // subtract 5 for "%URL%".
+			
+			//if ( $totalLen <= $maxLen )
+			//	$tweet = str_ireplace( "%URL%", $url, $tweet );
+			//else
+			//	$tweet = str_ireplace( "%URL%", "", $tweet ); // Too Long (need to get rid of URL).
+			
+		//}
 					
 		if ( preg_match( '/%TITLE%/i', $tweet ) ) {
 			
@@ -650,28 +646,20 @@ function leenkme_publish_to_twitter( $connect_arr = array(), $post, $tweet = fal
 							$tweet = get_leenkme_expanded_tweet( $post['ID'], $options['tweetFormat'], get_the_title( $post['ID'] ) );												
 						$tweet = stripslashes( html_entity_decode( $tweet, ENT_COMPAT, get_bloginfo('charset') ) );
 					}
-										
-					if ( !has_filter( 'get_shortlink', 'leenkme_get_shortlink_handler', 1, 4 ) ) {
-		
-						if ( !( $url = get_post_meta( $post['ID'], '_leenkme_shortened_url', true ) ) )
-							$url = leenkme_url_shortener( $post['ID'] );
-							
-						echo $tweet;
+																
+					if ( preg_match( '/%URL%/i', $tweet ) ) {
+									
+						$url = get_permalink( $post['ID'] );
+						$short_url_length = 25; //From Twitter
 						
-						if ( preg_match( '/%URL%/i', $tweet ) ) {
-							
-							$urlLen = strlen( $url );
-							$tweetLen = strlen( utf8_decode( $tweet ) );
-							$totalLen = $urlLen + $tweetLen - 5; // subtract 5 for "%URL%".
-							
-							if ( 140 >= $totalLen )
-								$tweet = str_ireplace( "%URL%", $url, $tweet );
-							else
-								$tweet = str_ireplace( "%URL%", "", $tweet ); // Too Long (need to get rid of URL).
-							
-						}
-							
-						echo $tweet;
+						$urlLen = $short_url_length;
+						$tweetLen = strlen( utf8_decode( $tweet ) );
+						$totalLen = $urlLen + $tweetLen - 5; // subtract 5 for "%URL%".
+						
+						if ( 140 >= $totalLen )
+							$tweet = str_ireplace( "%URL%", $url, $tweet );
+						else
+							$tweet = str_ireplace( "%URL%", "", $tweet ); // Too Long (need to get rid of URL).
 						
 					}
 					

@@ -159,7 +159,7 @@ $lm_post_jquery(document).ready(function($) {
 	
 function lm_tweet_len( response ) {
 	
-	tweet_len = 140 - response.length;
+	tweet_len = 140 - 25 - response.length; //25 is Twitter's Short URL Length
 
 	if ( 10 > tweet_len ) {
 		

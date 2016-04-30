@@ -30,38 +30,6 @@ $lm_plugin_jquery( document ).ready( function($) {
 		ajax_response( data );
 		
 	});
-
-	$( '.toplevel_page_leenkme' ).on( 'change', 'select#leenkme_url_shortener_select', function() {
-		
-		var data = {
-			action: 		'show_lm_shortener_options',
-			selected:		$( 'select#leenkme_url_shortener_select' ).val(),
-			_wpnonce:		$('input#leenkme_general_options_nonce').val()
-		};
-		
-		$lm_plugin_jquery.post(ajaxurl, data, function(response) {
-			
-			$( 'td.url_shortener_options' ).html( response );
-			
-		});
-		
-	});
-
-	$( '.toplevel_page_leenkme' ).on( 'change', 'input.yourls_auth_type', function() {
-		
-		if ( 1 == $( 'input.yourls_auth_type:checked' ).val() ) {
-				
-			$( 'div#yourls_unpw_options' ).hide();
-			$( 'div#yourls_signature_options' ).show();
-				
-		} else {
-		
-			$( 'div#yourls_signature_options' ).hide();
-			$( 'div#yourls_unpw_options' ).show();
-			
-		}
-		
-	});
 	/* End leenk.me General Settings */
 
 	/* Start leenk.me Twitter Settings */

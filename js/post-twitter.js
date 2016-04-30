@@ -11,7 +11,7 @@ $lm_post_twitter_jquery(document).ready(function($) {
 		
 	});
 	
-	$( '.post-php' ).on( 'click', 'a#set_to_default_tweet' function( e ) {
+	$( '.post-php' ).on( 'click', 'a#set_to_default_tweet', function( e ) {
 	
 		e.preventDefault();
 		
@@ -22,7 +22,7 @@ $lm_post_twitter_jquery(document).ready(function($) {
 		
 	});
 	
-	$( 'textarea#leenkme_tweet' ).bind('keyup paste', function() {
+	$( '.post-php' ).on('keyup paste', 'textarea#leenkme_tweet', function() {
 		
 		$( 'span#lm_tweet_count' ).text( lm_tweet_len( $( this ).val() ) );
 		

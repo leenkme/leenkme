@@ -736,21 +736,7 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 			
 			$leenkme_users = leenkme_get_users();
 			
-			// Facebook currently addes ref=nf on the end of every URL, this break TinyURL and YOURLS,
-			// So we have to use the default non-permalink URL to be safe.
-			switch( $leenkme_settings['url_shortener'] ) {
-			
-				case 'tinyurl' :
-				case 'yourls' :
-					$url = home_url( '?p=' . $post['ID'] );
-					break;
-			
-				default:
-					if ( !( $url = get_post_meta( $post['ID'], '_leenkme_shortened_url', true ) ) )
-						$url = leenkme_url_shortener( $post['ID'] );
-					break;
-					
-			}
+			$url = get_permalink( $post['ID'] );
 			
 			foreach ( $leenkme_users as $leenkme_user ) {
 				

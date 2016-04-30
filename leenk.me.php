@@ -31,8 +31,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 		
 			add_action( 'init', array( &$this, 'upgrade' ) );
 			add_action( 'admin_enqueue_scripts', 				array( &$this, 'leenkme_admin_enqueue_scripts' ) );
-			add_action( 'wp_ajax_show_lm_shortener_options', 	array( &$this, 'show_lm_shortener_options' ) );
-			add_filter( 'get_shortlink', 'leenkme_get_shortlink_handler', 1, 4 );
 			
 			$leenkme_settings = $this->get_leenkme_settings();
 			
@@ -52,7 +50,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 								'facebook' 					=> false,
 								'linkedin' 					=> false,
 								'post_types'				=> array( 'post' ),
-								'url_shortener'				=> 'tinyurl',
 								'use_og_meta_tags'			=> false,
 								'og_type'					=> 'website',
 								'og_sitename'				=> '%WPSITENAME%',
@@ -182,47 +179,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 							$leenkme_settings['post_types'] = $_REQUEST['post_types'];
 						else
 							$leenkme_settings['post_types'] = array( 'post' );
-						
-						if ( !empty( $_REQUEST['url_shortener'] ) )
-							$leenkme_settings['url_shortener'] = $_REQUEST['url_shortener'];
-						else
-							$leenkme_settings['url_shortener'] = '';
-						
-						if ( !empty( $_REQUEST['bitly_username'] ) )
-							$leenkme_settings['bitly_username'] = $_REQUEST['bitly_username'];
-						else
-							$leenkme_settings['bitly_username'] = '';
-						
-						if ( !empty( $_REQUEST['bitly_apikey'] ) )
-							$leenkme_settings['bitly_apikey'] = $_REQUEST['bitly_apikey'];
-						else
-							$leenkme_settings['bitly_apikey'] = '';
-						
-						if ( !empty( $_REQUEST['yourls_auth_type'] ) )
-							$leenkme_settings['yourls_auth_type'] = $_REQUEST['yourls_auth_type'];
-						else
-							$leenkme_settings['yourls_auth_type'] = '';
-						
-						if ( !empty( $_REQUEST['yourls_api_url'] ) )
-							$leenkme_settings['yourls_api_url'] = $_REQUEST['yourls_api_url'];
-						else
-							$leenkme_settings['yourls_api_url'] = '';
-						
-						if ( !empty( $_REQUEST['yourls_username'] ) )
-							$leenkme_settings['yourls_username'] = $_REQUEST['yourls_username'];
-						else
-							$leenkme_settings['yourls_username'] = '';
-						
-						if ( !empty( $_REQUEST['yourls_password'] ) )
-							$leenkme_settings['yourls_password'] = $_REQUEST['yourls_password'];
-						else
-							$leenkme_settings['yourls_password'] = '';
-						
-						if ( !empty( $_REQUEST['yourls_signature'] ) )
-							$leenkme_settings['yourls_signature'] = $_REQUEST['yourls_signature'];
-						else
-							$leenkme_settings['yourls_signature'] = '';
-						
+												
 						if ( !empty( $_REQUEST['use_og_meta_tags'] ) )
 							$leenkme_settings['use_og_meta_tags'] = true;
 						else
@@ -460,51 +417,6 @@ if ( ! class_exists( 'leenkme' ) ) {
                         <p><?php _e( 'To take advantage of publishing to Pages and Custom Post Types, please upgrade to the latest version of WordPress.', 'leenkme' ); ?></p>
                         
                         <?php } ?>
-                        
-                        <table id="leenkme_leenkme_url_shortener">
-                        
-                        <tr>
-                        	<th rowspan="1"><?php _e( 'Select Your Default URL Shortner', 'leenkme' ); ?></th>
-                            <td class="leenkme_url_shortener">
-                            	<select id="leenkme_url_shortener_select" name="url_shortener"> 
-                                	<option value="bitly" <?php selected( 'bitly', $leenkme_settings['url_shortener'] ); ?>>bit.ly</option>
-                                    <option value="yourls" <?php selected( 'yourls', $leenkme_settings['url_shortener'] ); ?>>YOURLS</option>
-                                    <option value="isgd" <?php selected( 'isgd', $leenkme_settings['url_shortener'] ); ?>>is.gd</option>
-                                    <option value="wpme" <?php selected( 'wpme', $leenkme_settings['url_shortener'] ); ?>>wp.me</option>
-                                    <option value="tinyurl" <?php selected( 'tinyurl', $leenkme_settings['url_shortener'] ); ?>>TinyURL</option>
-                                    <option value="tflp" <?php selected( 'tflp', $leenkme_settings['url_shortener'] ); ?>>Twitter Friendly Links Plugin</option>
-                                    <option value="wppostid" <?php selected( 'wppostid', $leenkme_settings['url_shortener'] ); ?>>WordPress Post ID</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                        	<td></td>
-                            <td class='url_shortener_options'>
-                            	<?php
-									switch( $leenkme_settings['url_shortener'] ) {
-										
-										case 'bitly' :
-											leenkme_show_bitly_options();
-											break;
-										
-										case 'yourls' :
-											leenkme_show_yourls_options();
-											break;
-										
-										case 'wpme' :
-											leenkme_show_wpme_options();
-											break;
-										
-										case 'tflp' :
-											leenkme_show_tflp_options();
-											break;
-										
-									}
-								?>
-                            </td>
-                        </tr>
-                        
-                        </table>
                                                   
                         <p class="submit">
                             <input class="button-primary" type="submit" name="update_leenkme_settings" value="<?php _e( 'Save Settings', 'leenkme' ) ?>" />
@@ -530,7 +442,7 @@ if ( ! class_exists( 'leenkme' ) ) {
                         
                             <tr>
                                 <td><?php _e( 'Select Site Type', 'leenkme' ); ?></td>
-                                <td class="leenkme_url_shortener">
+                                <td>
                                     <select id="og_type" name="og_type"> 
                                         <option value="website" <?php selected( 'website', $leenkme_settings['og_type'] ); ?>>Website</option>
                                         <option value="blog" <?php selected( 'blog', $leenkme_settings['og_type'] ); ?>>Blog</option>
@@ -890,52 +802,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 				
 			echo '</div>';
 
-		}
-		
-		/**
-		 * Save the data via AJAX
-		 *
-		 * @TODO clean params
-		 * @since 0.3
-		 */
-		function show_lm_shortener_options() {
-			
-			check_ajax_referer( 'leenkme_general_options' );
-			
-			if ( !empty( $_REQUEST['selected'] ) ) {
-				
-				switch( $_REQUEST['selected'] ) {
-					
-					case 'bitly' :
-						die( leenkme_show_bitly_options() );
-						break;
-					
-					case 'yourls' :
-						die( leenkme_show_yourls_options() );
-						break;
-					
-					case 'wpme' :
-						die( leenkme_show_wpme_options() );
-						break;
-					
-					case 'tflp' :
-						die( leenkme_show_tflp_options() );
-						break;
-						
-					default :
-						die();
-						break;
-						
-				}	
-				
-			} else {
-				
-				die();	
-				
-			}
-			
-		}
-		
+		}		
 		
 		/**
 		 * Output Open Graph Meta Tags - http://ogp.me/
@@ -1013,7 +880,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 if ( class_exists( 'leenkme' ) ) {
 	
 	require_once( 'includes/functions.php' );
-	require_once( 'includes/url-shortener.php' );
 	
 	$dl_pluginleenkme = new leenkme();
 	
