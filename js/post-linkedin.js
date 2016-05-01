@@ -2,7 +2,7 @@ var $lm_post_linkedin_jquery = jQuery.noConflict();
 
 $lm_post_linkedin_jquery(document).ready(function($) {
 	
-	$( '.post-php' ).on( 'mousedown', 'textarea#lm_li_comment, input#lm_li_linktitle, textarea#lm_li_description', function() {
+	$( '.post-php, .post-new-php' ).on( 'mousedown', 'textarea#lm_li_comment, input#lm_li_linktitle, textarea#lm_li_description', function() {
 		
 		$( 'input[name=lm_linkedin_type]' ).val( 1 );
 		$( 'span.li_default_format' ).hide();
@@ -11,7 +11,7 @@ $lm_post_linkedin_jquery(document).ready(function($) {
 		
 	});
 	
-	$( '.post-php' ).on( 'click', 'a#set_to_default_li_post', function( e ) {
+	$( '.post-php, .post-new-php' ).on( 'click', 'a#set_to_default_li_post', function( e ) {
 	
 		e.preventDefault();
 		
@@ -22,7 +22,7 @@ $lm_post_linkedin_jquery(document).ready(function($) {
 		
 	});
 		
-	$('.post-php').on( 'click', 'input#lm_reshare_button', function() {
+	$('.post-php, .post-new-php').on( 'click', 'input#lm_reshare_button', function() {
 		
 		linkedin_array = {
 			'comment':			$( 'textarea#lm_li_comment' ).val(),

@@ -2,7 +2,7 @@ var $lm_post_twitter_jquery = jQuery.noConflict();
 
 $lm_post_twitter_jquery(document).ready(function($) {
 	
-	$( '.post-php' ).on( 'mousedown', 'textarea#leenkme_tweet', function() {
+	$( '.post-php, .post-new-php' ).on( 'mousedown', 'textarea#leenkme_tweet', function() {
 		
 		$( 'input[name=lm_tweet_type]' ).val( 1 );
 		$( 'span.tw_default_format' ).hide();
@@ -11,7 +11,7 @@ $lm_post_twitter_jquery(document).ready(function($) {
 		
 	});
 	
-	$( '.post-php' ).on( 'click', 'a#set_to_default_tweet', function( e ) {
+	$( '.post-php, .post-new-php' ).on( 'click', 'a#set_to_default_tweet', function( e ) {
 	
 		e.preventDefault();
 		
@@ -22,13 +22,13 @@ $lm_post_twitter_jquery(document).ready(function($) {
 		
 	});
 	
-	$( '.post-php' ).on('keyup paste', 'textarea#leenkme_tweet', function() {
+	$( '.post-php, .post-new-php' ).on('keyup paste', 'textarea#leenkme_tweet', function() {
 		
 		$( 'span#lm_tweet_count' ).text( lm_tweet_len( $( this ).val() ) );
 		
 	});
 		
-	$('.post-php').on( 'click', 'input#lm_retweet_button', function() {
+	$('.post-php, .post-new-php').on( 'click', 'input#lm_retweet_button', function() {
 		
 		var data = {
 			'action': 		'retweet',
