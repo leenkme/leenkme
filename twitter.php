@@ -308,23 +308,21 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 	
 	if ( !empty( $tweet ) ) {
 		
+		$url = apply_filters( 'leenkme_get_permalink', get_permalink( $post_id ), $post_id );
 		$maxLen = 140;
 		
-		//if ( preg_match( '/%URL%/i', $tweet ) ) {
+		if ( preg_match( '/%URL%/i', $tweet ) ) {
+
+			$urlLen = 25; //From Twitter
+			$tweetLen = strlen( utf8_decode( $tweet ) );
+			$totalLen = $urlLen + $tweetLen - 5; // subtract 5 for '%URL%'.
 			
-			//$url = get_permalink( $post_id );
-			//$short_url_length = 25; //From Twitter
-			//
-			//$urlLen = $short_url_length;
-			//$tweetLen = strlen( utf8_decode( $tweet ) );
-			//$totalLen = $urlLen + $tweetLen - 5; // subtract 5 for "%URL%".
+			if ( $totalLen <= $maxLen )
+				$tweet = str_ireplace( '%URL%', '1234567890123456789012345', $tweet );
+			else
+				$tweet = str_ireplace( '%URL%', '', $tweet ); // Too Long (need to get rid of URL).
 			
-			//if ( $totalLen <= $maxLen )
-			//	$tweet = str_ireplace( "%URL%", $url, $tweet );
-			//else
-			//	$tweet = str_ireplace( "%URL%", "", $tweet ); // Too Long (need to get rid of URL).
-			
-		//}
+		}
 					
 		if ( preg_match( '/%TITLE%/i', $tweet ) ) {
 			
@@ -333,12 +331,12 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 			$titleLen = strlen( utf8_decode( $title ) ); 
 			$tweetLen = strlen( utf8_decode( $tweet ) );
 			$diffLen = $maxLen - $tweetLen;
-			$totalLen = $titleLen + $tweetLen - 7;	// subtract 7 for "%TITLE%".
+			$totalLen = $titleLen + $tweetLen - 7;	// subtract 7 for '%TITLE%'.
 			
 			if ( $titleLen > $diffLen )
 				$title = leenkme_trim_words( $title, $diffLen );
 		
-			$tweet = str_ireplace( "%TITLE%", $title, $tweet );
+			$tweet = str_ireplace( '%TITLE%', $title, $tweet );
 			
 		}
 		
@@ -362,7 +360,7 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 		
 			$tweetLen = strlen( utf8_decode( $tweet ) );
 			$catLen = strlen( utf8_decode( $cat_str ) );
-			$totalLen = $catLen + $tweetLen - 6;	// subtract 5 for "%CATS%".
+			$totalLen = $catLen + $tweetLen - 6;	// subtract 5 for '%CATS%'.
 			
 			if ( $totalLen > $maxLen ) {
 				
@@ -374,7 +372,7 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 					
 					$cat_str = join( ' ', (array)$split_cat_str );
 					$catLen = strlen( utf8_decode( $cat_str ) );
-					$totalLen = $catLen + $tweetLen - 6;	// subtract 5 for "%CATS%".
+					$totalLen = $catLen + $tweetLen - 6;	// subtract 5 for '%CATS%'.
 	
 				}
 				
@@ -392,7 +390,7 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 				
 				$post_tags = wp_get_post_tags( $post_id );
 			
-				$tag_str = "";
+				$tag_str = '';
 				foreach( (array)$post_tags as $t ) {
 					
 					$tag = get_tag( $t );
@@ -404,7 +402,7 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 				
 				$post_tags = explode( ',', $tags );
 			
-				$tag_str = "";
+				$tag_str = '';
 				foreach($post_tags as $t){
 					
 					$tag_array[] = "#" . preg_replace( '/\W/', '', $t );
@@ -417,7 +415,7 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 		
 			$tweetLen = strlen( utf8_decode( $tweet ) );
 			$tagLen = strlen( utf8_decode( $tag_str ) );
-			$totalLen = $tagLen + $tweetLen - 6;	// subtract 5 for "%CATS%".
+			$totalLen = $tagLen + $tweetLen - 6;	// subtract 5 for '%CATS%'.
 			
 			if ( $totalLen > $maxLen ) {
 				
@@ -429,7 +427,7 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 					
 					$tag_str = join( " ", (array)$split_tag_str );
 					$tagLen = strlen( utf8_decode( $tag_str ) );
-					$totalLen = $tagLen + $tweetLen - 6;	// subtract 5 for "%CATS%".
+					$totalLen = $tagLen + $tweetLen - 6;	// subtract 5 for '%CATS%'.
 					
 				}
 				
@@ -438,6 +436,8 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 			$tweet = str_ireplace( '%TAGS%', $tag_str, $tweet );
 			
 		}
+		
+		$tweet = str_ireplace( '1234567890123456789012345', $url, $tweet );
 		
 	} else {
 		
@@ -649,17 +649,17 @@ function leenkme_publish_to_twitter( $connect_arr = array(), $post, $tweet = fal
 																
 					if ( preg_match( '/%URL%/i', $tweet ) ) {
 									
-						$url = get_permalink( $post['ID'] );
+						$url = apply_filters( 'leenkme_get_permalink', get_permalink( $post_id ), $post_id );
 						$short_url_length = 25; //From Twitter
 						
 						$urlLen = $short_url_length;
 						$tweetLen = strlen( utf8_decode( $tweet ) );
-						$totalLen = $urlLen + $tweetLen - 5; // subtract 5 for "%URL%".
+						$totalLen = $urlLen + $tweetLen - 5; // subtract 5 for '%URL%'.
 						
 						if ( 140 >= $totalLen )
-							$tweet = str_ireplace( "%URL%", $url, $tweet );
+							$tweet = str_ireplace( '%URL%', $url, $tweet );
 						else
-							$tweet = str_ireplace( "%URL%", "", $tweet ); // Too Long (need to get rid of URL).
+							$tweet = str_ireplace( '%URL%', '', $tweet ); // Too Long (need to get rid of URL).
 						
 					}
 					
