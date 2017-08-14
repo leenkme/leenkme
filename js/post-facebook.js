@@ -2,7 +2,7 @@ var $lm_post_facebook_jquery = jQuery.noConflict();
 
 $lm_post_facebook_jquery(document).ready(function($) {
 	
-	$( '.post-php, .post-new-php' ).on( 'mousedown', 'textarea#lm_fb_message, input#lm_fb_linkname, input#lm_fb_caption, textarea#lm_fb_description', function() {
+	$( '.post-php, .post-new-php' ).on( 'mousedown', 'textarea#lm_fb_message, textarea#lm_fb_description', function() {
 		
 		$( 'input[name=lm_facebook_type]' ).val( 1 );
 		$( 'span.fb_default_format' ).hide();
@@ -26,8 +26,6 @@ $lm_post_facebook_jquery(document).ready(function($) {
 		
 		facebook_array = {
 			'message':			$( 'textarea#lm_fb_message' ).val(),
-			'linkname':			$( 'input#lm_fb_linkname' ).val(),
-			'caption':			$( 'input#lm_fb_caption' ).val(),
 			'description':		$( 'textarea#lm_fb_description' ).val(),
 			'picture':			$( 'input[name=facebook_image]' ).val()
 		};

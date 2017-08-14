@@ -34,7 +34,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 			
 			$leenkme_settings = $this->get_leenkme_settings();
 			
-			if ( $leenkme_settings['use_og_meta_tags'] )
+			if ( $leenkme_settings['use_og_meta_tags'] || $leenkme_settings['use_single_og_meta_tags'] )
 				add_action( 'wp_head', array( &$this, 'output_leenkme_og_meta_tags' ) );
 		}
 

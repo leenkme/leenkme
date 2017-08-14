@@ -29,8 +29,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 								 'facebook_page' 			=> false,
 								 'facebook_group' 			=> false,
 								 'facebook_message'			=> '%TITLE%',
-								 'facebook_linkname'		=> '%WPSITENAME%',
-								 'facebook_caption' 		=> '%WPTAGLINE%',
 								 'facebook_description' 	=> '%EXCERPT%',
 								 'default_image' 			=> '',
 								 'force_facebook_image'		=> false,
@@ -80,16 +78,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 					else
 						$user_settings['facebook_message'] = '';
 		
-					if ( !empty( $_REQUEST['facebook_linkname'] ) )
-						$user_settings['facebook_linkname'] = $_REQUEST['facebook_linkname'];
-					else
-						$user_settings['facebook_linkname'] = '';
-					
-					if ( !empty( $_REQUEST['facebook_caption'] ) )
-						$user_settings['facebook_caption'] = $_REQUEST['facebook_caption'];
-					else
-						$user_settings['facebook_caption'] = '';
-					
 					if ( !empty( $_REQUEST['facebook_description'] ) )
 						$user_settings['facebook_description'] = $_REQUEST['facebook_description'];
 					else
@@ -177,14 +165,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
                             <tr>
                             	<td style='vertical-align: top; padding-top: 5px;'><?php _e( 'Default Message:', 'leenkme' ); ?></td>
                                 <td><textarea name="facebook_message" style="width: 500px;" maxlength="400"><?php echo $user_settings['facebook_message']; ?></textarea></td>
-                            </tr>
-                            <tr>
-                            	<td><?php _e( 'Default Link Name:', 'leenkme' ); ?></td>
-                                <td><input name="facebook_linkname" type="text" style="width: 500px;" value="<?php echo $user_settings['facebook_linkname']; ?>"  maxlength="100"/></td>
-                            </tr>
-                            <tr>
-                            	<td><?php _e( 'Default Caption:', 'leenkme' ); ?></td>
-                                <td><input name="facebook_caption" type="text" style="width: 500px;" value="<?php echo $user_settings['facebook_caption']; ?>" maxlength="100"/></td>
                             </tr>
                             <tr>
                             	<td style='vertical-align: top; padding-top: 5px;'><?php _e( 'Default Description:', 'leenkme' ); ?></td>
@@ -317,16 +297,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 				else
 					delete_post_meta( $post->ID, '_facebook_message' );
 				
-				if ( !empty( $_REQUEST['facebook_linkname'] ) )
-					update_post_meta( $post->ID, '_facebook_linkname', $_REQUEST['facebook_linkname'] );
-				else
-					delete_post_meta( $post->ID, '_facebook_linkname' );
-				
-				if ( !empty( $_REQUEST['facebook_caption'] ) )
-					update_post_meta( $post->ID, '_facebook_caption', $_REQUEST['facebook_caption'] );
-				else
-					delete_post_meta( $post->ID, '_facebook_caption' );
-				
 				if ( !empty( $_REQUEST['facebook_description'] ) )
 					update_post_meta( $post->ID, '_facebook_description', $_REQUEST['facebook_description'] );
 				else
@@ -400,24 +370,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 			}
 			$facebook_array['message'] = get_post_meta( $post->ID, '_facebook_message', true);
 			
-			if ( $facebook_array['linkname'] = get_post_meta( $post->ID, 'facebook_linkname', true ) ) {
-				
-				delete_post_meta( $post->ID, 'facebook_linkname', true );
-				update_post_meta( $post->ID, '_facebook_linkname', $facebook_array['linkname'] );
-				
-				
-			}
-			$facebook_array['linkname'] = get_post_meta( $post->ID, '_facebook_linkname', true);
-			
-			if ( $facebook_array['caption'] = get_post_meta( $post->ID, 'facebook_caption', true ) ) {
-				
-				delete_post_meta( $post->ID, 'facebook_caption', true );
-				update_post_meta( $post->ID, '_facebook_caption', $facebook_array['caption'] );
-				
-				
-			}
-			$facebook_array['caption'] = get_post_meta( $post->ID, '_facebook_caption', true);
-			
 			if ( $facebook_array['description'] = get_post_meta( $post->ID, 'facebook_description', true ) ) {
 				
 				delete_post_meta( $post->ID, 'facebook_description', true );
@@ -451,8 +403,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
                 <span id="lm_facebook_format" class="fb_default_format default_format" style="display:<?php if ( $format_type ) echo "none"; else echo "inline"; ?>"><?php _e( 'Default', 'leenkme' ); ?></span>
                 <input type="hidden" name="lm_facebook_type" value="<?php echo $format_type; ?>" />
                 <input type="hidden" name="facebook_message_format" value="<?php echo $user_settings['facebook_message']; ?>" />
-                <input type="hidden" name="facebook_linkname_format" value="<?php echo $user_settings['facebook_linkname']; ?>" />
-                <input type="hidden" name="facebook_caption_format" value="<?php echo $user_settings['facebook_caption']; ?>" />
                 <input type="hidden" name="facebook_description_format" value="<?php echo $user_settings['facebook_description']; ?>" />
                 <input type="hidden" name="facebook_image" value="<?php echo $facebook_array['picture'] ?>" />
             </div>
@@ -463,8 +413,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 				if ( 0 == $format_type ) {
 				
 					 $facebook_array['message'] 		= $user_settings['facebook_message'];
-					 $facebook_array['linkname'] 		= $user_settings['facebook_linkname'];
-					 $facebook_array['caption'] 		= $user_settings['facebook_caption'];
 					 $facebook_array['description']		= $user_settings['facebook_description'];
 				
 				}
@@ -480,8 +428,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
                     </div>
             
                     <div id="lm_fb_content_area">
-                        <input id="lm_fb_linkname" value="<?php echo $facebook_content['linkname']; ?>" type="text" name="facebook_linkname" maxlength="100" />
-                        <input id="lm_fb_caption" value="<?php echo $facebook_content['caption']; ?>" type="text" name="facebook_caption" maxlength="100"/>
                         <textarea id="lm_fb_description" name="facebook_description" maxlength="300"><?php echo $facebook_content['description']; ?></textarea>
                     </div>
                 
@@ -570,8 +516,6 @@ function get_leenkme_expanded_fb_post( $post_id, $facebook_array, $post_title = 
 		}
 		
 		$facebook_array['message'] 		= leenkme_trim_words( leenkme_replacements_args( $facebook_array['message'], $post_title, $post_id, $excerpt ), $maxMessageLen );
-		$facebook_array['linkname'] 	= leenkme_trim_words( leenkme_replacements_args( $facebook_array['linkname'], $post_title, $post_id, $excerpt ), $maxLinkNameLen );
-		$facebook_array['caption'] 		= leenkme_trim_words( leenkme_replacements_args( $facebook_array['caption'], $post_title, $post_id, $excerpt ), $maxCaptionLen );
 		$facebook_array['description'] 	= leenkme_trim_words( leenkme_replacements_args( $facebook_array['description'], $post_title, $post_id, $excerpt ), $maxDescLen );
 		
 		$user_settings = $dl_pluginleenkmeFacebook->get_user_settings( $user_id );
@@ -815,24 +759,15 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 					if ( $prefer_user ) {
 						
 						$facebook_array['message'] = $options['facebook_message'];
-						$facebook_array['linkname'] = $options['facebook_linkname'];
-						$facebook_array['caption'] = $options['facebook_caption'];
-						$facebook_array['description'] = $options['facebook_description'];
 					
 						$facebook_array = get_leenkme_expanded_fb_post( $post['ID'], $facebook_array, false, false, $leenkme_user->ID );
 						
 						foreach( $facebook_array as $key => $value ) {
 							$facebook_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', 'leenkme_utf8_html_entities', $value );
 						}
-
-						if ( !empty( $facebook_array['picture'] ) )
-							$connect_arr[$api_key]['facebook_picture'] = $facebook_array['picture'];
 						
 						$connect_arr[$api_key]['facebook_message'] 		= stripslashes( html_entity_decode( $facebook_array['message'], ENT_COMPAT, get_bloginfo('charset') ) );
 						$connect_arr[$api_key]['facebook_link'] 		= $url;
-						$connect_arr[$api_key]['facebook_name'] 		= stripslashes( html_entity_decode( $facebook_array['linkname'], ENT_COMPAT, get_bloginfo('charset') ) );
-						$connect_arr[$api_key]['facebook_caption']		= stripslashes( html_entity_decode( $facebook_array['caption'], ENT_COMPAT, get_bloginfo('charset') ) );
-						$connect_arr[$api_key]['facebook_description'] 	= stripslashes( html_entity_decode( $facebook_array['description'], ENT_COMPAT, get_bloginfo('charset') ) );
 						
 					} else {
 						
@@ -841,24 +776,12 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 						if ( $manual ) {
 							
 							$facebook_array['message']     = get_post_meta( $post['ID'], '_facebook_message', true );
-							$facebook_array['linkname']    = get_post_meta( $post['ID'], '_facebook_linkname', true );
-							$facebook_array['caption']     = get_post_meta( $post['ID'], '_facebook_caption', true );
-							$facebook_array['description'] = get_post_meta( $post['ID'], '_facebook_description', true );
 							
 						} else {
 							
 							if ( empty( $facebook_array['message'] ) )
 								$facebook_array['message'] = $options['facebook_message'];
-								
-							if ( empty( $facebook_array['linkname'] ) )
-								$facebook_array['linkname'] = $options['facebook_linkname'];
-						
-							if ( empty( $facebook_array['caption'] ) )
-								$facebook_array['caption'] = $options['facebook_caption'];
-							
-							if ( empty( $facebook_array['description'] ) )
-								$facebook_array['description'] = $options['facebook_description'];
-								
+																
 							$facebook_array = get_leenkme_expanded_fb_post( $post['ID'], $facebook_array, false, false, $leenkme_user->ID );
 							
 						}
@@ -866,17 +789,9 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 						foreach( $facebook_array as $key => $value ) {
 							$facebook_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', 'leenkme_utf8_html_entities', $value );
 						}
-																					
-						if ( !empty( $facebook_array['picture'] ) )
-							$connect_arr[$api_key]['facebook_picture'] = $facebook_array['picture'];
-						else
-							$connect_arr[$api_key]['facebook_picture'] = leenkme_get_picture( $user_settings, $post['ID'], 'facebook' );
-						
+
 						$connect_arr[$api_key]['facebook_message'] 		= stripslashes( html_entity_decode( $facebook_array['message'], ENT_COMPAT, get_bloginfo('charset') ) );
 						$connect_arr[$api_key]['facebook_link'] 		= $url;
-						$connect_arr[$api_key]['facebook_name'] 		= stripslashes( html_entity_decode( $facebook_array['linkname'], ENT_COMPAT, get_bloginfo('charset') ) );
-						$connect_arr[$api_key]['facebook_caption']		= stripslashes( html_entity_decode( $facebook_array['caption'], ENT_COMPAT, get_bloginfo('charset') ) );
-						$connect_arr[$api_key]['facebook_description'] 	= stripslashes( html_entity_decode( $facebook_array['description'], ENT_COMPAT, get_bloginfo('charset') ) );
 					
 					}
 					

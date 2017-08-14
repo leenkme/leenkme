@@ -47,8 +47,6 @@ $lm_post_jquery(document).ready(function($) {
 			
 			facebook_array = {
 				'message':			$( 'input[name=facebook_message_format]' ).val(),
-				'linkname':			$( 'input[name=facebook_linkname_format]' ).val(),
-				'caption':			$( 'input[name=facebook_caption_format]' ).val(),
 				'description':		$( 'input[name=facebook_description_format]' ).val()
 			};
 			
@@ -99,8 +97,6 @@ $lm_post_jquery(document).ready(function($) {
 				if ( 0 == ( $( 'input[name=lm_facebook_type]' ).val() ) ) {
 					
 					$( 'textarea#lm_fb_message' ).val( data['facebook']['message'] );
-					$( 'input#lm_fb_linkname' ).val( data['facebook']['linkname'] );
-					$( 'input#lm_fb_caption' ).val( data['facebook']['caption'] );
 					$( 'textarea#lm_fb_description' ).val( data['facebook']['description'] );
 					$( 'img#lm_fb_image_src' ).attr( 'src', data['facebook']['picture'] );
 					$( 'input[name=facebook_image]' ).val( data['facebook']['picture'] );
