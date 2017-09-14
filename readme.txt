@@ -2,8 +2,8 @@
 Contributors: layotte
 Tags: publish, automatic, facebook, twitter, linkedin, friendfeed, fan page, groups, publicize, open graph, social media, social media tools
 Requires at least: 3.1
-Tested up to: 4.8
-Stable tag: 2.12.0
+Tested up to: 4.9
+Stable tag: 2.13.0
 
 leenk.me empowers you to publicize your WordPress content to your Twitter, Facebook, and LinkedIn accounts automatically.
 
@@ -87,6 +87,10 @@ Feel free to use the leenk.me [contact form](http://leenk.me/contact) and we wil
 Yes, there is now a GUI interface for this in the main leenk.me settings, but if you can still use your own custom URL shortener by using the WordPress action hook 'leenkme_url_shortener' to change the URL shortener used. I wrote a post detailing [how to use the bit.ly URL shortener](http://leenk.me/2011/03/22/how-to-use-the-bit-ly-url-shortener-in-leenk-me/).
 
 == Changelog ==
+
+= 2.13.0 =
+* Removed a missed deprecated split() call
+* Changed maxlength to 140 characters in Twitter preview box
 
 = 2.12.0 =
 * Removing Caption/Link Name from Facebooky Array, no longer sending Picture URL (it's entirely OG driven now)

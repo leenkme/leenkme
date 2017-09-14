@@ -263,7 +263,7 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 				?>
                 
 				<tr><td colspan="2">
-                <textarea id="leenkme_tweet" name="leenkme_tweet" cols="65" rows="1" maxlength="115"><?php echo $expanded_tweet; ?></textarea>
+                <textarea id="leenkme_tweet" name="leenkme_tweet" cols="65" rows="1" maxlength="140"><?php echo $expanded_tweet; ?></textarea>
                 </td></tr>
                 
 				<tr><td scope="row" style="text-align:left; padding-top: 5px; padding-bottom:5px; padding-right:10px; line-height: 15px; font-size: 11px;"><?php _e( 'Exclude from Twitter:', 'leenkme' ) ?> <input type="checkbox" name="twitter_exclude" <?php checked( $exclude || "on" == $exclude ); ?> />
