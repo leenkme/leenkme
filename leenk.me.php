@@ -156,7 +156,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 					
 				update_user_option( $user_id, 'leenkme', $user_settings );
 				
-				if ( current_user_can( 'leenkme_manage_all_settings' ) ) { //we're dealing with the main Admin options
+				if ( current_user_can( 'activate_plugins' ) ) { //we're dealing with the main Admin options
 					
 					if ( ! empty( $_REQUEST['leenkme_general_options_nonce'] ) && wp_verify_nonce( $_REQUEST['leenkme_general_options_nonce'], 'leenkme_general_options' ) ) {	
 
@@ -300,7 +300,7 @@ if ( ! class_exists( 'leenkme' ) ) {
                         <?php } ?>
                         
                         <?php
-						if ( current_user_can( 'leenkme_manage_all_settings' ) ) { 
+						if ( current_user_can( 'activate_plugins' ) ) { 
 										
 							$leenkme_users = leenkme_get_users();
 							$other_users = array();
@@ -345,7 +345,7 @@ if ( ! class_exists( 'leenkme' ) ) {
                         
                     </div>
                     
-                    <?php if ( current_user_can( 'leenkme_manage_all_settings' ) ) { ?>
+                    <?php if ( current_user_can( 'activate_plugins' ) ) { ?>
                   
                     <div id="modules" class="postbox">
                     
@@ -558,9 +558,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 			else
 				$old_version = 0;
 			
-			if ( version_compare( $old_version, '1.2.3', '<' ) )
-				$this->upgrade_to_1_2_3();
-			
 			if ( version_compare( $old_version, '1.3.0', '<' ) )
 				$this->upgrade_to_1_3_0();
 			
@@ -582,27 +579,6 @@ if ( ! class_exists( 'leenkme' ) ) {
 			
 		}
 		
-		function upgrade_to_1_2_3() {
-			
-			$role = get_role('administrator');
-			if ($role !== NULL)
-				$role->add_cap('leenkme_manage_all_settings');
-				$role->add_cap('leenkme_edit_user_settings');
-	
-			$role = get_role('editor');
-			if ($role !== NULL)
-				$role->add_cap('leenkme_edit_user_settings');
-	
-			$role = get_role('author');
-			if ($role !== NULL)
-				$role->add_cap('leenkme_edit_user_settings');
-	
-			$role = get_role('contributor');
-			if ($role !== NULL)
-				$role->add_cap('leenkme_edit_user_settings');
-				
-		}
-		
 		function upgrade_to_1_3_0() {
 			
 			global $wpdb;
@@ -611,7 +587,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 			
 			foreach ( (array)$user_ids as $user_id ) {
 				
-				if ( !user_can( $user_id, 'leenkme_edit_user_settings' ) ) {
+				if ( !user_can( $user_id, 'edit_posts' ) ) {
 					
 					clean_user_cache( $user_id );
 					continue;
@@ -905,29 +881,29 @@ function leenkme_ap() {
 	if ( empty( $dl_pluginleenkme ) )
 		return;
 	
-	add_menu_page( __( 'leenk.me Settings', 'leenkme' ), __( 'leenk.me', 'leenkme' ), 'leenkme_edit_user_settings', 'leenkme', array( &$dl_pluginleenkme, 'leenkme_settings_page' ), $dl_pluginleenkme->base_url . '/images/leenkme-logo-16x16.png' );
+	add_menu_page( __( 'leenk.me Settings', 'leenkme' ), __( 'leenk.me', 'leenkme' ), 'edit_posts', 'leenkme', array( &$dl_pluginleenkme, 'leenkme_settings_page' ), $dl_pluginleenkme->base_url . '/images/leenkme-logo-16x16.png' );
 	
 	if (substr($dl_pluginleenkme->wp_version, 0, 3) >= '2.9')
-		add_submenu_page( 'leenkme', __( 'leenk.me Settings', 'leenkme' ), __( 'leenk.me Settings', 'leenkme' ), 'leenkme_edit_user_settings', 'leenkme', array( &$dl_pluginleenkme, 'leenkme_settings_page' ) );
+		add_submenu_page( 'leenkme', __( 'leenk.me Settings', 'leenkme' ), __( 'leenk.me Settings', 'leenkme' ), 'edit_posts', 'leenkme', array( &$dl_pluginleenkme, 'leenkme_settings_page' ) );
 	
 	if ( $dl_pluginleenkme->plugin_enabled( 'twitter' ) ) {
 		
 		global $dl_pluginleenkmeTwitter;
-		add_submenu_page( 'leenkme', __( 'Twitter Settings', 'leenkme' ), __( 'Twitter', 'leenkme' ), 'leenkme_edit_user_settings', 'leenkme_twitter', array( &$dl_pluginleenkmeTwitter, 'print_twitter_settings_page' ) );
+		add_submenu_page( 'leenkme', __( 'Twitter Settings', 'leenkme' ), __( 'Twitter', 'leenkme' ), 'edit_posts', 'leenkme_twitter', array( &$dl_pluginleenkmeTwitter, 'print_twitter_settings_page' ) );
 		
 	}
 	
 	if ( $dl_pluginleenkme->plugin_enabled( 'facebook' ) ) {
 		
 		global $dl_pluginleenkmeFacebook;
-		add_submenu_page( 'leenkme', __( 'Facebook Settings', 'leenkme' ), __( 'Facebook', 'leenkme' ), 'leenkme_edit_user_settings', 'leenkme_facebook', array( &$dl_pluginleenkmeFacebook, 'print_facebook_settings_page' ) );
+		add_submenu_page( 'leenkme', __( 'Facebook Settings', 'leenkme' ), __( 'Facebook', 'leenkme' ), 'edit_posts', 'leenkme_facebook', array( &$dl_pluginleenkmeFacebook, 'print_facebook_settings_page' ) );
 		
 	}
 	
 	if ( $dl_pluginleenkme->plugin_enabled( 'linkedin' ) ) {
 		
 		global $dl_pluginleenkmeLinkedIn;
-		add_submenu_page( 'leenkme', __( 'LinkedIn Settings', 'leenkme' ), __( 'LinkedIn', 'leenkme' ), 'leenkme_edit_user_settings', 'leenkme_linkedin', array( &$dl_pluginleenkmeLinkedIn, 'print_linkedin_settings_page' ) );
+		add_submenu_page( 'leenkme', __( 'LinkedIn Settings', 'leenkme' ), __( 'LinkedIn', 'leenkme' ), 'edit_posts', 'leenkme_linkedin', array( &$dl_pluginleenkmeLinkedIn, 'print_linkedin_settings_page' ) );
 		
 	}
 }
