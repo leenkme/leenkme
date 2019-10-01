@@ -33,7 +33,6 @@ $lm_post_facebook_jquery(document).ready(function($) {
 		var data = {
 			'action': 			'republish',
 			'id':  				$( 'input#post_ID' ).val(),
-			'post_author':		$( 'input#post_author' ).val(),
 			'facebook_array':  	facebook_array,
 			'_wpnonce': 		$( 'input#leenkme_wpnonce' ).val()
 		};

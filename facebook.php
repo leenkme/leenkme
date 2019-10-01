@@ -323,7 +323,7 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 			
 			if ( $exclude_page = get_post_meta( $post->ID, 'facebook_exclude_page', true ) ) {
 				
-				delete_post_meta( $post->ID, 'facebook_exclude_page', true );
+				delete_post_meta( $post->ID, 'facebook_exclude_page' );
 				update_post_meta( $post->ID, '_facebook_exclude_page', $exclude_page );
 				
 				
@@ -332,7 +332,7 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 			
 			if ( $exclude_group = get_post_meta( $post->ID, 'facebook_exclude_group', true ) ) {
 				
-				delete_post_meta( $post->ID, 'facebook_exclude_group', true );
+				delete_post_meta( $post->ID, 'facebook_exclude_group' );
 				update_post_meta( $post->ID, '_facebook_exclude_group', $exclude_group );
 				
 				
@@ -341,7 +341,7 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 			
 			if ( $facebook_array['message'] = get_post_meta( $post->ID, 'facebook_message', true ) ) {
 				
-				delete_post_meta( $post->ID, 'facebook_message', true );
+				delete_post_meta( $post->ID, 'facebook_message' );
 				update_post_meta( $post->ID, '_facebook_message', $facebook_array['message'] );
 				
 				
@@ -350,7 +350,7 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 			
 			if ( $facebook_array['description'] = get_post_meta( $post->ID, 'facebook_description', true ) ) {
 				
-				delete_post_meta( $post->ID, 'facebook_description', true );
+				delete_post_meta( $post->ID, 'facebook_description' );
 				update_post_meta( $post->ID, '_facebook_description', $facebook_array['description'] );
 				
 				
@@ -359,7 +359,7 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 			
 			if ( $facebook_array['picture'] = get_post_meta( $post->ID, 'facebook_image', true ) ) {
 				
-				delete_post_meta( $post->ID, 'facebook_image', true );
+				delete_post_meta( $post->ID, 'facebook_image' );
 				update_post_meta( $post->ID, '_facebook_image', $facebook_array['picture'] );
 				
 				
@@ -416,15 +416,11 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
             <div id="lm_facebook_options">
             
             	<div id="lm_fb_exlusions">
-                    <?php if ( $user_settings['facebook_page'] ) { ?>
                     <?php _e( 'Exclude from Page:', 'leenkme' ) ?>
                     <input type="checkbox" name="facebook_exclude_page" <?php checked( $exclude_page || "on" == $exclude_page ); ?> />
                     <br />
-                    <?php } ?>
-                    <?php if ( $user_settings['facebook_group'] ) { ?>
                     <?php _e( 'Exclude from Group:', 'leenkme' ) ?>
                     <input type="checkbox" name="facebook_exclude_group" <?php checked( $exclude_group || "on" == $exclude_group ); ?> />
-                    <?php } ?>
                 </div>
                 
                 <div id="lm_fb_republish">
@@ -514,7 +510,7 @@ function leenkme_ajax_republish() {
 			
 		} else {
 			
-			$results = leenkme_ajax_connect( leenkme_publish_to_facebook( array(), array( 'ID' => $_REQUEST['id'], 'post_author' => $_REQUEST['post_author'] ), $_REQUEST['facebook_array'], true ) );
+			$results = leenkme_ajax_connect( leenkme_publish_to_facebook( array(), $_REQUEST['id'], $_REQUEST['facebook_array'], true ) );
 	
 			if ( !empty( $results ) ) {		
 				
@@ -619,31 +615,26 @@ function leenkme_ajax_fb() {
 }
 									
 // Add function to pubslih to facebook
-function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_array = array(), $debug = false ) {
+function leenkme_publish_to_facebook( $connect_arr = array(), $post_id, $facebook_array = array(), $debug = false ) {
 	
 	global $dl_pluginleenkme, $dl_pluginleenkmeFacebook;
 	
-	if ( get_post_meta( $post['ID'], '_facebook_exclude_page', true ) )
-		$exclude_page = true;
-	else
-		$exclude_page = false;
+	$post = get_post( $post_id );
 	
-	if ( get_post_meta( $post['ID'], '_facebook_exclude_group', true ) )
-		$exclude_group = true;
-	else
-		$exclude_group = false;
+	$exclude_page = get_post_meta( $post->ID, '_facebook_exclude_page', true );
+	$exclude_group = get_post_meta( $post->ID, '_facebook_exclude_group', true );
 	
 	if ( !( $exclude_page && $exclude_group ) ) {
 		
 		$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
 		
-		if ( in_array( get_post_type( $post['ID'] ), $leenkme_settings['post_types'] ) ) {
+		if ( in_array( get_post_type( $post->ID ), $leenkme_settings['post_types'] ) ) {
 			
 			$options = get_option( 'leenkme_facebook' );
 			
 			$leenkme_users = leenkme_get_users();
 			
-			$url = get_permalink( $post['ID'] );
+			$url = get_permalink( $post->ID );
 			
 			foreach ( $leenkme_users as $leenkme_user ) {
 				
@@ -670,7 +661,7 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 						
 						$match = false;
 						
-						$post_categories = wp_get_post_categories( $post['ID'] );
+						$post_categories = wp_get_post_categories( $post->ID );
 						
 						foreach ( $post_categories as $cat ) {
 						
@@ -709,8 +700,8 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 					if ( $options['facebook_group'] && !$exclude_group )
 						$connect_arr[$api_key]['facebook_group'] = true;
 					
-					if ( $leenkme_user->ID != $post['post_author'] && ( 'mine' == $options['message_preference'] 
-						|| ( 'manual' == $options['message_preference'] && !get_post_meta( $post['ID'], '_lm_facebook_type', true ) ) ) )
+					if ( $leenkme_user->ID != $post->post_author && ( 'mine' == $options['message_preference'] 
+						|| ( 'manual' == $options['message_preference'] && !get_post_meta( $post->ID, '_lm_facebook_type', true ) ) ) )
 						$prefer_user = true;
 					else
 						$prefer_user = false;
@@ -719,7 +710,7 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 						
 						$facebook_array['message'] = $options['facebook_message'];
 					
-						$facebook_array = get_leenkme_expanded_fb_post( $post['ID'], $facebook_array, false, false, $leenkme_user->ID );
+						$facebook_array = get_leenkme_expanded_fb_post( $post->ID, $facebook_array, false, false, $leenkme_user->ID );
 						
 						foreach( $facebook_array as $key => $value ) {
 							$facebook_array[$key] = preg_replace_callback( '/(&#[0-9]+;)/', 'leenkme_utf8_html_entities', $value );
@@ -730,18 +721,18 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 						
 					} else {
 						
-						$manual = get_post_meta( $post['ID'], '_lm_facebook_type', true );
+						$manual = get_post_meta( $post->ID, '_lm_facebook_type', true );
 						
 						if ( $manual ) {
 							
-							$facebook_array['message']     = get_post_meta( $post['ID'], '_facebook_message', true );
+							$facebook_array['message']     = get_post_meta( $post->ID, '_facebook_message', true );
 							
 						} else {
 							
 							if ( empty( $facebook_array['message'] ) )
 								$facebook_array['message'] = $options['facebook_message'];
 																
-							$facebook_array = get_leenkme_expanded_fb_post( $post['ID'], $facebook_array, false, false, $leenkme_user->ID );
+							$facebook_array = get_leenkme_expanded_fb_post( $post->ID, $facebook_array, false, false, $leenkme_user->ID );
 							
 						}
 						

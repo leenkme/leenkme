@@ -858,19 +858,19 @@ if ( class_exists( 'leenkme' ) ) {
 	require_once( 'includes/functions.php' );
 	
 	$dl_pluginleenkme = new leenkme();
-	
-	if ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
-	
-		if ( $dl_pluginleenkme->plugin_enabled( 'twitter' ) )
-			require_once( 'twitter.php' );
-	
-		if ( $dl_pluginleenkme->plugin_enabled( 'facebook' ) )
-			require_once( 'facebook.php' );
-	
-		if ( $dl_pluginleenkme->plugin_enabled( 'linkedin' ) )
-			require_once( 'linkedin.php' );
-	
+
+	if ( $dl_pluginleenkme->plugin_enabled( 'twitter' ) ) {
+		require_once( 'twitter.php' );
 	}
+
+	if ( $dl_pluginleenkme->plugin_enabled( 'facebook' ) ) {
+		require_once( 'facebook.php' );
+	}
+
+	if ( $dl_pluginleenkme->plugin_enabled( 'linkedin' ) ) {
+		require_once( 'linkedin.php' );
+	}
+	
 }
 
 // Initialize the admin panel if the plugin has been activated
@@ -1008,7 +1008,9 @@ function leenkme_ajax_releenk() {
 		die( __( 'No Social Networks selected.', 'leenkme' ) );
 		
 	$connect_array = array();
-	$post_array = array( 'ID' => $_REQUEST['id'], 'post_author' => $_REQUEST['post_author'] );
+	$post = get_post( $_REQUEST['id'] );
+		
+	$post_array = array( 'ID' => $_REQUEST['id'], 'post_author' => $post->post_author );
 				
 	if ( in_array( 'twitter', $_REQUEST['networks'] ) ) {
 		
@@ -1062,57 +1064,64 @@ function leenkme_ajax_releenk() {
 }
 
 function leenkme_connect( $new_status, $old_status, $post ) {
-
-	$out = array();
 	
 	if ( 'publish' === $new_status && 'publish' !== $old_status ) {
 		
-		global $dl_pluginleenkme;
+		wp_schedule_single_event( ( current_time( 'timestamp', 1 ) + 5 ), 'leenkme_connect_schedule', array( $post->ID ) );
 		
-		if ( leenkme_rate_limit() ) {
-		
-			$connect_arr = apply_filters( 'leenkme_connect', array(), array( 'ID' => $post->ID, 'post_author' => $post->post_author ) );
+	}
+	
+}
 
-			if ( !empty( $connect_arr ) ) {
+function leenkme_connect_schedule( $post_id ) {
+
+	$out = array();
+	
+	global $dl_pluginleenkme;
+	
+	if ( leenkme_rate_limit() ) {
+		
+		$connect_arr = apply_filters( 'leenkme_connect', array(), $post_id );
+	
+		if ( !empty( $connect_arr ) ) {
+			
+			foreach ( $connect_arr as $api_key => $body ) {
 				
-				foreach ( $connect_arr as $api_key => $body ) {
+				$body['host'] = $_SERVER['SERVER_NAME'];
+				$body['leenkme_API'] = $api_key;
+				$headers = array( 'Authorization' => 'None' );
+														
+				$result = wp_remote_post( apply_filters( 'leenkme_api_url', $dl_pluginleenkme->api_url ), 
+											array( 	'body' => $body, 
+													'headers' => $headers,
+													'sslverify' => false,
+													'httpversion' => '1.1',
+													'timeout' => $dl_pluginleenkme->timeout ) );
+				
+				if ( !empty( $result ) ) {
 					
-					$body['host'] = $_SERVER['SERVER_NAME'];
-					$body['leenkme_API'] = $api_key;
-					$headers = array( 'Authorization' => 'None' );
-															
-					$result = wp_remote_post( apply_filters( 'leenkme_api_url', $dl_pluginleenkme->api_url ), 
-												array( 	'body' => $body, 
-														'headers' => $headers,
-														'sslverify' => false,
-														'httpversion' => '1.1',
-														'timeout' => $dl_pluginleenkme->timeout ) );
+					$out[$api_key] = $result;
 					
-					if ( !empty( $result ) ) {
-						
-						$out[$api_key] = $result;
-						
-					} else {
-						
-						$out[$api_key]=  "<p>" . __( 'Undefined error occurred, for help please contact <a href="http://leenk.me/" target="_blank">leenk.me support</a>.', 'leenkme' ) . "</p>";
-						
-					}
+				} else {
+					
+					$out[$api_key]=  "<p>" . __( 'Undefined error occurred, for help please contact <a href="http://leenk.me/" target="_blank">leenk.me support</a>.', 'leenkme' ) . "</p>";
 					
 				}
 				
 			}
-		
-		} else {
-			
-			$out[] = __( 'Error: You have exceeded your rate limit for API calls, only 350 API calls are allowed every hour.', 'leenkme' );
 			
 		}
+	
+	} else {
+		
+		$out[] = __( 'Error: You have exceeded your rate limit for API calls, only 350 API calls are allowed every hour.', 'leenkme' );
 		
 	}
 	
 	return $out;
 
 }
+add_action( 'leenkme_connect_schedule', 'leenkme_connect_schedule', 10, 1 ); 
 
 function leenkme_ajax_connect( $connect_arr ) {
 	

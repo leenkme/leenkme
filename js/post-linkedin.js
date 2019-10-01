@@ -37,7 +37,6 @@ $lm_post_linkedin_jquery(document).ready(function($) {
 		var data = {
 			'action': 			'reshare',
 			'id':  				$( 'input#post_ID' ).val(),
-			'post_author':		$( 'input#post_author' ).val(),
 			'linkedin_array':  	linkedin_array,
 			'_wpnonce': 		$( 'input#leenkme_wpnonce' ).val()
 		};

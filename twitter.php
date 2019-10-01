@@ -228,9 +228,8 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 			
 			if ( $tweet = get_post_meta( $post->ID, 'leenkme_tweet', true ) ) {
 				
-				delete_post_meta( $post->ID, 'leenkme_tweet', true );
+				delete_post_meta( $post->ID, 'leenkme_tweet' );
 				update_post_meta( $post->ID, '_leenkme_tweet', $tweet );
-				
 				
 			}
 			
@@ -509,7 +508,7 @@ function leenkme_ajax_retweet() {
 		
 		} else if ( !empty( $_REQUEST['tweet'] ) ) {
 			
-			$results = leenkme_ajax_connect( leenkme_publish_to_twitter( array(), array( 'ID' => $_REQUEST['id'], 'post_author' => $_REQUEST['post_author'] ), $_REQUEST['tweet'], true ) );
+			$results = leenkme_ajax_connect( leenkme_publish_to_twitter( array(), $_REQUEST['id'], $_REQUEST['tweet'], true ) );
 			
 			if ( !empty( $results ) ) {	
 			
@@ -556,17 +555,19 @@ function leenkme_ajax_retweet() {
 }
 
 // Add function to publish to twitter
-function leenkme_publish_to_twitter( $connect_arr = array(), $post, $tweet = false, $debug = false ) {
+function leenkme_publish_to_twitter( $connect_arr = array(), $post_id, $tweet = false, $debug = false ) {
 	
-	global $wpdb, $dl_pluginleenkme, $dl_pluginleenkmeTwitter;
+	global $wpdb, $dl_pluginleenkme, $dl_pluginleenkmeTwitter, $post;
 	
-	$exclude_twitter = get_post_meta( $post['ID'], '_twitter_exclude', true );
+	$post = get_post( $post_id );
+	
+	$exclude_twitter = get_post_meta( $post_id, '_twitter_exclude', true );
 	
 	if ( !$exclude_twitter ) {
 		
 		$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
 		
-		if ( in_array( get_post_type( $post['ID'] ), $leenkme_settings['post_types'] ) ) {
+		if ( in_array( get_post_type( $post_id ), $leenkme_settings['post_types'] ) ) {
 			
 			$options = get_option( 'leenkme_twitter' );
 			
@@ -598,7 +599,7 @@ function leenkme_publish_to_twitter( $connect_arr = array(), $post, $tweet = fal
 						
 						$match = false;
 						
-						$post_categories = wp_get_post_categories( $post['ID'] );
+						$post_categories = wp_get_post_categories( $post_id );
 						
 						foreach ( $post_categories as $cat ) {
 						
@@ -625,25 +626,25 @@ function leenkme_publish_to_twitter( $connect_arr = array(), $post, $tweet = fal
 						}
 					}
 					
-					if ( $leenkme_user->ID != $post['post_author'] && ( 'mine' == $options['message_preference'] 
-						|| ( 'manual' == $options['message_preference'] && !get_post_meta( $post['ID'], '_lm_tweet_type', true ) ) ) )
+					if ( $leenkme_user->ID != $post->post_author && ( 'mine' == $options['message_preference'] 
+						|| ( 'manual' == $options['message_preference'] && !get_post_meta( $post_id, '_lm_tweet_type', true ) ) ) )
 						$prefer_user = true;
 					else
 						$prefer_user = false;
 												
 					if ( $prefer_user ) {
 						
-						$tweet = stripslashes( html_entity_decode( get_leenkme_expanded_tweet( $post['ID'], $options['tweetFormat'], get_the_title( $post['ID'] ) ), ENT_COMPAT, get_bloginfo('charset') ) );
+						$tweet = stripslashes( html_entity_decode( get_leenkme_expanded_tweet( $post_id, $options['tweetFormat'], get_the_title( $post_id ) ), ENT_COMPAT, get_bloginfo('charset') ) );
 												
 					} else {
 						
-						$manual = get_post_meta( $post['ID'], '_lm_tweet_type', true );
+						$manual = get_post_meta( $post_id, '_lm_tweet_type', true );
 												
 						if ( $manual )
-							$tweet = get_post_meta( $post['ID'], '_leenkme_tweet', true );
+							$tweet = get_post_meta( $post_id, '_leenkme_tweet', true );
 													
 						if ( empty( $tweet ) )
-							$tweet = get_leenkme_expanded_tweet( $post['ID'], $options['tweetFormat'], get_the_title( $post['ID'] ) );												
+							$tweet = get_leenkme_expanded_tweet( $post_id, $options['tweetFormat'], get_the_title( $post_id ) );												
 						$tweet = stripslashes( html_entity_decode( $tweet, ENT_COMPAT, get_bloginfo('charset') ) );
 					}
 																
