@@ -301,12 +301,7 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 					delete_post_meta( $post->ID, '_facebook_image' );
 				
 			}
-	
-			if ( !empty( $_REQUEST['facebook_exclude_profile'] ) )
-				update_post_meta( $post->ID, '_facebook_exclude_profile', $_REQUEST['facebook_exclude_profile'] );
-			else
-				delete_post_meta( $post->ID, '_facebook_exclude_profile' );
-	
+		
 			if ( !empty( $_REQUEST['facebook_exclude_page'] ) )
 				update_post_meta( $post->ID, '_facebook_exclude_page', $_REQUEST['facebook_exclude_page'] );
 			else
@@ -325,16 +320,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 			
 			$current_user = wp_get_current_user();
 			$user_id = $current_user->ID;
-			
-			if ( $exclude_profile = get_post_meta( $post->ID, 'facebook_exclude_profile', true ) ) {
-				
-				delete_post_meta( $post->ID, 'facebook_exclude_profile', true );
-				update_post_meta( $post->ID, '_facebook_exclude_profile', $exclude_profile );
-				
-				
-			}
-			$exclude_profile = get_post_meta( $post->ID, '_facebook_exclude_profile', true ); 
-			
 			
 			if ( $exclude_page = get_post_meta( $post->ID, 'facebook_exclude_page', true ) ) {
 				
@@ -522,8 +507,7 @@ function leenkme_ajax_republish() {
 	
 	if ( !empty( $_REQUEST['id'] ) && !empty( $_REQUEST['facebook_array'] ) ) {
 		
-		if ( get_post_meta( $_REQUEST['id'], '_facebook_exclude_profile', true ) 
-				&& get_post_meta( $_REQUEST['id'], '_facebook_exclude_page', true )
+		if ( get_post_meta( $_REQUEST['id'], '_facebook_exclude_page', true )
 				&& get_post_meta( $_REQUEST['id'], '_facebook_exclude_group', true ) ) {
 					
 			die( __( 'You have excluded this post from publishing to your Facebook profile, Fan Page, and Group. If you would like to publish it, edit the post and remove the appropriate exclude check boxes.' ) );
@@ -639,11 +623,6 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 	
 	global $dl_pluginleenkme, $dl_pluginleenkmeFacebook;
 	
-	if ( get_post_meta( $post['ID'], '_facebook_exclude_profile', true ) )
-		$exclude_profile = true;
-	else
-		$exclude_profile = false;
-	
 	if ( get_post_meta( $post['ID'], '_facebook_exclude_page', true ) )
 		$exclude_page = true;
 	else
@@ -654,7 +633,7 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 	else
 		$exclude_group = false;
 	
-	if ( !( $exclude_profile && $exclude_page && $exclude_group ) ) {
+	if ( !( $exclude_page && $exclude_group ) ) {
 		
 		$leenkme_settings = $dl_pluginleenkme->get_leenkme_settings();
 		
@@ -720,7 +699,7 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 					}
 						
 					if ( !$options['facebook_page']  && !$options['facebook_group'])
-						continue;	//Skip this user if they don't have Profile or Page checked in plugins Facebook Settings
+						continue;	//Skip this user if they don't have Page or Group checked in plugins Facebook Settings
 	
 					// Added facebook page to connection array if enabled
 					if ( $options['facebook_page'] && !$exclude_page )
