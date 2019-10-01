@@ -48,13 +48,11 @@ $lm_plugin_jquery( document ).ready( function($) {
 	/* Start leenk.me Facebook Settings */
 	$('.toplevel_page_leenkme_facebook, .leenk-me_page_leenkme_facebook').on( 'click', 'input#fb_publish', function() {
 		
-		var facebook_profile = $('input#facebook_profile').attr('checked')
 		var facebook_page = $('input#facebook_page').attr('checked')
 		var facebook_group = $('input#facebook_group').attr('checked')
 		
 		var data = {
 			action:				'fb_publish',
-			facebook_profile:	facebook_profile,
 			facebook_page:		facebook_page,
 			facebook_group:		facebook_group,
 			_wpnonce:			$('input#fb_publish_wpnonce').val()

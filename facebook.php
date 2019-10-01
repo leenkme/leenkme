@@ -25,7 +25,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 			
 			// Default values for the options
 			$defaults = array(
-								 'facebook_profile' 		=> true,
 								 'facebook_page' 			=> false,
 								 'facebook_group' 			=> false,
 								 'facebook_message'			=> '%TITLE%',
@@ -58,11 +57,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 
 				if ( ! empty( $_REQUEST['fb_publish_wpnonce'] ) && wp_verify_nonce( $_REQUEST['fb_publish_wpnonce'], 'fb_publish' ) ) {	
 									
-					if ( !empty( $_REQUEST['facebook_profile'] ) )
-						$user_settings['facebook_profile'] = true;
-					else
-						$user_settings['facebook_profile'] = false;
-					
 					if ( !empty( $_REQUEST['facebook_page'] ) )
 						$user_settings['facebook_page'] = true;
 					else
@@ -140,8 +134,7 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
 						
 						<div class="inside">
 						
-							<p><?php _e( 'Publish to Personal Profile?', 'leenkme' ); ?> <input type="checkbox" id="facebook_profile" name="facebook_profile" <?php checked( $user_settings['facebook_profile'] ); ?> /></p>
-							<p><?php _e( 'Publish to Fan Page?', 'leenkme' ); ?> <input type="checkbox" id="facebook_page" name="facebook_page" <?php checked( $user_settings['facebook_page'] ); ?> /></p>
+							<p><?php _e( 'Publish to Page?', 'leenkme' ); ?> <input type="checkbox" id="facebook_page" name="facebook_page" <?php checked( $user_settings['facebook_page'] ); ?> /></p>
 							<p><?php _e( 'Publish to Group?', 'leenkme' ); ?> <input type="checkbox" id="facebook_group" name="facebook_group" <?php checked( $user_settings['facebook_group'] ); ?> /></p>
 						
 							<p>
@@ -438,11 +431,6 @@ if ( ! class_exists( 'leenkme_Facebook' ) ) {
             <div id="lm_facebook_options">
             
             	<div id="lm_fb_exlusions">
-					<?php if ( $user_settings['facebook_profile'] ) { ?>
-                    <?php _e( 'Exclude from Profile:', 'leenkme' ) ?>
-                    <input type="checkbox" name="facebook_exclude_profile" <?php checked( $exclude_profile || "on" == $exclude_profile ); ?> />
-                    <br />
-                    <?php } ?>
                     <?php if ( $user_settings['facebook_page'] ) { ?>
                     <?php _e( 'Exclude from Page:', 'leenkme' ) ?>
                     <input type="checkbox" name="facebook_exclude_page" <?php checked( $exclude_page || "on" == $exclude_page ); ?> />
@@ -604,11 +592,7 @@ function leenkme_ajax_fb() {
 		$connect_arr[$api_key]['facebook_link'] = $url;
 		$connect_arr[$api_key]['facebook_picture'] = $picture;
 		$connect_arr[$api_key]['facebook_description'] = $description;
-						
-		if ( !empty( $_REQUEST['facebook_profile'] ) 
-				&& ( 'true' === $_REQUEST['facebook_profile'] || 'checked' === $_REQUEST['facebook_profile'] ) )
-			$connect_arr[$api_key]['facebook_profile'] = true;
-		
+
 		if ( !empty( $_REQUEST['facebook_page'] ) 
 				&& ( 'true' === $_REQUEST['facebook_page'] || 'checked' === $_REQUEST['facebook_page'] ) )
 			$connect_arr[$api_key]['facebook_page'] = true;
@@ -735,12 +719,8 @@ function leenkme_publish_to_facebook( $connect_arr = array(), $post, $facebook_a
 						
 					}
 						
-					if ( !$options['facebook_profile'] && !$options['facebook_page']  && !$options['facebook_group'])
+					if ( !$options['facebook_page']  && !$options['facebook_group'])
 						continue;	//Skip this user if they don't have Profile or Page checked in plugins Facebook Settings
-						
-					// Added facebook profile to connection array if enabled
-					if ( $options['facebook_profile'] && !$exclude_profile )
-						$connect_arr[$api_key]['facebook_profile'] = true;
 	
 					// Added facebook page to connection array if enabled
 					if ( $options['facebook_page'] && !$exclude_page )
