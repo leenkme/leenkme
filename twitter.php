@@ -26,7 +26,7 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 			// Default values for the options
 			$defaults = array(
 								 'tweetFormat' 			=> '%TITLE% %URL%',
-								 'tweetCats '			=> array( '0' ),
+								 'tweet_cats'			=> array( '0' ),
 								 'clude'	 			=> 'in',
 								 'message_preference'	=> 'author'
 							);
@@ -59,15 +59,15 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 					else
 						$user_settings['tweetFormat'] = '';
 					
-					if ( !empty( $_REQUEST['clude'] ) && !empty( $_REQUEST['tweetCats'] ) ) {
+					if ( !empty( $_REQUEST['clude'] ) && !empty( $_REQUEST['tweet_cats'] ) ) {
 						
 						$user_settings['clude'] = $_REQUEST['clude'];
-						$user_settings['tweetCats'] = $_REQUEST['tweetCats'];
+						$user_settings['tweet_cats'] = $_REQUEST['tweet_cats'];
 						
 					} else {
 						
 						$user_settings['clude'] = 'in';
-						$user_settings['tweetCats'] = array( '0' );
+						$user_settings['tweet_cats'] = array( '0' );
 						
 					}
 					
@@ -141,7 +141,6 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
                     </div>
 				   
 					<div id="post-types" class="postbox">
-                    
                         <div class="handlediv" title="Click to toggle"><br /></div>
                         <h3 class="hndle"><span><?php _e( 'Publish Settings', 'leenkme' ); ?></span></h3>
                         
@@ -153,16 +152,13 @@ if ( ! class_exists( 'leenkme_Twitter' ) ) {
 							<input type='radio' name='clude' id='include_cat' value='in' <?php checked( 'in', $user_settings['clude'] ); ?> /><label for='include_cat'><?php _e( 'Include', 'leenkme' ); ?></label> &nbsp; &nbsp; <input type='radio' name='clude' id='exclude_cat' value='ex' <?php checked( 'ex', $user_settings['clude'] ); ?> /><label for='exclude_cat'><?php _e( 'Exclude', 'leenkme' ); ?></label>
                             </p>
                             <p>
-                            <select id='categories' name='tweetCats[]' multiple="multiple" size="5" style="height: 70px; width: 150px;">
-                                <option value="0" <?php selected( in_array( "0", (array)$user_settings['tweetCats'] ) ); ?>>All Categories</option>
+                            <select id='categories' name='tweet_cats[]' multiple="multiple" size="5" style="height: 70px; width: 150px;">
+                                <option value="0" <?php selected( in_array( "0", (array)$user_settings['tweet_cats'] ) ); ?>>All Categories</option>
                             <?php 
-                            $categories = get_categories( array( 'hide_empty' => 0, 'orderby' => 'name' ) );
+							$categories = get_categories( array( 'hide_empty' => 0, 'orderby' => 'name' ) );
                             foreach ( (array)$categories as $category ) {
                                 ?>
-                                
-                                <option value="<?php echo $category->term_id; ?>" <?php selected( in_array( $category->term_id, (array)$user_settings['tweetCats'] ) ); ?>><?php echo $category->name; ?></option>
-            
-            
+								<option value="<?php echo $category->term_id; ?>" <?php selected( in_array( $category->term_id, (array)$user_settings['tweet_cats'] ) ); ?>><?php echo $category->name; ?></option>
                                 <?php
                             }
                             ?>
@@ -586,10 +582,10 @@ function leenkme_publish_to_twitter( $connect_arr = array(), $post_id, $tweet = 
 				
 				if ( !empty( $options ) ) {	
 					
-					if ( ( !empty( $options['tweetCats'] ) && !empty( $options['clude'] ) )
-							&& !( 'in' == $options['clude'] && in_array( '0', $options['tweetCats'] ) ) ) {
+					if ( ( !empty( $options['tweet_cats'] ) && !empty( $options['clude'] ) )
+							&& !( 'in' == $options['clude'] && in_array( '0', $options['tweet_cats'] ) ) ) {
 						
-						if ( 'ex' == $options['clude'] && in_array( '0', (array)$options['tweetCats'] ) ) {
+						if ( 'ex' == $options['clude'] && in_array( '0', (array)$options['tweet_cats'] ) ) {
 							
 							if ( $debug ) echo '<p>' . __( 'You have your <a href="admin.php?page=leenkme_twitter">Leenk.me Twitter settings</a> set to Exclude All Categories.', 'leenkme' ) . '</p>';
 							
@@ -603,7 +599,7 @@ function leenkme_publish_to_twitter( $connect_arr = array(), $post_id, $tweet = 
 						
 						foreach ( $post_categories as $cat ) {
 						
-							if ( in_array( (int)$cat, $options['tweetCats'] ) ) {
+							if ( in_array( (int)$cat, $options['tweet_cats'] ) ) {
 							
 								$match = true;
 								

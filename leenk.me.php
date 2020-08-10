@@ -1220,22 +1220,6 @@ function get_leenkme_expanded_post_ajax() {
 	
 }
 
-function leenkme_help_list( $contextual_help, $screen ) {
-	
-	if ( 'leenkme' == $screen->parent_base ) {
-		
-		$contextual_help[$screen->id] = __( '<p>Need help working with the leenk.me plugin? Try these links for more information:</p>', 'leenkme' ) 
-			. '<a href="http://leenk.me/2010/09/04/how-to-use-the-leenk-me-twitter-plugin-for-wordpress/" target="_blank">Twitter</a> | '
-			. '<a href="http://leenk.me/2010/09/04/how-to-use-the-leenk-me-facebook-plugin-for-wordpress/" target="_blank">Facebook</a> | '
-			. '<a href="http://leenk.me/2010/12/01/how-to-use-the-leenk-me-linkedin-plugin-for-wordpress/" target="_blank">LinkedIn</a>';
-
-	}
-
-	return $contextual_help;
-
-}
-
-
 function releenk_row_action( $actions, $post ) {
 	
 	global $dl_pluginleenkme;
@@ -1277,8 +1261,6 @@ if ( !empty( $dl_pluginleenkme ) ) {
 	add_action( 'wp_ajax_leenkme_row_action', 			'leenkme_ajax_leenkme_row_action' );
 	add_action( 'wp_ajax_releenk', 						'leenkme_ajax_releenk' );
 	add_action( 'wp_ajax_get_leenkme_expanded_post', 	'get_leenkme_expanded_post_ajax' );
-	
-	add_filter( 'contextual_help_list', 'leenkme_help_list', 10, 2);
 	
 	// edit-post.php post row update
 	add_filter( 'post_row_actions', 'releenk_row_action', 10, 2 );
