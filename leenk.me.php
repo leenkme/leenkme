@@ -713,7 +713,7 @@ if ( ! class_exists( 'leenkme' ) ) {
 	
 			echo '<div id="leenkme_meta_box">';
 			
-			echo '<a href class="leenkme_refresh_button button button-primary button-large right">' . __( 'Refresh Preview', 'leenkme' ) . '</a>';
+			echo '<div style="margin-top: 15px;"><button type="button" class="components-button leenkme_refresh_button is-primary alignright">' . __( 'Refresh Preview', 'leenkme' ) . '</button></div>';
 			
 				echo '<ul class="leenkme_tabs">';
 				
@@ -1215,6 +1215,9 @@ function get_leenkme_expanded_post_ajax() {
 		$return_array['linkedin'] = get_leenkme_expanded_li_post( $post_id, $_REQUEST['linkedin_array'], $title, $excerpt );
 	else
 		$return_array['linkedin'] = array();
+		
+	error_log( print_r( $_REQUEST, true ) );
+	error_log( print_r( $return_array, true ) );
 		
 	die( json_encode( $return_array ) );
 	

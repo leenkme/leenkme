@@ -5,41 +5,7 @@ $lm_post_jquery(document).ready(function($) {
 	$( '.leenkme_refresh_button' ).on( 'click', function( event ) {
 		event.preventDefault();
 		
-		excerpt = $( 'textarea#excerpt' ).val();
-		
-		if ( '' == excerpt ) {
-			
-			if ( tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() ) {
-			
-				excerpt = tinyMCE.get('content').getContent();
-				
-			} else {
-			
-				excerpt = $( '#post #content' ).val();
-		
-			}
-			
-		}
-		
-		tweet_format = $( 'textarea#leenkme_tweet' ).val();
-		cats = new Array;
-		
-		if ( 0 == ( $( 'input[name=lm_tweet_type]' ).val() ) ) {
-			
-			tweet_format = $( 'input[name=lm_tweet_format]' ).val();
-		
-			$( 'input[name="post_category[]"]' ).each( function() {
-				
-				if ( true == $( this ).attr( 'checked' ) || 'checked' == $( this ).attr( 'checked' ) ) {
-					
-					var str = $( this ).val();
-					cats[ cats.length ] = str;
-					
-				}
-				
-			});
-		
-		}
+		tweet_format = $( 'input[name=lm_tweet_format]' ).val();
 		
 		facebook_array = new Array;
 		
@@ -64,17 +30,21 @@ $lm_post_jquery(document).ready(function($) {
 			
 		}
 				
+		cats = wp.data.select( 'core/editor' ).getEditedPostAttribute( 'categories' );
+		
+		tags = wp.data.select( 'core/editor' ).getEditedPostAttribute( 'tags' );
+				
 		data = {
 			'action': 			'get_leenkme_expanded_post',
 			'post_id': 			$( 'input#post_ID' ).val(),
 			'tweet': 			tweet_format,
 			'facebook_array': 	facebook_array,
 			'linkedin_array': 	linkedin_array,
-			'title': 			$( 'input#title' ).val(),
+			'title': 			wp.data.select( 'core/editor' ).getEditedPostAttribute( 'title' ),
 			'cats': 			cats.join( ',' ),
-			'tags': 			$( '.the-tags' ).val(),
-			'excerpt':			excerpt,
-			'_wpnonce': 		$('input#expanded_post_wpnonce').val()
+			'tags': 			tags.join( ',' ),
+			'excerpt':			wp.data.select( 'core/editor' ).getEditedPostAttribute( 'excerpt' ),
+			'_wpnonce': 		$('input#_wpnonce').val()
 		};
 		
 		$lm_post_jquery.post( ajaxurl, data, function( response ) {

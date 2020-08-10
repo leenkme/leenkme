@@ -382,27 +382,15 @@ function get_leenkme_expanded_tweet( $post_id, $tweet = false, $title, $cats = f
 			$tag_array = array();
 			
 			if ( false === $tags ) {
-				
 				$post_tags = wp_get_post_tags( $post_id );
-			
-				$tag_str = '';
-				foreach( (array)$post_tags as $t ) {
-					
-					$tag = get_tag( $t );
-					$tag_array[] = "#" . preg_replace( '/[^\p{L}\p{N}]/u', '', $tag->name );
-					
-				}
-				
 			} else if ( !empty( $tags ) ) {
-				
 				$post_tags = explode( ',', $tags );
+			}
 			
-				$tag_str = '';
-				foreach($post_tags as $t){
-					
-					$tag_array[] = "#" . preg_replace( '/\W/', '', $t );
-					
-				}
+			foreach( (array)$post_tags as $t ) {
+				
+				$tag = get_tag( $t );
+				$tag_array[] = "#" . preg_replace( '/[^\p{L}\p{N}]/u', '', $tag->name );
 				
 			}
 			
